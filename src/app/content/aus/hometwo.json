@@ -1,0 +1,170 @@
+{
+  "topThingsToDo": {
+    "title": "Top things to do in Australia",
+    "subtitle": "Discover breathtaking adventures across Australia’s islands",
+    "tours": [
+      { "src": "/Top things/ph1.jpg", "title": "Luxury Hotels in Sydney" },
+      { "src": "/Top things/ph2.jpeg", "title": "Family-Friendly Hotels in Brisbane" },
+      { "src": "/Top things/ph3.avif", "title": "Romantic Resorts in Whitsundays" },
+      { "src": "/Top things/ph4.jpg", "title": "Bondi Beach Sydney" },
+      { "src": "/Top things/ph5.jpg", "title": "Whitehaven Beach Queensland" },
+      { "src": "/Top things/ph6.jpg", "title": "Whitsunday Islands" },
+      { "src": "/Top things/ph7.jpg", "title": "Aboriginal Cultural Experiences" },
+      { "src": "/Top things/ph8.jpg", "title": "National Parks & Natural Wonders" }
+    ]
+  },
+  "features": {
+    "title": "Featured or Top visited properties",
+    "subtitle": "Discover #CocotelCollections and exceptional stays in Australia. Explore Sydney, Queensland, and more top destinations",
+    "tours": [
+      {
+        "src": ["/Top things/Half Moon.jpg", "/Top things/Half Moon2.jpg", "/Top things/Half Moon3.jpg", "/Top things/Half Moon4.jpg"],
+        "title": "Half Moon Village and Beach House",
+        "discount": "25% Discount",
+        "city" : "Sydney",
+        "country": "Australia",
+        "originalPrice": 4500,
+        "price": 3080,
+        "reviews": { "count": 5, "rating": 4.7 },
+        "category": "Best Viewing"
+      },
+      {
+        "src": ["/Top things/arc.jpg", "/Top things/arc2.jpg", "/Top things/arc3.jpg", "/Top things/1.jpg"],
+        "title": "ARC Homes Hotel Panglao powered by Cocotel",
+        "discount": "20% Discount",
+        "city" : "Brisbane",
+        "country": "Australia",
+        "originalPrice": 3450,
+        "price": 2167,
+        "reviews": { "count": 4, "rating": 4.5 },
+        "category": "Cultural"
+      },
+      {
+        "src": ["/Top things/Beach1.png", "/Top things/Beach2.png", "/Top things/Beach3.png", "/Top things/1.jpg"],
+        "title": "Beach Placid Resort Powered by Cocotel",
+        "discount": "15% Discount",
+        "city" : "Sydney",
+        "country": "Australia",
+        "originalPrice": 1800,
+        "price": 1530,
+        "reviews": { "count": 3, "rating": 4.4 },
+        "category": "Adventure"
+      },
+      {
+        "src": ["/Top things/Bendix1.jpg", "/Top things/Bendix2.jpg", "/Top things/Bendix3.jpg", "/Top things/2.jpg"],
+        "title": "Bendix Hotel powered by Cocotel",
+        "discount": "30% Discount",
+        "city" : "Melbourne",
+        "country": "Australia",
+        "originalPrice": 3200,
+        "price": 2240,
+        "reviews": { "count": 6, "rating": 5 },
+        "category": "Luxury"
+      }
+    ]
+  },
+  "attractions": {
+    "title": "Top attractions in Australia",
+    "subtitle": "Discover all the best places you can visit in Australia",
+    "tours": [
+      { "src": "/Top things/Tanah Lot Temple.jpg", "title": "Great Barrier Reef Diving" },
+      { "src": "/Top things/ph8.jpg", "title": "Blue Mountains Hiking" },
+      { "src": "/Top things/Komodo National Park.jpg", "title": "Uluru (Ayers Rock) Experiences" },
+      { "src": "/Top things/ph3.avif", "title": "Daintree Rainforest Exploration" },
+      { "src": "/Top things/resized-shutterstock-1478003996-1.jpg", "title": "Wildlife Safari & Koala Sanctuaries" },
+      { "src": "/Top things/resized-shutterstock-1506000698-4.jpg", "title": "Whale Watching Tours" },
+      { "src": "/Top things/Gili Trawangan.webp", "title": "Nightlife in Gold Coast" },
+      { "src": "/Top things/shutterstock-1384933283.jpg", "title": "Magnetic Island" }
+    ]
+  },
+  "photos": {
+    "title": "Photos of Australia",
+    "subtitle": "See pictures of the best destinations and attractions in Australia",
+    "tours": [
+      { "src": "/Top things/ph5.jpg", "title": "Tanah Lot Temple" },
+      { "src": "/Top things/ph1.jpg", "title": "Borobudur Temple" },
+      { "src": "/Top things/ph2.jpeg", "title": "Komodo National Park" },
+      { "src": "/Top things/ph3.avif", "title": "Raja Ampat Islands" },
+      { "src": "/Top things/ph4.jpg", "title": "Mount Bromo" },
+      { "src": "/Top things/ph6.jpg", "title": "Lake Toba" },
+      { "src": "/Top things/ph7.jpg", "title": "Gili Trawangan" },
+      { "src": "/Top things/ph8.jpg", "title": "Prambanan Temple" }
+    ]
+  },
+  "header": {
+    "title": "Welcome to Cocotel Australia",
+    "links": [
+      { "name": "Home", "href": "/in" },
+      { "name": "Tours", "href": "/in/tours" },
+      { "name": "About", "href": "/in/about" }
+    ]
+  },
+  "hero": {
+    "title": "Explore Australia",
+    "subtitle": "Discover amazing adventures across Australia’s islands",
+    "image": "/Top things/hero-in.jpg",
+    "video":"images/australiya-1080.mp4"
+  },
+  "footer": {
+    "logo": "/logo/footer.svg",
+    "socials": [
+      { "name": "Facebook", "icon": "FaFacebookF" },
+      { "name": "Instagram", "icon": "FaInstagram" },
+      { "name": "TikTok", "icon": "FaTiktok" }
+    ],
+    "contacts": {
+      "email": "csr@cocotel.co.id",
+      "phones": ["+62-21-1234-5678", "+62-21-8765-4321"]
+    },
+    "navSections": [
+      {
+        "title": "About Cocotel",
+        "links": [
+          { "name": "Blog", "href": "/blog" },
+          { "name": "Explore", "href": "/explore" },
+          { "name": "Contact us", "href": "/contactUs" },
+          { "name": "Career", "href": "/career" },
+          { "name": "Partner With Us", "href": "/partner-With-Us" }
+        ]
+      },
+      {
+        "title": "Guide to the Philippines",
+        "links": [
+          { "name": "Login", "href": "/login" },
+          { "name": "Regiester", "href": "/regiester" },
+          { "name": "Frequently Asked Questions", "href": "/faq" },
+          { "name": "Data Privacy Policy", "href": "/privacy" },
+          { "name": "Terms and Conditions", "href": "/terms" }
+        ]
+      },
+      {
+        "title": "Travel Services",
+        "links": [
+          { "name": "Tours & Activity Packages", "href": "/tours" },
+          { "name": "Luxury Resorts Packages", "href": "/resorts" },
+          { "name": "All-Inclusive Family Vacation Packages", "href": "/family-vacations" },
+          { "name": "Honeymoon Packages", "href": "/honeymoon" },
+          { "name": "Car Rentals", "href": "/car-rentals" },
+          { "name": "Airport Transfers", "href": "/airport-transfers" },
+          { "name": "Hotel Booking", "href": "/hotel-booking" }
+        ]
+      },
+      {
+        "title": "Top Destinations",
+        "links": [
+          { "name": "Boracay Tours", "href": "/boracay" },
+          { "name": "Palawan Tours", "href": "/palawan" },
+          { "name": "Bohol Tours", "href": "/bohol" },
+          { "name": "Siargao Tours", "href": "/siargao" },
+          { "name": "Cebu Tours", "href": "/cebu" },
+          { "name": "Baguio Tours", "href": "/baguio" },
+          { "name": "Ilocos Tours", "href": "/ilocos" },
+          { "name": "Manila Tours", "href": "/manila" },
+          { "name": "Iloilo Tours", "href": "/iloilo" },
+          { "name": "Albay Tours", "href": "/albay" }
+        ]
+      }
+    ]
+    
+  }
+}

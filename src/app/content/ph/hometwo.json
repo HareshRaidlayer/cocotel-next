@@ -1,0 +1,169 @@
+{
+  "topThingsToDo": {
+    "title": "Top things to do in the Philippines",
+    "subtitle": "Discover all the adventures you can experience in the Philippines",
+    "tours": [
+      { "src": "/Top things/group-travel-4.jpg", "title": "Luxury Hotels in Manila" },
+      { "src": "/Top things/resized-shutterstock-1506000698-4.jpg", "title": "Beachfront Resorts in Boracay" },
+      { "src": "/Top things/resized-shutterstock-399071341.jpg", "title": "Family-Friendly Hotels in Cebu" },
+      { "src": "/Top things/resized-shutterstock-1478003996-1.jpg", "title": "Diving & Snorkeling Spots" },
+      { "src": "/Top things/resized-shutterstock-1753609961-1.jpg", "title": "Filipino Food Experiences" },
+      { "src": "/Top things/shutterstock-1062273197.jpg", "title": "Ziplining & Adventure Parks" },
+      { "src": "/Top things/shutterstock-1384933283.jpg", "title": "Romantic Resorts for Couples" },
+      { "src": "/Top things/naked-island-siargao.jpg", "title": "Spa & Wellness Resorts" }
+    ]
+  },
+  "features": {
+    "title": "Featured or Top visited properties",
+    "subtitle": "Discover #CocotelCollections and exceptional stays in the Philippines. Explore Batangas, Cebu, and more top destinations",
+    "tours": [
+      {
+        "src": ["/Top things/Virginia1.jpg", "/Top things/Virginia2.jpg", "/Top things/Virginia3.jpg", "/Top things/Virginia4.jpg"],
+        "title": "La Virginia Leisure Park and Amusement Resort powered by Cocotel",
+        "discount": "30% Discount",
+        "city" : "Manila",
+        "country": "Philippines",
+        "originalPrice": 1056,
+        "price": 2941,
+        "reviews": { "count": 3, "rating": 4.3 },
+        "category": "Best Viewing"
+      },
+      {
+        "src": ["/Top things/Urban1.jpg", "/Top things/Urban2.jpg", "/Top things/Urban2.png", "/Top things/Urban4.jpg"],
+        "title": "Urban Glamp Resort Iloilo Where art meets ​relaxation",
+        "discount": "30% Discount",
+        "city" : "Manila",
+        "country": "Philippines",
+        "originalPrice": 4914,
+        "price": 3159,
+        "reviews": { "count": 3, "rating": 5 },
+        "category": "Luxury"
+      },
+      {
+        "src": ["/Top things/Azahar1.jpg", "/Top things/Azahar2.jpg", "/Top things/Azahar3.jpg", "/Top things/Azahar4.jpg"],
+        "title": "Azahar Resort Panglao powered by Cocotel",
+        "discount": "20% Discount",
+        "city" : "Davao City",
+        "country": "Philippines",
+        "originalPrice": 4107,
+        "price": 3333,
+        "reviews": { "count": 2, "rating": 4.6 },
+        "category": "Best Selling"
+      },
+      {
+        "src": ["/Top things/Amos1.png", "/Top things/Amos2.jpg", "/Top things/Amos3.jpg", "/Top things/Amos4.jpg"],
+        "title": "Amos Pili Tree Inn Powered by Cocotel",
+        "discount": "30% Discount",
+        "city" : "Quezon City",
+        "country": "Philippines",
+        "originalPrice": 2045,
+        "price": 1610,
+        "reviews": { "count": 4, "rating": 4.45 },
+        "category": "Luxury"
+      }
+    ]
+  },
+  "attractions": {
+    "title": "Top attractions in the Philippines",
+    "subtitle": "Discover all the best places you can visit in the Philippines",
+    "tours": [
+      { "src": "/Top things/1.png", "title": "Puerto Princesa Underground River" },
+      { "src": "/Top things/2.jpg", "title": "White Beach in Boracay Island" },
+      { "src": "/Top things/3.jpg", "title": "Chocolate Hills" },
+      { "src": "/Top things/4.jpg", "title": "Intramuros" },
+      { "src": "/Top things/5.jpg", "title": "Kayangan Lake" },
+      { "src": "/Top things/6.jpg", "title": "Kawasan Falls" },
+      { "src": "/Top things/7.jpg", "title": "Nacpan Beach" },
+      { "src": "/Top things/8.jpg", "title": "Calle Crisologo" }
+    ]
+  },
+  "photos": {
+    "title": "Photos of the Philippines",
+    "subtitle": "See pictures of the best destinations and attractions in the Philippines",
+    "tours": [
+      { "src": "/Top things/1.png", "title": "Puerto Princesa Underground River" },
+      { "src": "/Top things/2.jpg", "title": "White Beach in Boracay Island" },
+      { "src": "/Top things/3.jpg", "title": "Chocolate Hills" },
+      { "src": "/Top things/4.jpg", "title": "Intramuros" },
+      { "src": "/Top things/5.jpg", "title": "Kayangan Lake" },
+      { "src": "/Top things/6.jpg", "title": "Kawasan Falls" },
+      { "src": "/Top things/7.jpg", "title": "Nacpan Beach" },
+      { "src": "/Top things/8.jpg", "title": "Calle Crisologo" }
+    ]
+  },
+  "header": {
+    "title": "Welcome to Cocotel Philippines",
+    "links": [
+      { "name": "Home", "href": "/ph" },
+      { "name": "Tours", "href": "/ph/tours" },
+      { "name": "About", "href": "/ph/about" }
+    ]
+  },
+  "hero": {
+    "title": "Explore the Philippines",
+    "subtitle": "Discover amazing adventures in the Pearl of the Orient",
+    "image": "/Top things/hero-ph.jpg",
+    "video": "images/philippines-1080.mov"
+  },
+  "footer": {
+    "logo": "/logo/footer.svg",
+    "socials": [
+      { "name": "Facebook", "icon": "FaFacebookF" },
+      { "name": "Instagram", "icon": "FaInstagram" },
+      { "name": "TikTok", "icon": "FaTiktok" }
+    ],
+    "contacts": {
+      "email": "csr@cocotel.com.ph",
+      "phones": ["+63-917-307-7462", "+63-908-932-1399"]
+    },
+    "navSections": [
+      {
+        "title": "About Cocotel",
+        "links": [
+          { "name": "Blog", "href": "/blog" },
+          { "name": "Explore", "href": "/explore" },
+          { "name": "Contact us", "href": "/contactUs" },
+          { "name": "Career", "href": "/career" },
+          { "name": "Partner With Us", "href": "/partner-With-Us" }
+        ]
+      },
+      {
+        "title": "Guide to the Philippines",
+        "links": [
+          { "name": "Login", "href": "/login" },
+          { "name": "Regiester", "href": "/regiester" },
+          { "name": "Frequently Asked Questions", "href": "/faq" },
+          { "name": "Data Privacy Policy", "href": "/privacy" },
+          { "name": "Terms and Conditions", "href": "/terms" }
+        ]
+      },
+      {
+        "title": "Travel Services",
+        "links": [
+          { "name": "Tours & Activity Packages", "href": "/tours" },
+          { "name": "Luxury Resorts Packages", "href": "/resorts" },
+          { "name": "All-Inclusive Family Vacation Packages", "href": "/family-vacations" },
+          { "name": "Honeymoon Packages", "href": "/honeymoon" },
+          { "name": "Car Rentals", "href": "/car-rentals" },
+          { "name": "Airport Transfers", "href": "/airport-transfers" },
+          { "name": "Hotel Booking", "href": "/hotel-booking" }
+        ]
+      },
+      {
+        "title": "Top Destinations",
+        "links": [
+          { "name": "Boracay Tours", "href": "/boracay" },
+          { "name": "Palawan Tours", "href": "/palawan" },
+          { "name": "Bohol Tours", "href": "/bohol" },
+          { "name": "Siargao Tours", "href": "/siargao" },
+          { "name": "Cebu Tours", "href": "/cebu" },
+          { "name": "Baguio Tours", "href": "/baguio" },
+          { "name": "Ilocos Tours", "href": "/ilocos" },
+          { "name": "Manila Tours", "href": "/manila" },
+          { "name": "Iloilo Tours", "href": "/iloilo" },
+          { "name": "Albay Tours", "href": "/albay" }
+        ]
+      }
+    ]
+  }
+}
