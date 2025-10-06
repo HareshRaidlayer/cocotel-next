@@ -57,7 +57,7 @@ const Header = () => {
             <Link href="/events" className="hover:underline">Events at Cocotel</Link>
           </li>
           <li>
-            <Link href="/partner" className="hover:underline">Partner With Us</Link>
+            <Link href="#" className="hover:underline">Partner With Us</Link>
           </li>
         </ul>
 
@@ -200,7 +200,7 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link href="/partner" onClick={() => setShowMobileMenu(false)}>
+              <Link href="#" onClick={() => setShowMobileMenu(false)}>
                 Partner With Us
               </Link>
             </li>
