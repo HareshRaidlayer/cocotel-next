@@ -13,7 +13,7 @@ const categories = [
 ];
 const DiscoverSection = () => {
   return (
-    <section className="container mx-auto bg-white text-center mt-10">
+    <section className="container mx-auto bg-white text-center mt-10 p-2 xl:p-0">
       
         <h2 className="text-xl md:text-2xl font-bold text-center mb-2 text-green-600">
           Discover What Cocotel has to Offer

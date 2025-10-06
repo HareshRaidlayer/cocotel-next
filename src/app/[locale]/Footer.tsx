@@ -116,7 +116,7 @@ const Footer: React.FC<BottomProps> = ({ data }) => {
             </div>
           </div>
           {navSections.map((section, idx) => (
-              <div key={idx}>
+              <div className="text-center md:text-left" key={idx}>
                 <h4 className="text-lg font-semibold mb-4 text-shadow-c-lg">{section.title}</h4>
                 <ul className="space-y-2 text-sm">
                   {section.links.map((link, i) => (

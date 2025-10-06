@@ -6,7 +6,7 @@ const TopThingsToDo = ({ data }) => {
   if (!data) return null;
 
   return (
-    <section className="container mx-auto bg-white mt-10">
+    <section className="container mx-auto bg-white mt-10 p-2 xl:p-0">
      
         <h2 className="text-xl md:text-2xl font-bold text-center mb-2 text-green-600">
           {data.title}
