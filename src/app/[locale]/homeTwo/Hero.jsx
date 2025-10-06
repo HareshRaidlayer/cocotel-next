@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "@/components/ui/button";
+import Head from "next/head";
 
 const countries = [
   { code: "ph", name: "Philippines", flag: "/images/Flag_of_the_Philippines.svg.png" },
@@ -84,6 +85,9 @@ const Hero = ({ data }) => {
 
   return (
     <>
+    <Head>
+        <link rel="preload" href={data.video} as="video" />
+      </Head>
       <section className="container mx-auto mt-5 relative h-96 md:h-[500px] lg:h-[600px] rounded-xl">
         {/* Background Video */}
         <video
@@ -96,7 +100,7 @@ const Hero = ({ data }) => {
         />
 
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-20 rounded-xl"></div>
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-center text-center text-white">
