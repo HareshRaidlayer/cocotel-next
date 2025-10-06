@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { FiChevronDown } from "react-icons/fi";
+import Link from "next/link"; 
 
 const countries = [
   { name: "United States", code: "+1" },
@@ -148,9 +149,9 @@ const RegisterPage = () => {
               <input type="checkbox" className="mr-2 mt-1 sm:mt-0" />
               <label className="text-sm leading-snug">
                 I agree to the{" "}
-                <link href="#" className="text-green-600 font-medium">
+                <Link href="#" className="text-green-600 font-medium">
                   Terms and Conditions
-                </link>
+                </Link>
               </label>
             </div>
           </div>
@@ -164,9 +165,9 @@ const RegisterPage = () => {
           </button>
           <div className="flex items-center space-x-1 justify-center">
             <p className="text-black">Already have an account?</p>
-            <link href="/login" className="text-green-600 hover:underline">
+            <Link href="/login" className="text-green-600 hover:underline">
               Login
-            </link>
+            </Link>
           </div>
         </form>
       </div>
