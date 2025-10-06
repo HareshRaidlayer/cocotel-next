@@ -1,5 +1,6 @@
 import React from "react";
 import { FaUser, FaLock } from "react-icons/fa";
+import Link from "next/link"; // Import Next.js Link component
 
 const LoginPage = () => {
   return (
@@ -58,12 +59,12 @@ const LoginPage = () => {
             {/* Forgot Password + Login Button */}
             <div className="mb-6">
               <div className="flex justify-end mb-4">
-                <link
+                <Link
                   href="#"
                   className="text-sm text-black hover:text-green-700 font-semibold"
                 >
                   Forgot Your Password?
-                </link>
+                </Link>
               </div>
               <button
                 type="button"
@@ -76,9 +77,9 @@ const LoginPage = () => {
             <div className="text-center mt-10">
               <p className="text-black">Don&apos;t have an account?</p>
               <h3 className="text-black font-bold">
-                <link href="/register" className="hover:text-green-600 transition">
+                <Link href="/register" className="hover:text-green-600 transition">
                   Sign up/Register
-                </link>
+                </Link>
               </h3>
             </div>
           </form>
