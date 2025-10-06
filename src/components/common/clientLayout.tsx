@@ -27,7 +27,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     // Fallback: Hide loader after 3 seconds (adjust as needed for your site's load time)
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 500);
 
     // Hide loader when all assets (e.g., video, images, fonts) are fully loaded
     const handleLoad = () => {
