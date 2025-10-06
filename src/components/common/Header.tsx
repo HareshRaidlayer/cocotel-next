@@ -7,7 +7,13 @@ import { FiChevronDown, FiMenu, FiShoppingCart, FiUser } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import { usePathname, useRouter } from "next/navigation";
 
-const countries = [
+// Define the Country interface
+interface Country {
+  code: string;
+  name: string;
+  flag: string;
+}
+const countries: Country[] = [
   { code: "ph", name: "PHP", flag: "/images/Flag_of_the_Philippines.svg.png" },
   { code: "idn", name: "IDR", flag: "/images/Flag_of_Indonesia.svg.png" },
   { code: "au", name: "AUD", flag: "/images/australiya-flag.jpg" },
@@ -34,7 +40,7 @@ const Header = () => {
   }, [pathname]);
 
   // Handle country change
-  const handleCountryChange = (country) => {
+  const handleCountryChange = (country: Country) => {
     setSelectedCountry(country);
     setShowCountryDropdown(false);
     router.push(`/${country.code}`);
