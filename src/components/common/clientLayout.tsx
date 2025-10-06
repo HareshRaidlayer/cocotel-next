@@ -1,9 +1,53 @@
+// src/components/common/clientLayout.tsx
 "use client";
 
-export default function ClientLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <>{children}</>;
+import { useState, useEffect, createContext, ReactNode } from "react";
+import Loader from "@/components/Loader"; // Adjust path if needed
+
+// Define the context type for TypeScript
+interface LoadingContextType {
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+// Create the context with a default value
+export const LoadingContext = createContext<LoadingContextType>({
+  isLoading: true,
+  setIsLoading: () => {},
+});
+
+interface ClientLayoutProps {
+  children: ReactNode;
+}
+
+export default function ClientLayout({ children }: ClientLayoutProps) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Fallback: Hide loader after 3 seconds (adjust as needed for your site's load time)
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    // Hide loader when all assets (e.g., video, images, fonts) are fully loaded
+    const handleLoad = () => {
+      setIsLoading(false);
+    };
+
+    window.addEventListener("load", handleLoad);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("load", handleLoad);
+    };
+  }, []);
+
+  return (
+    <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
+      {isLoading && <Loader />}
+      <main className={isLoading ? "opacity-0" : "opacity-100 transition-opacity duration-500"}>
+        {children}
+      </main>
+    </LoadingContext.Provider>
+  );
 }
