@@ -55,7 +55,7 @@ const Header = () => {
         </Link>
 
         {/* Desktop Nav */}
-        <ul className="hidden lg:flex space-x-10 font-bold text-green-700">
+        <ul className="hidden lg:flex space-x-10 font-semibold text-green-600">
           <li>
             <Link href="/" className="hover:underline">Home</Link>
           </li>
