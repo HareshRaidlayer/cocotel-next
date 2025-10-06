@@ -87,12 +87,16 @@ const Hero = ({ data }) => {
     <>
     <Head>
         <link rel="preload" href={data.video} as="video" />
+
+        <link rel="preload" href={`/images/${data.videoPoster}`} as="image" />
+
       </Head>
       <section className="container mx-auto mt-5 relative h-96 md:h-[500px] lg:h-[600px] rounded-xl">
         {/* Background Video */}
         <video
           className="absolute top-0 left-0 w-full h-full object-cover rounded-xl"
           src={data.video}
+          poster={`/images/${data.videoPoster}`}
           autoPlay
           loop
           muted
