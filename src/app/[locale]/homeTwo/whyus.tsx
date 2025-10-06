@@ -3,7 +3,7 @@ import { FaTrophy, FaGlobe, FaMoneyBillWave, FaSmile, FaArrowRight, FaPhone } fr
 
 const WhyUs = () => {
   return (
-    <section className="container mx-auto bg-white mt-10">
+    <section className="container mx-auto bg-white mt-10 p-2 xl:p-0">
         <h2 className="text-xl md:text-2xl font-bold text-center mb-2 text-green-600">
           
           Why Choose The #1 Hotel Booking Platform in the Philippines
