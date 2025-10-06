@@ -44,21 +44,21 @@ const Hero = ({ data }) => {
   const router = useRouter(); // Initialize useRouter
 
   // Close dropdowns if clicked outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (calendarRef.current && !calendarRef.current.contains(e.target)) {
-        setCalendarOpen(false);
-      }
-      if (guestsRef.current && !guestsRef.current.contains(e.target)) {
-        setGuestsOpen(false);
-      }
-      if (locationRef.current && !locationRef.current.contains(e.target)) {
-        setLocationOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     if (calendarRef.current && !calendarRef.current.contains(e.target)) {
+  //       setCalendarOpen(false);
+  //     }
+  //     if (guestsRef.current && !guestsRef.current.contains(e.target)) {
+  //       setGuestsOpen(false);
+  //     }
+  //     if (locationRef.current && !locationRef.current.contains(e.target)) {
+  //       setLocationOpen(false);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
 
   // Filter locations based on search query and active country
   const filteredLocations = locations[activeCountry].filter((loc) =>
