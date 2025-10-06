@@ -9,7 +9,14 @@ const nextConfig: NextConfig = {
         port: '', // Leave empty if no port
         pathname: '/**', // Allows any path; adjust as needed (e.g., '/images/**')
       },
+       {
+        protocol: 'https',
+        hostname: 'www.cocotel.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
+    
   },
 };
 
