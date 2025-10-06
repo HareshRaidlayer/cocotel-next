@@ -50,7 +50,7 @@ const Photos: React.FC<PhotosProps> = ({ data }) => {
   };
 
   return (
-    <section className="container mx-auto mt-12">
+    <section className="container mx-auto mt-12 p-2 xl:p-0">
         <h2 className="text-xl md:text-2xl font-bold text-center mb-2 text-green-600">
           {title}
         </h2>

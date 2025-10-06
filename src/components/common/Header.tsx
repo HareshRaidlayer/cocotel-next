@@ -48,10 +48,10 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
-      <nav className="container mx-auto py-3 flex items-center justify-between">
+      <nav className="container mx-auto py-3 flex items-center justify-between px-2 xl:px-0">
         {/* Logo */}
         <Link href="/">
-          <Image src="/logo/logo.png" alt="Logo" width={185} height={54} className="object-cover" priority />
+          <Image src="/logo/logo.png" alt="Logo" width={185} height={54} className="object-cover w-28 md:w-[185px]" priority />
         </Link>
 
         {/* Desktop Nav */}
@@ -183,9 +183,9 @@ const Header = () => {
       {/* Mobile Menu with fade animation */}
       {showMobileMenu && (
         <div className="lg:hidden fixed inset-0 bg-white z-50 flex flex-col transition-opacity duration-300 opacity-100">
-          <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center justify-between p-2 border-b">
             <Link href="/">
-              <Image src="/logo/logo.png" alt="Logo" width={140} height={40} />
+              <Image src="/logo/logo.png" alt="Logo" width={140} height={40} className="w-28" />
             </Link>
             <button
               onClick={() => setShowMobileMenu(false)}
