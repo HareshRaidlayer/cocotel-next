@@ -13,16 +13,16 @@ interface Country {
   name: string;
   flag: string;
 }
-const countries: Country[] = [
+const currency = [
   { code: "ph", name: "PHP", flag: "/images/Flag_of_the_Philippines.svg.png" },
-  { code: "idn", name: "IDR", flag: "/images/Flag_of_Indonesia.svg.png" },
-  { code: "au", name: "AUD", flag: "/images/australiya-flag.jpg" },
+  { code: "id", name: "IDR", flag: "/images/Flag_of_Indonesia.svg.png" },
+  { code: "aus", name: "AUD", flag: "/images/australiya-flag.jpg" },
 ];
 
 const Header = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState(countries[0]);
+  const [selectedCountry, setSelectedCountry] = useState(currency[0]);
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
@@ -35,7 +35,7 @@ const Header = () => {
   // Determine current locale from pathname
   useEffect(() => {
     const locale = pathname.split('/')[1] || 'ph'; // Default to 'ph' if root or invalid
-    const currentCountry = countries.find(c => c.code === locale) || countries[0];
+    const currentCountry = currency.find(c => c.code === locale) || currency[0];
     setSelectedCountry(currentCountry);
   }, [pathname]);
 
@@ -43,7 +43,7 @@ const Header = () => {
   const handleCountryChange = (country: Country) => {
     setSelectedCountry(country);
     setShowCountryDropdown(false);
-    router.push(`/${country.code}`);
+    
   };
 
   return (
@@ -89,7 +89,7 @@ const Header = () => {
                     <RxCross2 />
                   </div>
                 </div>
-                {countries.map((country) => (
+                {currency.map((country) => (
                   <li
                     key={country.code}
                     onClick={() => handleCountryChange(country)}
