@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { FaCalendarAlt } from 'react-icons/fa';
 import { HiArrowRight } from 'react-icons/hi';
 
+
 const Page = () => {
   return (
     <section className="w-full">
