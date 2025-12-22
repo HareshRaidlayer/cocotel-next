@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "@/components/ui/button";
 import Head from "next/head";
+import Head from "next/head";
 
 const countries = [
   { code: "ph", name: "Philippines", flag: "/images/Flag_of_the_Philippines.svg.png" },
