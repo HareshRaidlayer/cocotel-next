@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiChevronDown, FiMenu, FiShoppingCart, FiUser } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
-import { usePathname, useRouter } from "next/navigation";
 import { useLocale } from '@/lib/locale-context';
 
 // Define the Country interface
@@ -27,9 +26,6 @@ const Header = () => {
   const [selectedCountry, setSelectedCountry] = useState(currency[0]);
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-
-  const router = useRouter();
-  const pathname = usePathname();
 
   const cartItems = ["Item 1", "Item 2", "Item 3"];
   const userOptions = [t('header.profile'), t('header.settings'), t('header.logout')];
