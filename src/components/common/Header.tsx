@@ -6,20 +6,22 @@ import Link from "next/link";
 import { FiChevronDown, FiMenu, FiShoppingCart, FiUser } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import { usePathname, useRouter } from "next/navigation";
+import { useLocale } from '@/lib/locale-context';
 
 // Define the Country interface
 interface Country {
   code: string;
   name: string;
-  flag: string;
+  locale: string;
 }
 const currency = [
-  { code: "ph", name: "PHP", flag: "/images/Flag_of_the_Philippines.svg.png" },
-  { code: "id", name: "IDR", flag: "/images/Flag_of_Indonesia.svg.png" },
-  { code: "aus", name: "AUD", flag: "/images/australiya-flag.jpg" },
+  { code: "ph", name: "Filipino", locale: "ph" },
+  { code: "id", name: "Indonesian",  locale: "id" },
+  { code: "en", name: "English", locale: "en" },
 ];
 
 const Header = () => {
+  const { locale, setLocale, t } = useLocale();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(currency[0]);
@@ -30,20 +32,19 @@ const Header = () => {
   const pathname = usePathname();
 
   const cartItems = ["Item 1", "Item 2", "Item 3"];
-  const userOptions = ["Profile", "Settings", "Logout"];
+  const userOptions = [t('header.profile'), t('header.settings'), t('header.logout')];
 
-  // Determine current locale from pathname
+  // Determine current locale from session
   useEffect(() => {
-    const locale = pathname.split('/')[1] || 'ph'; // Default to 'ph' if root or invalid
-    const currentCountry = currency.find(c => c.code === locale) || currency[0];
+    const currentCountry = currency.find(c => c.locale === locale) || currency[0];
     setSelectedCountry(currentCountry);
-  }, [pathname]);
+  }, [locale]);
 
   // Handle country change
   const handleCountryChange = (country: Country) => {
     setSelectedCountry(country);
     setShowCountryDropdown(false);
-    
+    setLocale(country.locale);
   };
 
   return (
@@ -57,13 +58,13 @@ const Header = () => {
         {/* Desktop Nav */}
         <ul className="hidden lg:flex space-x-10 font-semibold text-green-600">
           <li>
-            <Link href="/" className="hover:underline">Home</Link>
+            <Link href="/" className="hover:underline">{t('header.home')}</Link>
           </li>
           <li>
-            <Link href="/events" className="hover:underline">Events at Cocotel</Link>
+            <Link href="/events" className="hover:underline">{t('header.events')}</Link>
           </li>
           <li>
-            <Link href="#" className="hover:underline">Partner With Us</Link>
+            <Link href="#" className="hover:underline">{t('header.partner')}</Link>
           </li>
         </ul>
 
@@ -75,13 +76,12 @@ const Header = () => {
               onClick={() => setShowCountryDropdown(!showCountryDropdown)}
               className="flex items-center gap-2 px-3 py-1 rounded text-sm font-medium text-white bg-[#4CAA42] hover:bg-green-600"
             >
-              <Image src={selectedCountry.flag} alt={selectedCountry.name} width={20} height={20} />
               {selectedCountry.name} <FiChevronDown />
             </button>
             {showCountryDropdown && (
               <ul className="absolute right-0 mt-2 bg-white border rounded shadow w-44 z-50">
                 <div className="bg-[#4CAA42] rounded-t-[5px] text-white font-semibold p-2 flex items-center justify-between">
-                  <span> Currency</span>
+                  <span>{t('header.currency')}</span>
                   <div
                     onClick={() => setShowCountryDropdown(false)}
                     className="bg-white text-[#4CAA42] cursor-pointer text-sm font-bold p-1 rounded-full"
@@ -95,7 +95,6 @@ const Header = () => {
                     onClick={() => handleCountryChange(country)}
                     className="px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer flex items-center gap-2"
                   >
-                    <Image src={country.flag} alt={country.name} width={20} height={20} />
                     {country.name}
                   </li>
                 ))}
@@ -114,7 +113,7 @@ const Header = () => {
             {showCartDropdown && (
               <ul className="absolute z-50 mt-2 bg-white border rounded shadow w-40 right-0">
                 <div className="bg-[#4CAA42] text-white rounded-t-[5px] font-semibold p-2 flex items-center justify-between">
-                  <span>Cart</span>
+                  <span>{t('header.cart')}</span>
                   <div
                     onClick={() => setShowCartDropdown(false)}
                     className="bg-white text-[#4CAA42] cursor-pointer text-sm font-bold p-1 rounded-full"
@@ -132,7 +131,7 @@ const Header = () => {
                     </li>
                   ))
                 ) : (
-                  <li className="px-4 py-2 text-sm text-green-700">Cart is empty</li>
+                  <li className="px-4 py-2 text-sm text-green-700">{t('header.cartEmpty')}</li>
                 )}
               </ul>
             )}
@@ -149,7 +148,7 @@ const Header = () => {
             {showUserDropdown && (
               <ul className="absolute z-50 mt-2 bg-white border rounded shadow w-40 right-0">
                 <div className="bg-[#4CAA42] rounded-t-[5px] text-white font-bold p-2 flex items-center justify-between">
-                  <span>Account</span>
+                  <span>{t('header.account')}</span>
                   <div
                     onClick={() => setShowUserDropdown(false)}
                     className="bg-white text-[#4CAA42] cursor-pointer text-sm font-bold p-1 rounded-full"
@@ -197,17 +196,17 @@ const Header = () => {
           <ul className="flex flex-col space-y-4 p-6 font-medium text-blue-600">
             <li>
               <Link href="/" onClick={() => setShowMobileMenu(false)}>
-                Home
+                {t('header.home')}
               </Link>
             </li>
             <li>
               <Link href="/events" onClick={() => setShowMobileMenu(false)}>
-                Events at Cocotel
+                {t('header.events')}
               </Link>
             </li>
             <li>
               <Link href="#" onClick={() => setShowMobileMenu(false)}>
-                Partner With Us
+                {t('header.partner')}
               </Link>
             </li>
           </ul>
