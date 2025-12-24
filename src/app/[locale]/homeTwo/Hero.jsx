@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Button } from "@/components/ui/button";
-import Head from "next/head";
+import { useLocale } from '@/lib/locale-context';
 import Head from "next/head";
 
 const countries = [
@@ -25,6 +25,7 @@ const locations = {
 };
 
 const Hero = ({ data }) => {
+  const { t } = useLocale();
   const [activeCountry, setActiveCountry] = useState("ph");
   const [location, setLocation] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -92,7 +93,7 @@ const Hero = ({ data }) => {
         <link rel="preload" href={`/images/${data.videoPoster}`} as="image" />
 
       </Head>
-      <section className="container mx-auto mt-5 relative h-96 md:h-[500px] lg:h-[600px] rounded-xl">
+      <section className="container mx-auto mt-5 relative h-96 md:h-[280px] lg:h-[380px] rounded-xl">
         {/* Background Video */}
         <video
           className="absolute top-0 left-0 w-full h-full object-cover rounded-xl"
@@ -102,19 +103,18 @@ const Hero = ({ data }) => {
           loop
           muted
           playsInline
+          loading="lazy"
         />
 
         {/* Overlay */}
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-center text-center text-white">
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-5 text-shadow-c-lg">
-            Just Unpacked!
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3 text-shadow-c-lg">
+            {t('hero.title')}
           </h1>
-          <p className="text-base md:text-xl lg:text-2xl max-w-5xl mb-12 text-shadow-c-lg">
-            Unlock your adventure with Cocotel. Explore our collection of hotels and resorts in
-            beachside, cityscape, and mountain settings. Book now with No queues, no crowds—all
-            discounted.
+          <p className="text-base md:text-xl lg:text-2xl max-w-5xl mb-3 text-shadow-c-lg">
+            {t('hero.subtitle')}
           </p>
 
           {/* Search Bar */}
@@ -139,7 +139,7 @@ const Hero = ({ data }) => {
                       }`}
                       variants={tabVariants}
                     >
-                      <Image src={c.flag} alt={c.name} width={20} height={20} />
+                      <Image src={c.flag} alt={c.name} width={20} height={20} loading="lazy" />
                       {c.name}
                     </Button>
                   ))}
@@ -522,26 +522,26 @@ const Hero = ({ data }) => {
               <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" />
               <path d="M10 4a1 1 0 011 1v6a1 1 0 11-2 0V5a1 1 0 011-1z" />
             </svg>
-            <span className="text-sm font-semibold">Wide Selection of Hotel Booking</span>
+            <span className="text-sm font-semibold">{t('hero.feature1')}</span>
           </div>
           <div className="flex items-start space-x-2 p-4 sm:p-0">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9 2a1 1 0 011 1v8a1 1 0 11-2 0V3a1 1 0 011-1zm5 5a1 1 0 011 1v3a1 1 0 11-2 0V8a1 1 0 011-1z" />
             </svg>
-            <span className="text-sm font-semibold">Best Price Guarantee</span>
+            <span className="text-sm font-semibold">{t('hero.feature2')}</span>
           </div>
           <div className="flex items-start space-x-2 p-4 sm:p-0">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM7 9a1 1 0 100 2h6a1 1 0 100-2H7z" />
             </svg>
-            <span className="text-sm font-semibold">Easy Booking & Cancellation</span>
+            <span className="text-sm font-semibold">{t('hero.feature3')}</span>
           </div>
           <div className="flex items-start space-x-2 p-4 sm:p-0">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
               <path d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm8-6a6 6 0 100 12 6 6 0 000-12z" />
             </svg>
-            <span className="text-sm font-semibold">Comprehensive Destination Guides</span>
+            <span className="text-sm font-semibold">{t('hero.feature4')}</span>
           </div>
         </div>
       </section>
