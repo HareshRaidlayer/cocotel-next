@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiChevronDown, FiMenu, FiShoppingCart, FiUser } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
+
 import { useLocale } from '@/lib/locale-context';
 
 // Define the Country interface
