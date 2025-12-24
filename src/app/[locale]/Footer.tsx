@@ -58,13 +58,13 @@ const Footer: React.FC<BottomProps> = ({ data }) => {
   const { logo, socials, contacts, navSections } = data;
 
   return (
-    <footer className="relative bg-gradient-to-t from-green-700 via-green-600 to-green-500 text-white mt-10 p-2 ">
+    <footer className="relative bg-gradient-to-t from-green-900 via-green-800 to-green-700 text-white mt-10 p-2 ">
       <div className="absolute inset-0 bg-black/10"></div>
       <div className="relative z-10 container mx-auto pt-10 pb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-8">
           {/* LEFT SIDE: Logo + Socials + Contacts */}
           <div className="flex flex-col items-center md:items-start space-y-6 text-center md:text-left md:col-span-1">
-            <p className="text-lg font-semibold text-shadow-c-lg">Stay Connected with Us</p>
+            <p className="text-lg font-semibold ">Stay Connected with Us</p>
             <div className="flex gap-5">
               {socials.map((social, idx) => {
                 const Icon = iconMap[social.icon];
@@ -94,7 +94,7 @@ const Footer: React.FC<BottomProps> = ({ data }) => {
               loading="lazy"
             />
             {/* Contacts Section */}
-            <div className="mt-6 space-y-3 text-sm md:text-base text-shadow-c-lg">
+            <div className="mt-6 space-y-3 text-sm md:text-base ">
               <div className="">
                
                 <div className="flex items-center gap-2">
@@ -117,13 +117,13 @@ const Footer: React.FC<BottomProps> = ({ data }) => {
           </div>
           {navSections.map((section, idx) => (
               <div className="text-center md:text-left" key={idx}>
-                <h4 className="text-lg font-semibold mb-4 text-shadow-c-lg">{section.title}</h4>
+                <h4 className="text-lg font-semibold mb-4 ">{section.title}</h4>
                 <ul className="space-y-2 text-sm">
                   {section.links.map((link, i) => (
                     <li key={i}>
                       <Link
                         href={link.href}
-                        className="hover:underline hover:text-yellow-200 text-shadow-c-lg transition"
+                        className="hover:underline hover:text-yellow-200  transition"
                       >
                         {link.name}
                       </Link>

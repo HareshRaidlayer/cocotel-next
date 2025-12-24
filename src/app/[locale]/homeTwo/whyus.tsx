@@ -1,105 +1,140 @@
+"use client";
+
 import React from "react";
-import { FaTrophy, FaGlobe, FaMoneyBillWave, FaSmile, FaArrowRight, FaPhone } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { useLocale } from '@/lib/locale-context';
+import {
+	FaTrophy,
+	FaGlobe,
+	FaMoneyBillWave,
+	FaSmile,
+	FaArrowRight,
+	FaPhone,
+} from "react-icons/fa";
 
 const WhyUs = () => {
-  return (
-    <section className="container mx-auto bg-white mt-10 p-2 xl:p-0">
-        <h2 className="text-xl md:text-2xl font-bold text-center mb-2 text-green-600">
-          
-          Why Choose The #1 Hotel Booking Platform in the Philippines
-        </h2>
-        <p className="text-center font-normal text-gray-800 mb-8">
-          Plan your dream trip to the Philippines with the most trusted and complete travel service provider
-        </p>
+	const { t } = useLocale();
 
-        {/* Six cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Card 1 */}
-          <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 hover:bg-yellow-100 transition duration-300">
-            <div className="flex items-center mb-2">
-              <FaTrophy className="text-yellow-500 mr-2" />
-              <h3 className="text-lg font-semibold text-yellow-700">Philippines&apos; Top Travel Platform</h3>
-            </div>
-            <p className="text-gray-600">
-              Trusted by thousands of travelers and recognized for excellence, we make it easy to explore the Philippines from coast to coast&apost;.
-            </p>
-          </div>
+	const cards = [
+		{
+			title: t('whyUs.card1.title'),
+			icon: <FaTrophy className="text-orange-600" size={48} />,
+			desc: t('whyUs.card1.desc'),
+		},
+		{
+			title: t('whyUs.card2.title'),
+			icon: <FaGlobe className="text-yellow-600" size={36} />,
+			desc: t('whyUs.card2.desc'),
+		},
+		{
+			title: t('whyUs.card3.title'),
+			icon: <FaMoneyBillWave className="text-teal-600" size={36} />,
+			desc: t('whyUs.card3.desc'),
+		},
+		{
+			title: t('whyUs.card4.title'),
+			icon: <FaSmile className="text-pink-600" size={36} />,
+			desc: t('whyUs.card4.desc'),
+		},
+		{
+			title: t('whyUs.card5.title'),
+			icon: <FaArrowRight className="text-purple-700" size={48} />,
+			desc: t('whyUs.card5.desc'),
+		},
+		{
+			title: t('whyUs.card6.title'),
+			icon: <FaPhone className="text-sky-600" size={36} />,
+			desc: t('whyUs.card6.desc'),
+		},
+	];
 
-          {/* Card 2 */}
-          <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 hover:bg-blue-100 transition duration-300">
-            <div className="flex items-center mb-2">
-              <FaGlobe className="text-blue-500 mr-2" />
-              <h3 className="text-lg font-semibold text-blue-700">Everything You Need in One Place</h3>
-            </div>
-            <p className="text-gray-600">
-              From island-hopping tours and hotel stays to transport, car rentals, and travel guides, we offer the most complete range of services for every type of traveler.
-            </p>
-          </div>
+	// Order matching the image: Top row - card 0 & card 4 | Bottom row - card 2, card 1, card 3, card 5
+	const topCards = [cards[0], cards[4]];
+	const bottomCards = [cards[2], cards[1], cards[3], cards[5]];
 
-          {/* Card 3 */}
-          <div
-            className="bg-green-50 rounded-lg p-4 hover:bg-green-100 transition duration-300"
-            style={{ border: "2px solid rgb(51, 171, 99)" }}
-          >
-            <div className="flex items-center mb-2">
-              <FaMoneyBillWave className="text-green-500 mr-2" />
-              <h3 className="text-lg font-semibold text-green-700">Best Price Guarantee</h3>
-            </div>
-            <p className="text-gray-600">
-              Get the lowest prices on all our services. If you find a better deal, we&apos;ll match it—no questions asked.
-            </p>
-          </div>
+	return (
+		<section className="container mx-auto py-12 px-4">
+			<motion.h2
+				initial={{ opacity: 0, y: 50 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+				className="text-xl md:text-2xl font-bold text-center mb-2 text-green-600"
+			>
+				{t('whyUs.title')}
+			</motion.h2>
+			<motion.p
+				initial={{ opacity: 0, y: 40 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+				className="text-center mb-12 font-normal text-gray-800 max-w-3xl mx-auto"
+			>
+				{t('whyUs.subtitle')}
+			</motion.p>
 
-          {/* Card 4 */}
-          <div className="bg-purple-50 border-2 border-purple-300 rounded-lg p-4 hover:bg-purple-100 transition duration-300">
-            <div className="flex items-center mb-2">
-              <FaSmile className="text-purple-500 mr-2" />
-              <h3 className="text-lg font-semibold text-purple-700">Flexible &amp; Secure Booking</h3>
-            </div>
-            <p className="text-gray-600">
-              Enjoy flexible booking options and free cancellations on most services, giving you the confidence to plan with ease.
-            </p>
-          </div>
+			{/* Top Row - 2 larger cards */}
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+				{topCards.map((card, index) => (
+					<motion.div
+						key={index}
+						initial={{ opacity: 0, y: 50 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true }}
+						transition={{ duration: 0.6, delay: index * 0.4 }}
+						className={`relative rounded-3xl p-8 text-center overflow-hidden shadow-lg  flex flex-col items-center justify-start ${
+							index === 0 ? "bg-orange-100" : "bg-purple-100"
+						}`}
+					>
+						{/* White circle with icon centered */}
+						<div className=" w-24 h-24 bg-white rounded-full shadow-md flex items-center justify-center">
+							{card.icon}
+						</div>
 
-          {/* Card 5 */}
-          <div
-            className="rounded-lg p-4 transition duration-300"
-            style={{
-              "--base-color-rgb": "80, 202, 228",
-              border: "2px solid rgb(var(--base-color-rgb))",
-              backgroundColor: "rgba(var(--base-color-rgb), 0.1)",
-            } as React.CSSProperties}
-          >
-            <div className="flex items-center mb-2">
-              <FaArrowRight
-                className="mr-2"
-                style={{ color: "rgb(var(--base-color-rgb))" }}
-              />
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: "rgb(var(--base-color-rgb))" }}
-              >
-                Curated by Local Experts
-              </h3>
-            </div>
-            <p className="text-gray-600">
-              Our team of Filipino travel specialists ensures every service meets the highest standards and reflects the best of what the Philippines has to offer.
-            </p>
-          </div>
+						<h3
+							className={`relative z-10 text-2xl font-bold mt-5 ${
+								index === 0 ? "text-red-700" : "text-gray-900"
+							}`}
+						>
+							{card.title}
+						</h3>
+						<p className="relative z-10 text-gray-800 mt-5 text-base md:text-lg leading-relaxed px-4">
+							{card.desc}
+						</p>
+					</motion.div>
+				))}
+			</div>
 
-          {/* Card 6 */}
-          <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4 hover:bg-red-100 transition duration-300">
-            <div className="flex items-center mb-2">
-              <FaPhone className="text-red-500 mr-2" />
-              <h3 className="text-lg font-semibold text-red-700">24/7 Support in 14 Languages</h3>
-            </div>
-            <p className="text-gray-600">
-              We&apos;re here for you anytime, in your language. Our support team is available 24/7 to make sure your trip goes smoothly.
-            </p>
-          </div>
-        </div>
-    </section>
-  );
+			{/* Bottom Row - 4 smaller cards */}
+			<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+				{bottomCards.map((card, index) => {
+					const bgColors = ["bg-teal-100", "bg-yellow-100", "bg-pink-100", "bg-sky-100"];
+					return (
+						<motion.div
+							key={index}
+							initial={{ opacity: 0, y: 30 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true }}
+							transition={{ duration: 0.5, delay: index * 0.5 }}
+							className={`relative rounded-3xl p-6 text-center overflow-hidden shadow-lg  flex flex-col items-center justify-start ${bgColors[index]}`}
+						>
+							{/* White circle with icon centered */}
+							<div className=" w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center">
+								{card.icon}
+							</div>
+
+							<h3 className="relative z-10 text-lg font-bold mt-10 text-gray-900">
+								{card.title}
+							</h3>
+							<p className="relative z-10 text-gray-800 mt-4 text-sm leading-relaxed px-3">
+								{card.desc}
+							</p>
+						</motion.div>
+					);
+				})}
+			</div>
+		</section>
+	);
 };
 
 export default WhyUs;

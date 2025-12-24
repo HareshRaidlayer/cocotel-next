@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Poppins } from 'next/font/google';
 import ClientLayout from "@/components/common/clientLayout"; // New Client Component
+import { LocaleProvider } from "@/lib/locale-context";
 import "../../public/css/style.css";
 
 const poppins = Poppins({
@@ -43,8 +44,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        {/* <Header /> */}
-        <ClientLayout>{children}</ClientLayout>
+        <LocaleProvider>
+          <ClientLayout>{children}</ClientLayout>
+        </LocaleProvider>
       </body>
     </html>
   );
