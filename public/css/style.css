@@ -291,6 +291,20 @@
 	border-radius: 9999px;
 	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
+ .vendor-card {
+    --tw-bg-opacity: 1;
+    
+}
+.vendor-card {
+    -webkit-mask-image: url(../images/box-shape2.png);
+    mask-image: url(../images/box-shape2.png);
+    -webkit-mask-position: top;
+    mask-position: top;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+}
 
 .swiper-button-prev::after,
 .swiper-button-next::after {
