@@ -15,7 +15,18 @@ module.exports = {
       "./app/**/*.{js,ts,jsx,tsx}"
     ],
     theme: {
+    	container: {
+    		center: true,
+    		screens: {
+    			'lg': '1000px',
+    			'xl': '1200px',
+    			'2xl': '1300px',
+    		},
+    	},
     	extend: {
+    		screens: {
+    			'2xl': '1400px',
+    		},
     		borderRadius: {
     			lg: 'var(--radius)',
     			md: 'calc(var(--radius) - 2px)',
