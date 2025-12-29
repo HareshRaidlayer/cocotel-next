@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   keywords: ['hotel booking', 'travel', 'accommodation', 'hotels', 'vacation'],
   icons: {
     icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
   openGraph: {
     title: 'Hotel Booking - Find Your Perfect Stay',

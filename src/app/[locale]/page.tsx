@@ -6,6 +6,7 @@ import type { NextPage } from "next"; // Import NextPage for typing
 import Header from "../../components/common/Header";
 import Hero from "./homeTwo/Hero";
 import Features from "./homeTwo/Features";
+import CocotelOffers from "./homeTwo/CocotelOffers";
 import TopThingsToDo from "./homeTwo/TopThingsToDo";
 import Attractions from "./homeTwo/attractions";
 import WhyUs from "./homeTwo/whyus";
@@ -70,6 +71,7 @@ const Home: NextPage<PageProps> = async ({ params }) => {
       <Header />
       <Hero data={data.hero}/>
       <TopThingsToDo data={data.topThingsToDo} />
+      <CocotelOffers/>
       <Features content={data} locale={locale} />
       <DiscoverSection/>
       <Attractions data={data.attractions} />
