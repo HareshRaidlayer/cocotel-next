@@ -19,7 +19,7 @@ export default function CocotelOffers() {
 			<div className="absolute inset-0 bg-black/30" />
 
 			{/* Content */}
-			<div className="relative z-10 px-10 py-10 max-w-7xl mx-auto">
+			<div className="relative z-10 px-2 md:px-10 py-10 max-w-7xl mx-auto">
 				<div className="grid lg:grid-cols-1 gap-12 items-center">
 					{/* Left Main Card */}
 					{/* <motion.div
