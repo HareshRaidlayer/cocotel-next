@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function CocotelOffers() {
 	return (
-		<section className="container mx-auto relative mt-10 w-full min-h-[250px] overflow-hidden rounded-3xl">
+		<section className="container mx-auto relative mt-10 w-full min-h-[250px] overflow-hidden rounded-none sm:rounded-3xl">
 			{/* Background Image */}
 			<Image
 				src="/images/wp6904653-palawan-wallpapers.jpg"
