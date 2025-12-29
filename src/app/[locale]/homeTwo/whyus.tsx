@@ -48,7 +48,7 @@ const WhyUs = () => {
       </motion.p>
 
       {/* Bottom Row - 4 smaller cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {bottomCards.map((card, index) => (
           <motion.div
             key={index}
