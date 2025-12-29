@@ -93,10 +93,10 @@ const Hero = ({ data }) => {
         <link rel="preload" href={`/images/${data.videoPoster}`} as="image" />
 
       </Head>
-      <section className="container mx-auto mt-5 relative h-96 md:h-[280px] lg:h-[380px] rounded-xl">
+      <section className="container mx-auto mt-5 relative h-96 md:h-[280px] lg:h-[380px] rounded-none md:rounded-xl">
         {/* Background Video */}
         <video
-          className="absolute top-0 left-0 w-full h-full object-cover rounded-xl"
+          className="absolute top-0 left-0 w-full h-full object-cover rounded-none md:rounded-xl"
           src={data.video}
           poster={`/images/${data.videoPoster}`}
           autoPlay
@@ -516,7 +516,7 @@ const Hero = ({ data }) => {
           </motion.div>
       </section>
       <section className="container mx-auto">
-        <div className="flex flex-col sm:flex-row items-center justify-around bg-white border-b border-green-500 text-green-600 py-5 px-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-around bg-white border-b border-green-500 text-green-600 py-5 px-2 sm:px-0">
           <div className="flex items-start space-x-2 p-4 sm:p-0">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" />
