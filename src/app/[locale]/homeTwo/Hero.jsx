@@ -93,7 +93,7 @@ const Hero = ({ data }) => {
         <link rel="preload" href={`/images/${data.videoPoster}`} as="image" />
 
       </Head>
-      <section className="container mx-auto mt-5 relative h-96 md:h-[280px] lg:h-[380px] rounded-none md:rounded-xl">
+      <section className="container mx-auto mt-5 relative h-96 md:h-[480px] lg:h-[380px] rounded-none md:rounded-xl">
         {/* Background Video */}
         <video
           className="absolute top-0 left-0 w-full h-full object-cover rounded-none md:rounded-xl"
