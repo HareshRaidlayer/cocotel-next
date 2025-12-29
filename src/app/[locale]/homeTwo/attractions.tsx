@@ -50,8 +50,12 @@ const Attractions: React.FC<AttractionsProps> = ({ data }) => {
 
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
 					{tours.map((tour, index) => (
-						<div
+						<motion.div
 							key={index}
+							initial={{ opacity: 0, y: 40 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true }}
+							transition={{ duration: 0.5, delay: index * 0.2 }}
 							className="relative group rounded-lg overflow-hidden"
 						>
 							{/* Number Badge */}
@@ -74,7 +78,7 @@ const Attractions: React.FC<AttractionsProps> = ({ data }) => {
 									{tour.title}
 								</p>
 							</div>
-						</div>
+						</motion.div>
 					))}
 				</div>
 
