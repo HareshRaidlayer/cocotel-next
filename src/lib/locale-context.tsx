@@ -161,10 +161,10 @@ const translations = {
 };
 
 export const LocaleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [locale, setLocaleState] = useState('ph');
+  const [locale, setLocaleState] = useState('en');
 
   useEffect(() => {
-    const savedLocale = sessionStorage.getItem('locale') || 'ph';
+    const savedLocale = sessionStorage.getItem('locale') || 'en';
     setLocaleState(savedLocale);
   }, []);
 
