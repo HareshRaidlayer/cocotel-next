@@ -18,7 +18,7 @@ export default function CocotelOffers() {
 					/>
 					<div className="relative w-36 h-32 rounded-xl overflow-hidden border border-2 border-white hidden md:block">
 						<Image
-							src="/images/wp6904639-palawan-wallpapers.jpg"
+							src="/images/wp6904639-palawan-wallpapers.webp"
 							alt="COUPON DEALS"
 							fill
 							className="object-cover "
@@ -62,7 +62,7 @@ export default function CocotelOffers() {
 					/>
 					<div className="relative w-36 h-32 rounded-xl overflow-hidden border border-2 border-white hidden md:block">
 						<Image
-							src="/images/wp6904639-palawan-wallpapers.jpg"
+							src="/images/wp6904639-palawan-wallpapers.webp"
 							alt="COUPON DEALS"
 							fill
 							className="object-cover "
