@@ -95,6 +95,7 @@ const Features = ({ locale = "ph", content }) => {
 								width={380}
 								height={207}
 								className="w-full h-[200px] object-cover"
+								loading="lazy"
 							/>
 
 							{/* Quick View Button */}
@@ -115,6 +116,7 @@ const Features = ({ locale = "ph", content }) => {
 										alt="Left Rating"
 										width={22}
 										height={22}
+										loading="lazy"
 									/>
 									<span className="text-white text-base font-bold text-shadow-md">
 										5
@@ -124,6 +126,7 @@ const Features = ({ locale = "ph", content }) => {
 										alt="Right Rating"
 										width={22}
 										height={22}
+										loading="lazy"
 									/>
 									<span className="text-white ms-3 text-sm font-semibold text-shadow-md">
 										3 reviews
@@ -205,6 +208,7 @@ const Features = ({ locale = "ph", content }) => {
 							width={1000}
 							height={600}
 							className="max-w-full max-h-[80vh] object-contain"
+							loading="lazy"
 						/>
 						<button
 							className="absolute right-4 text-white text-4xl bg-black/50 rounded-full p-2 hover:bg-black/70"
@@ -227,6 +231,7 @@ const Features = ({ locale = "ph", content }) => {
 									alt={tours[quickViewIndex].title}
 									width={120}
 									height={90}
+									loading="lazy"
 									className={`rounded-lg object-cover border ${
 										currentSlide === i ? "border-blue-500" : "border-gray-300"
 									}`}

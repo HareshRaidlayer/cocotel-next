@@ -84,6 +84,7 @@ const Photos: React.FC<PhotosProps> = ({ data }) => {
 						width={896}
 						height={479}
 						className="w-full h-[479px] object-cover"
+						loading="lazy"
 					/>
 					{/* Homepage Thumbnails (6 only) */}
 					<div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2 p-2 rounded">
@@ -98,6 +99,7 @@ const Photos: React.FC<PhotosProps> = ({ data }) => {
 									alt={tour.title}
 									width={120}
 									height={90}
+									loading="lazy"
 									className={`rounded-lg object-cover border ${
 										currentSlide === index
 											? "border-blue-500"

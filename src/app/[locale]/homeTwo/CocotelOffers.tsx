@@ -59,6 +59,7 @@ export default function CocotelOffers() {
 						alt=""
 						fill
 						className="absolute inset-0 z-[-1] object-cover opacity-10"
+						loading="lazy"
 					/>
 					<div className="relative w-36 h-32 rounded-xl overflow-hidden border border-2 border-white hidden md:block">
 						<Image
@@ -66,6 +67,7 @@ export default function CocotelOffers() {
 							alt="COUPON DEALS"
 							fill
 							className="object-cover "
+							loading="lazy"
 						/>
 
 						{/* <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-center px-3">
