@@ -70,6 +70,8 @@ const Attractions: React.FC<AttractionsProps> = ({ data }) => {
 								width={321}
 								height={199}
 								className="object-cover w-full h-[199px]"
+								loading="lazy"
+
 							/>
 
 							{/* Title inside image */}

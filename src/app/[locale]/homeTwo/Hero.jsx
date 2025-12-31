@@ -103,6 +103,7 @@ const Hero = ({ data }) => {
           loop
           muted
           playsInline
+          preload="metadata"
           loading="lazy"
         />
 
