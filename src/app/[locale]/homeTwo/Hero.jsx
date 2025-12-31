@@ -113,7 +113,7 @@ const Hero = ({ data }) => {
           <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3 text-shadow-c-lg">
             {t('hero.title')}
           </h1>
-          <p className="text-base font-medium lg:text-md max-w-5xl mb-3 text-shadow-c-lg">
+          <p className="text-sm font-medium lg:text-md max-w-5xl mb-3 text-shadow-c-lg">
             {t('hero.subtitle')}
           </p>
 
