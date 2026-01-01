@@ -29,7 +29,12 @@ const Header = () => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   const cartItems = ["Item 1", "Item 2", "Item 3"];
-  const userOptions = [t('header.profile'), t('header.settings'), t('header.logout')];
+  const userOptions = [
+    { label: t('header.login'), href: '/login' },
+    { label: t('header.profile'), href: '/profile' },
+    { label: t('header.settings'), href: '/settings' },
+    { label: t('header.logout'), href: '/logout' }
+  ];
 
   // Determine current locale from session
   useEffect(() => {
@@ -154,12 +159,14 @@ const Header = () => {
                   </div>
                 </div>
                 {userOptions.map((option) => (
-                  <li
-                    key={option}
-                    onClick={() => setShowUserDropdown(false)}
-                    className="px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer"
-                  >
-                    {option}
+                  <li key={option.label}>
+                    <Link
+                      href={option.href}
+                      onClick={() => setShowUserDropdown(false)}
+                      className="block px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer"
+                    >
+                      {option.label}
+                    </Link>
                   </li>
                 ))}
               </ul>

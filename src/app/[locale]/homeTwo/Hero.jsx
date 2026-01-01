@@ -93,7 +93,7 @@ const Hero = ({ data }) => {
         <link rel="preload" href={`/images/${data.videoPoster}`} as="image" />
 
       </Head>
-      <section className="container mx-auto mt-5 relative h-96 md:h-[480px] lg:h-[380px] rounded-none md:rounded-xl">
+      <section className="container mx-auto mt-0 md:mt-5 relative h-96 md:h-[480px] lg:h-[380px] rounded-none md:rounded-xl">
         {/* Background Video */}
         <video
           className="absolute top-0 left-0 w-full h-full object-cover rounded-none md:rounded-xl"
@@ -103,6 +103,7 @@ const Hero = ({ data }) => {
           loop
           muted
           playsInline
+          preload="metadata"
           loading="lazy"
         />
 
@@ -325,9 +326,9 @@ const Hero = ({ data }) => {
             className="w-full max-w-5xl mx-auto sm:hidden"
           >
             <div>
-              <div className="flex flex-col bg-white rounded-xl shadow-xl gap-3">
+              <div className="flex flex-col bg-white rounded-xl shadow-xl gap-3 mt-3">
                 {/* Country Tabs inside box */}
-                <div className="flex space-x-1 p-2 md:p-6 bg-green-100/50 rounded-t-xl">
+                <div className="flex justify-center space-x-1 p-2 md:p-6 bg-green-100/50 rounded-t-xl">
                   {countries.map((c) => (
                     <Button
                       key={c.code}
@@ -346,7 +347,7 @@ const Hero = ({ data }) => {
                 </div>
 
                 {/* Search Fields */}
-                <div className="bg-white flex flex-col md:flex-row flex-wrap items-center gap-3 pb-6 px-4 md:px-6 rounded-xl">
+                <div className="bg-white flex flex-col md:flex-row flex-wrap items-center gap-3 pb-5 px-4 md:px-6 rounded-xl">
                   {/* Location Dropdown */}
                   <div
                     className="relative flex items-center border border-green-500 rounded-lg px-3 py-3 flex-1 w-full"
@@ -516,27 +517,27 @@ const Hero = ({ data }) => {
           </motion.div>
       </section>
       <section className="container mx-auto">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-around bg-white border-b border-green-500 text-green-600 py-5 px-2 sm:px-0">
-          <div className="flex items-start space-x-2 p-4 sm:p-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-around bg-white border-b border-green-500 text-green-600 pt-0 md:pt-5 pb-5 px-2 lg:px-0">
+          <div className="flex items-start space-x-2 p-2 sm:p-0">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" />
               <path d="M10 4a1 1 0 011 1v6a1 1 0 11-2 0V5a1 1 0 011-1z" />
             </svg>
             <span className="text-sm font-semibold">{t('hero.feature1')}</span>
           </div>
-          <div className="flex items-start space-x-2 p-4 sm:p-0">
+          <div className="flex items-start space-x-2 p-2 sm:p-0">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M9 2a1 1 0 011 1v8a1 1 0 11-2 0V3a1 1 0 011-1zm5 5a1 1 0 011 1v3a1 1 0 11-2 0V8a1 1 0 011-1z" />
             </svg>
             <span className="text-sm font-semibold">{t('hero.feature2')}</span>
           </div>
-          <div className="flex items-start space-x-2 p-4 sm:p-0">
+          <div className="flex items-start space-x-2 p-2 sm:p-0">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM7 9a1 1 0 100 2h6a1 1 0 100-2H7z" />
             </svg>
             <span className="text-sm font-semibold">{t('hero.feature3')}</span>
           </div>
-          <div className="flex items-start space-x-2 p-4 sm:p-0">
+          <div className="flex items-start space-x-2 p-2 sm:p-0">
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
               <path d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm8-6a6 6 0 100 12 6 6 0 000-12z" />
