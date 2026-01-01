@@ -7,7 +7,7 @@ export default function CocotelOffers() {
 	return (
 		<section className="container mx-auto mt-6 md:mt-10 w-full p-2 xl:p-0">
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-				<div className="relative rounded-2xl bg-[#299e60] overflow-hidden p-8 block md:flex items-center gap-4  z-0">
+				<div className="relative rounded-2xl bg-[#299e60] overflow-hidden p-2 md:p-8 block md:flex items-center gap-4  z-0">
 					{/* Background shape */}
 					<Image
 						src="/images/offer-shape.png"
@@ -51,7 +51,7 @@ export default function CocotelOffers() {
 					</div>
 				</div>
 
-				<div className="relative rounded-2xl bg-[#299e60] overflow-hidden p-8 block md:flex items-center gap-4  z-0">
+				<div className="relative rounded-2xl bg-[#299e60] overflow-hidden p-2 md:p-8 block md:flex items-center gap-4  z-0">
 					{/* Background shape */}
 					<Image
 						src="/images/offer-shape.png"
