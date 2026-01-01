@@ -6,6 +6,8 @@ body{
     /* background: #081b29; */
 
     background: linear-gradient(rgb(116 192 76 / 59%), rgb(80 192 69 / 29%)), url(/images/Beach1.jpg);
+    /* background: linear-gradient(rgba(222, 243, 210, 0.8), rgb(222, 243, 210, 0.8)), url(/images/Beach1.jpg); */
+
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -318,6 +320,7 @@ body{
     color: #fff;
     line-height: 1.3;
     text-transform: uppercase;
+    text-align: center;
 }
 
 .info-text p{
@@ -331,7 +334,9 @@ body{
     right: 0;
     width: 850px;
     height: 600px;
-    background: linear-gradient(45deg, #081b29, #00ff58);
+    /* background: linear-gradient(45deg, #081b29, #00ff58); */
+        background: linear-gradient(45deg, #2c485d, #46e87e);
+
     border-bottom: 3px solid #00ff58;
     transform: rotate(10deg) skewY(40deg);
     /* transform: rotate(0) skewY(0); */
@@ -363,4 +368,95 @@ body{
 .wrapper.active .bg-animate2{
     transform: rotate(-11deg) skewY(-41deg);
     transition-delay: 1.2s;
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        width: 100%;
+        height: auto;
+        flex-direction: column-reverse;
+        display: flex;
+    }
+    .wrapper.active{
+        flex-direction: column;
+    }
+    
+    .wrapper .form-box {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 20px;
+    }
+    
+    .wrapper .form-box.login {
+        left: 0;
+        padding: 20px;
+        order: 1;
+    }
+    
+
+    .wrapper .form-box.register {
+        right: 0;
+        padding: 20px;
+        order: 3;
+        display: none;
+    }
+    
+    .wrapper.active .form-box.login {
+        display: none;
+    }
+    
+    .wrapper.active .form-box.register {
+        display: flex;
+    }
+    
+    .wrapper .info-text {
+        position: relative;
+        width: 100%;
+        height: auto;
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .wrapper .info-text.login {
+        right: 0;
+        text-align: center;
+        padding: 20px;
+        order: 2;
+    }
+    
+    .wrapper .info-text.register {
+        left: 0;
+        text-align: center;
+        padding: 20px;
+        order: 2;
+        display: none;
+    }
+    
+    .wrapper.active .info-text.login {
+        display: none;
+    }
+    
+    .wrapper.active .info-text.register {
+        display: flex;
+    }
+    
+    .wrapper .bg-animate,
+    .wrapper .bg-animate2 {
+        display: none;
+    }
+    .info-text h2 {
+        /* font-size: 20px; */
+        display: none;
+    }
+    
+    .form-box h2 {
+        /* font-size: 24px; */
+        display: none;
+    }
+    
+    .form-box .input-box,
+    .form-box .select-box {
+        margin: 20px 0;
+    }
 }

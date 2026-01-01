@@ -42,7 +42,7 @@ const LoginPage = () => {
                 <button className="btn animation" type="submit" style={{ "--i": 3, "--j": 24 } as React.CSSProperties}>Login</button>
                 <div className="logreg-link animation" style={{ "--i": 4, "--j": 25 } as React.CSSProperties}>
                     <Link href="#" className="text-blue-500">Forgot Your Password?</Link>
-                    <p>Don't have an account?  
+                    <p>Dont have an account?  
                     <Link href="javascript:void(0)" onClick={handleRegisterClick} className="register-link"> Sign up</Link></p>
                 </div>
             </form>
