@@ -4,14 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useLocale } from '@/lib/locale-context';
 import Image from "next/image";
-import {
-  FaTrophy,
-  FaGlobe,
-  FaMoneyBillWave,
-  FaSmile,
-  FaArrowRight,
-  FaPhone,
-} from "react-icons/fa";
+
 
 const WhyUs = () => {
   const { t } = useLocale();
@@ -28,7 +21,7 @@ const WhyUs = () => {
   const bottomCards = [cards[0], cards[1], cards[2], cards[3], cards[4], cards[5]]; // Money, Globe, Smile, Phone
 
   return (
-    <section className="container mx-auto py-12 px-4">
+    <section className="container mx-auto py-8 md:py-12 px-4">
       <motion.h2
         initial={{ opacity: 0, y: 50 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -43,7 +36,7 @@ const WhyUs = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, delay: 0.4 }}
-        className="text-center mb-12 font-normal text-gray-800 max-w-3xl mx-auto"
+        className="text-center mb-8 md:mb-12 font-normal text-gray-800 max-w-3xl mx-auto"
       >
         {t('whyUs.subtitle')}
       </motion.p>

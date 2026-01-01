@@ -27,7 +27,7 @@ const Attractions: React.FC<AttractionsProps> = ({ data }) => {
 	const { title, subtitle, tours } = data;
 
 	return (
-		<section className="container mx-auto mt-12 p-2 xl:p-0">
+		<section className="container mx-auto mt-5 md:mt-12 p-2 xl:p-0">
 			<div className="">
 				<motion.h2
 					initial={{ opacity: 0, y: 50 }}
@@ -70,6 +70,8 @@ const Attractions: React.FC<AttractionsProps> = ({ data }) => {
 								width={321}
 								height={199}
 								className="object-cover w-full h-[199px]"
+								loading="lazy"
+
 							/>
 
 							{/* Title inside image */}

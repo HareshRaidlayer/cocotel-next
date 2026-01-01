@@ -90,7 +90,7 @@ const categories = [
 const DiscoverSection = () => {
 	const { t } = useLocale();
 	return (
-		<section className="container mx-auto bg-white text-center mt-10 p-2 xl:p-0">
+		<section className="container mx-auto bg-white text-center mt-5 md:mt-10 p-2 xl:p-0">
 			<motion.h2
 				initial={{ opacity: 0, y: 50 }}
 				whileInView={{ opacity: 1, y: 0 }}
