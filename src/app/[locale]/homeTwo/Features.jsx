@@ -62,7 +62,7 @@ const Features = ({ locale = "ph", content }) => {
 	};
 
 	return (
-		<section className="container mx-auto mt-12 p-2 xl:p-0">
+		<section className="container mx-auto mt-5 md:mt-12 p-2 xl:p-0">
 			<motion.h2
 				initial={{ opacity: 0, y: 50 }}
 				whileInView={{ opacity: 1, y: 0 }}

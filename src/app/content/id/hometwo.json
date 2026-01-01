@@ -109,64 +109,73 @@
     "video": "https://hel1.your-objectstorage.com/hana/app3534482538357/Webvideo/indonesia-1080.mp4"
   },
   "footer": {
-    "logo": "/logo/footer.svg",
-    "socials": [
-      { "name": "Facebook", "icon": "FaFacebookF" },
-      { "name": "Instagram", "icon": "FaInstagram" },
-      { "name": "TikTok", "icon": "FaTiktok" }
-    ],
-    "contacts": {
-      "email": "csr@cocotel.co.id",
-      "phones": ["+62-21-1234-5678", "+62-21-8765-4321"]
-    },
-    "navSections": [
-      {
-        "title": "About Cocotel",
-        "links": [
-          { "name": "Blog", "href": "/blog" },
-          { "name": "Explore", "href": "/explore" },
-          { "name": "Contact us", "href": "/contactUs" },
-          { "name": "Career", "href": "/career" },
-          { "name": "Partner With Us", "href": "/partner-With-Us" }
-        ]
-      },
-      {
-        "title": "Guide to the Philippines",
-        "links": [
-          { "name": "Login", "href": "/login" },
-          { "name": "Regiester", "href": "/regiester" },
-          { "name": "Frequently Asked Questions", "href": "/faq" },
-          { "name": "Data Privacy Policy", "href": "/privacy" },
-          { "name": "Terms and Conditions", "href": "/terms" }
-        ]
-      },
-      {
-        "title": "Travel Services",
-        "links": [
-          { "name": "Tours & Activity Packages", "href": "/tours" },
-          { "name": "Luxury Resorts Packages", "href": "/resorts" },
-          { "name": "All-Inclusive Family Vacation Packages", "href": "/family-vacations" },
-          { "name": "Honeymoon Packages", "href": "/honeymoon" },
-          { "name": "Car Rentals", "href": "/car-rentals" },
-          { "name": "Airport Transfers", "href": "/airport-transfers" },
-          { "name": "Hotel Booking", "href": "/hotel-booking" }
-        ]
-      },
-      {
-        "title": "Top Destinations",
-        "links": [
-          { "name": "Boracay Tours", "href": "/boracay" },
-          { "name": "Palawan Tours", "href": "/palawan" },
-          { "name": "Bohol Tours", "href": "/bohol" },
-          { "name": "Siargao Tours", "href": "/siargao" },
-          { "name": "Cebu Tours", "href": "/cebu" },
-          { "name": "Baguio Tours", "href": "/baguio" },
-          { "name": "Ilocos Tours", "href": "/ilocos" },
-          { "name": "Manila Tours", "href": "/manila" },
-          { "name": "Iloilo Tours", "href": "/iloilo" },
-          { "name": "Albay Tours", "href": "/albay" }
-        ]
-      }
+  "logo": "/logo/footer.svg",
+  "socials": [
+    { "name": "Facebook", "icon": "FaFacebookF" },
+    { "name": "Instagram", "icon": "FaInstagram" },
+    { "name": "TikTok", "icon": "FaTiktok" },
+    { "name": "Twitter", "icon": "FaTwitter" },
+    { "name": "LinkedIn", "icon": "FaLinkedinIn" }
+  ],
+  "contacts": {
+    "email": "csr@cocotel.com.ph",
+    "phones": ["+63-917-307-7462", "+63-908-932-1399", "+62-821-3526-7640"]
+  },
+  "navSections": [
+  {
+    "title": "Hotels in Bali",
+    "links": [
+      { "name": "Luxury Hotels", "href": "#" },
+      { "name": "Budget Hotels", "href": "#" },
+      { "name": "Beach Resorts", "href": "#" },
+      { "name": "Villas & Private Stays", "href": "#" },
+      { "name": "Hotel Deals", "href": "#" }
+    ]
+  },
+  {
+    "title": "Hotels in Jakarta",
+    "links": [
+      { "name": "Business Hotels", "href": "#" },
+      { "name": "Luxury Hotels", "href": "#" },
+      { "name": "Budget Hotels", "href": "#" },
+      { "name": "Airport Hotels", "href": "#" },
+      { "name": "City Center Hotels", "href": "#" }
+    ]
+  },
+  {
+    "title": "Hotels in Lombok",
+    "links": [
+      { "name": "Beach Resorts", "href": "#" },
+      { "name": "Luxury Resorts", "href": "#" },
+      { "name": "Honeymoon Resorts", "href": "#" },
+      { "name": "Budget Stays", "href": "#" },
+      { "name": "Eco Resorts", "href": "#" }
+    ]
+  },
+  {
+    "title": "Hotels in Yogyakarta",
+    "links": [
+      { "name": "Heritage Hotels", "href": "#" },
+      { "name": "Boutique Hotels", "href": "#" },
+      { "name": "Budget Hotels", "href": "#" },
+      { "name": "Family-Friendly Hotels", "href": "#" },
+      { "name": "City Hotels", "href": "#" }
+    ]
+  },
+  {
+    "title": "Top Destinations",
+    "links": [
+      { "name": "Bali Hotels", "href": "#" },
+      { "name": "Jakarta Hotels", "href": "#" },
+      { "name": "Lombok Hotels", "href": "#" },
+      { "name": "Yogyakarta Hotels", "href": "#" },
+      { "name": "Bandung Hotels", "href": "#" },
+      { "name": "Surabaya Hotels", "href": "#" },
+      { "name": "Medan Hotels", "href": "#" },
+      { "name": "Makassar Hotels", "href": "#" }
     ]
   }
+]
+
+}
 }

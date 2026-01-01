@@ -29,7 +29,7 @@ const TopThingsToDo = ({ data }) => {
 	if (!data) return null;
 
 	return (
-		<section className="container mx-auto bg-white mt-10 p-2 xl:p-0">
+		<section className="container mx-auto bg-white mt-4 md:mt-10 p-2 xl:p-0">
 			<motion.h2
 				initial={{ opacity: 0, y: 50 }}
 				whileInView={{ opacity: 1, y: 0 }}
@@ -44,7 +44,7 @@ const TopThingsToDo = ({ data }) => {
 				whileInView={{ opacity: 1, y: 0 }}
 				viewport={{ once: true }}
 				transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-				className="text-center mb-8 font-normal text-gray-800"
+				className="text-center mb-4 md:mb-8 font-normal text-gray-800"
 			>
 				{data.subtitle}
 			</motion.p>
