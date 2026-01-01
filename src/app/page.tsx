@@ -14,8 +14,8 @@ import Footer from "./[locale]/Footer";
 import DiscoverSection from "./[locale]/homeTwo/discoverWhat";
 
 export const metadata = {
-  title: "Guide to the Philippines",
-  description: "Travel marketplace for the Philippines",
+  title: "Hotel Booking - Find Your Perfect Stay",
+  description: "Book hotels with ease. Explore top destinations, compare prices, and find the best deals for your next stay.",
   icons: {
     icon: "/favicon.ico",
   },
