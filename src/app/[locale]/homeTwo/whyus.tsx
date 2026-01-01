@@ -4,14 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useLocale } from '@/lib/locale-context';
 import Image from "next/image";
-import {
-  FaTrophy,
-  FaGlobe,
-  FaMoneyBillWave,
-  FaSmile,
-  FaArrowRight,
-  FaPhone,
-} from "react-icons/fa";
+
 
 const WhyUs = () => {
   const { t } = useLocale();
