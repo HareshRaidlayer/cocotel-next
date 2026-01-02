@@ -91,19 +91,19 @@ const Photos: React.FC<PhotosProps> = ({ data }) => {
 						{visibleTours.map((tour, index) => (
 							<div
 								key={index}
-								className="cursor-pointer"
+								className="cursor-pointer w-[120px] h-[75px] rounded-lg overflow-hidden border"
 								onClick={() => openPopup(index)}
 							>
 								<Image
 									src={tour.src || "/fallback-image.jpg"}
 									alt={tour.title}
 									width={120}
-									height={90}
+									height={8}
 									loading="lazy"
-									className={`rounded-lg object-cover border ${
+									className={` object-cover h-full w-full ${
 										currentSlide === index
-											? "border-blue-500"
-											: "border-gray-300"
+											? "border-2 border-blue-500"
+											: "border border-gray-300"
 									}`}
 								/>
 							</div>
