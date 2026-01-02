@@ -85,9 +85,9 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
       </div>
       {/* Main Navigation Grid */}
       <div className="container mx-auto px-4 ">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10 bg-gray-700 border-b border-gray-100 py-10">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10 bg-gray-700 border-b border-gray-100 py-10">
             {/* Logo and contact */}
-          <div className="border-r border-gray-400">
+          <div className="border-r-0 md:border-r border-gray-400">
             <div className="flex items-center gap-4 mb-4">
                 <Image
                   src={logo}
@@ -102,7 +102,7 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
                 <h5 className="font-semibold ">Contact Us</h5>
                 <a 
                   href={`mailto:${contacts.email}`} 
-                  className="text-red-400 hover:text-red-300 hover:underline text-sm"
+                  className="text-green-400 hover:text-red-300 hover:underline text-sm"
                 >
                   {contacts.email}
                 </a>
@@ -117,7 +117,7 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
             </div>
           </div>
           {/* About cocotel */}
-          <div className="border-r border-gray-400">
+          <div className="border-r-0 md:border-r border-gray-400">
             <h4 className="font-bold text-lg mb-3 text-white">About Cocotel</h4>
             <ul className="space-y-2">
               <li>
@@ -143,7 +143,7 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
             </ul>
           </div>
           {/* About Us */}
-          <div className="border-r border-gray-400">
+          <div className="border-r-0 md:border-r border-gray-400">
             <h4 className="font-bold text-lg mb-3 text-white">About Us</h4>
             <ul className="space-y-2">
               

@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import "../../../public/css/login.css"
 import Link from 'next/link';
 import Image from 'next/image';
+import Button from "@/components/ui/Button";
 
 const LoginPage = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -39,7 +40,8 @@ const LoginPage = () => {
                     <label>Password</label>
                     <i className='bx bxs-lock-alt' ></i>
                 </div>
-                <button className="btn animation" type="submit" style={{ "--i": 3, "--j": 24 } as React.CSSProperties}>Login</button>
+                {/* <button className="px-4 py-2 btn-magnetic font-medium rounded focus:outline-none text-white w-full animation" type="submit" style={{ "--i": 3, "--j": 24 } as React.CSSProperties}>Login</button> */}
+                <Button className="w-full animation" name="Login"  style={{ "--i": 3, "--j": 24 } as React.CSSProperties}/>
                 <div className="logreg-link animation" style={{ "--i": 4, "--j": 25 } as React.CSSProperties}>
                     <Link href="#" className="text-blue-500">Forgot Your Password?</Link>
                     <p>Dont have an account?  
@@ -98,7 +100,8 @@ const LoginPage = () => {
                 <div className=" form-check animation mb-2" style={{ "--i": 20, "--j": 3 } as React.CSSProperties}>
                     <input type="checkbox" required checked/>  I agree to the <Link className='text-blue-500' href="#"> Terms and Conditions</Link>
                 </div>
-                <button className="btn animation" style={{ "--i": 21, "--j": 4 } as React.CSSProperties} type="submit" >Sign up</button>
+                {/* <button className="px-4 py-2 btn-magnetic font-medium rounded focus:outline-none text-white w-full animation" style={{ "--i": 21, "--j": 4 } as React.CSSProperties} type="submit" >Sign up</button> */}
+                <Button className="w-full animation" name="Sign up"  style={{ "--i": 21, "--j": 4 } as React.CSSProperties}/>
                 <div className="logreg-link animation" style={{ "--i": 22, "--j": 5 } as React.CSSProperties}>
                     <p>Already have an account?
                     <Link href="javascript:void(0)" onClick={handleLoginClick} className="login-link"> Login</Link></p>
