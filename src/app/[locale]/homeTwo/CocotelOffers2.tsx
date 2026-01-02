@@ -8,7 +8,7 @@ export default function CocotelOffers2() {
 
   return (
     <section className="container mx-auto mt-6 md:mt-10 w-full p-2 xl:p-0">
-      <div className="relative w-full h-60 overflow-hidden rounded-lg">
+      <div className="relative w-full h-60 overflow-hidden">
         
         {/* Background Image */}
         <Image
@@ -26,19 +26,14 @@ export default function CocotelOffers2() {
         <div className="relative z-10 flex h-full text-white">
           
           {/* Left QR Section */}
-          <div className="w-1/4 flex items-center justify-center border-r-4 border-dotted border-gray-400">
-            <div>
-                <p className="text-sm opacity-90">
+          <div className="w-1/4 flex items-center justify-center border-r-4 border-[#eac285] border-dotted border-gray-400">
+            <div className="text-center">
+                <p className="text-base text-center text-[#eac285]">
                   DiSCOUNT UP TO
                 </p>
-                <h3 className="text-xl font-semibold">30% OFF</h3>
+                <h3 className="text-5xl text-[#eac285] font-bold">30% OFF</h3>
                 
-                <Image
-              src={qrCodeImage}
-              alt="QR Code"
-              width={70}
-              height={70}
-            />
+                <Image src={qrCodeImage} alt="QR Code" width={100} height={100} className="m-auto"/>
             </div>
             
           </div>
@@ -46,8 +41,8 @@ export default function CocotelOffers2() {
           {/* Right Content Section */}
           <div className="w-3/4 flex items-center px-6">
             <div>
-              <h3 className="text-xl font-semibold">Exclusive Offer</h3>
-              <p className="text-sm opacity-90">
+              <h3 className="text-xl  font-semibold">Exclusive Offer</h3>
+              <p className="text-sm opacity-90 ">
                 Scan the QR code to get your discount voucher
               </p>
             </div>

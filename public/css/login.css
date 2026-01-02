@@ -20,7 +20,7 @@ body{
     background: #081b29;
     border: 1px solid #00ff58;
     overflow: hidden;
-    box-shadow: 0 0 4px #00ff58;
+    box-shadow: 0 0 1px #00ff58;
 }
 
 .wrapper .form-box{
@@ -337,7 +337,7 @@ body{
     /* background: linear-gradient(45deg, #081b29, #00ff58); */
         background: linear-gradient(45deg, #2c485d, #46e87e);
 
-    border-bottom: 3px solid #00ff58;
+    border-bottom: 2px solid #00ff58;
     transform: rotate(10deg) skewY(40deg);
     /* transform: rotate(0) skewY(0); */
     transform-origin: bottom right;
