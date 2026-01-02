@@ -12,29 +12,56 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'Hotel Booking - Find Your Perfect Stay',
-  description: 'Book hotels with ease. Explore top destinations, compare prices, and find the best deals for your next stay.',
-  keywords: ['hotel booking', 'travel', 'accommodation', 'hotels', 'vacation'],
+  title: 'Cocotel Hotels - Best Hotel Booking in Philippines, Indonesia & Australia',
+  description: 'Book luxury hotels and resorts in Philippines, Indonesia, and Australia with Cocotel. Best prices, exclusive deals, and premium accommodations across Southeast Asia and Oceania.',
+  keywords: [
+    'hotel booking Philippines', 'hotels Indonesia', 'hotels Australia',
+    'Manila hotels', 'Bali hotels', 'Sydney hotels', 'resort booking',
+    'luxury hotels Southeast Asia', 'beach resorts Philippines',
+    'Jakarta hotels', 'Melbourne hotels', 'Cebu hotels', 'Boracay resorts',
+    'hotel deals Asia Pacific', 'accommodation booking'
+  ],
+  authors: [{ name: 'Cocotel International' }],
+  robots: 'index, follow',
+  alternates: {
+    canonical: 'https://cocotel.com',
+    languages: {
+      'en': 'https://cocotel.com/en',
+      'id': 'https://cocotel.com/id',
+      'tl': 'https://cocotel.com/ph'
+    }
+  },
   icons: {
     icon: '/favicon.png',
     shortcut: '/favicon.png',
     apple: '/favicon.png',
   },
   openGraph: {
-    title: 'Hotel Booking - Find Your Perfect Stay',
-    description: 'Discover and book hotels worldwide with the best prices and deals.',
+    title: 'Cocotel Hotels - Premium Hotel Booking in Philippines, Indonesia & Australia',
+    description: 'Discover luxury hotels and exclusive resort deals across Philippines, Indonesia, and Australia. Book with Cocotel for the best rates and premium experiences.',
     url: 'https://cocotel.com',
-    siteName: 'Hotel Booking',
+    siteName: 'Cocotel Hotels',
     images: [
       {
-        url: '/images/hero-bg.jpg',
+        url: 'https://cocotel.com/images/cocotel-hotels-og.jpg',
         width: 1200,
         height: 630,
-        alt: 'Hotel Booking Hero Image',
+        alt: 'Cocotel Hotels - Luxury Accommodations in Asia Pacific',
       },
     ],
     locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Cocotel Hotels - Best Hotel Booking in Asia Pacific',
+    description: 'Book luxury hotels in Philippines, Indonesia & Australia with exclusive deals and premium service.',
+    images: ['https://cocotel.com/images/cocotel-hotels-twitter.jpg'],
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+    yahoo: 'your-yahoo-verification-code',
   }
 };
 
@@ -45,6 +72,46 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Google Analytics */}
+        {/* <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'GA_MEASUREMENT_ID');
+            `,
+          }}
+        /> */}
+        {/* Schema.org structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "TravelAgency",
+              "name": "Cocotel Hotels",
+              "description": "Premium hotel booking service for Philippines, Indonesia, and Australia",
+              "url": "https://cocotel.com",
+              "logo": "https://cocotel.com/logo/footer.svg",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+63-917-307-7462",
+                "contactType": "customer service",
+                "areaServed": ["PH", "ID", "AU"]
+              },
+              "areaServed": [
+                {"@type": "Country", "name": "Philippines"},
+                {"@type": "Country", "name": "Indonesia"},
+                {"@type": "Country", "name": "Australia"}
+              ],
+              "serviceType": "Hotel Booking"
+            })
+          }}
+        />
+      </head>
       <body className={poppins.className}>
         <LocaleProvider>
           <ClientLayout>{children}</ClientLayout>
