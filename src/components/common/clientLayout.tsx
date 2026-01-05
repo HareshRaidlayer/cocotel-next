@@ -4,7 +4,7 @@
 import { useState, useEffect, createContext, ReactNode } from "react";
 import Loader from "@/components/Loader"; // Adjust path if needed
 
-// Define the context type for TypeScript
+// Define the context type for TypeScript test
 interface LoadingContextType {
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
