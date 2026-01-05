@@ -202,14 +202,15 @@ const Footer: React.FC<FooterProps> = ({ data }) => {
 
         </div>
         {/* Additional Navigation Sections */}
+          <h4 className="font-bold text-lg mb-2 text-white">Cocotel hotels</h4>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 border-b border-gray-100 pb-10 ">
           {navSections.map((section, idx) => (
             <div key={idx}>
-              {section.title && (
+              {/* {section.title && (
                 <h4 className="font-bold text-lg mb-2 text-white">
                   {section.title}
                 </h4>
-              )}
+              )} */}
               <ul className="space-y-1">
                 {section.links.map((link, i) => (
                   <li key={i}>
