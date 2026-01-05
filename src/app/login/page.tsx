@@ -44,9 +44,9 @@ const LoginPage = () => {
                     <i className='bx bxs-lock-alt' ></i>
                 </div>
                 {/* <button className="px-4 py-2 btn-magnetic font-medium rounded focus:outline-none text-white w-full animation" type="submit" style={{ "--i": 3, "--j": 24 } as React.CSSProperties}>Login</button> */}
-                <Button className="w-full animation" name="Sign in"  style={{ "--i": 3, "--j": 24 } as React.CSSProperties}/>
+                <Button className="w-full animation" name="Login"  style={{ "--i": 3, "--j": 24 } as React.CSSProperties}/>
                 <div className="logreg-link animation" style={{ "--i": 4, "--j": 25 } as React.CSSProperties}>
-                    <Link href="#" className="text-green-500">Forgot Your Password?</Link>
+                    <Link href="#" className="text-blue-500">Forgot Your Password?</Link>
                     <p>Dont have an account?  
                     <Link href="javascript:void(0)" onClick={handleRegisterClick} className="register-link"> Sign up</Link></p>
                 </div>
@@ -78,14 +78,30 @@ const LoginPage = () => {
                     <label>Email</label>
                     <i className='bx bxs-envelope' ></i>
                 </div>
-                 
-                <div className={`phone-input-box animation ${phone ? 'has-value' : ''}`} style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
+                 {/* <div
+                    className="select-box animation"
+                    style={{ "--i": 19, "--j": 2 } as React.CSSProperties}
+                    >
+                    <select required>
+                        <option value="+91">India (+91)</option>
+                        <option value="+1">USA (+1)</option>
+                        <option value="+44">UK (+44)</option>
+                        <option value="+61">Australia (+61)</option>
+                    </select>
+                    <label>Country Code</label>
+                </div>
+                <div className="input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
+                    <input type="number" required />
+                    <label>Phone</label>
+                    <i className='bx bxs-envelope' ></i>
+                </div> */}
+                <div className="input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
                     <PhoneInput
                         international
-                        defaultCountry="PH"
+                        defaultCountry="IN"
                         value={phone}
                         onChange={setPhone}
-                        className="PhoneInput"
+                        className="flex "
                     />
                     <label>Phone Number</label>
                 </div>
@@ -95,13 +111,13 @@ const LoginPage = () => {
                     <i className='bx bxs-lock-alt' ></i>
                 </div>
                 <div className=" form-check animation mb-2" style={{ "--i": 20, "--j": 3 } as React.CSSProperties}>
-                    <input type="checkbox" required checked/>  I agree to the <Link className='text-green-500' href="#"> Terms and Conditions</Link>
+                    <input type="checkbox" required checked/>  I agree to the <Link className='text-blue-500' href="#"> Terms and Conditions</Link>
                 </div>
                 {/* <button className="px-4 py-2 btn-magnetic font-medium rounded focus:outline-none text-white w-full animation" style={{ "--i": 21, "--j": 4 } as React.CSSProperties} type="submit" >Sign up</button> */}
                 <Button className="w-full animation" name="Sign up"  style={{ "--i": 21, "--j": 4 } as React.CSSProperties}/>
                 <div className="logreg-link animation" style={{ "--i": 22, "--j": 5 } as React.CSSProperties}>
                     <p>Already have an account?
-                    <Link href="javascript:void(0)" onClick={handleLoginClick} className="login-link"> Sign in</Link></p>
+                    <Link href="javascript:void(0)" onClick={handleLoginClick} className="login-link"> Login</Link></p>
                 </div>
             </form>
         </div>
