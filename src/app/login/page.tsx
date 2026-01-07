@@ -9,7 +9,7 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
 const LoginPage = () => {
-    const [phone, setPhone] = useState<string | undefined>();
+const [phone, setPhone] = useState<string | undefined>();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleRegisterClick = () => {
@@ -95,7 +95,7 @@ const LoginPage = () => {
                     <label>Phone</label>
                     <i className='bx bxs-envelope' ></i>
                 </div> */}
-                <div className="input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
+                <div className="phone-input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
                     <PhoneInput
                         international
                         defaultCountry="IN"
