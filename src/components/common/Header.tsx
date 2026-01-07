@@ -3,8 +3,11 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FiChevronDown, FiMenu, FiShoppingCart, FiUser } from "react-icons/fi";
+import { FiChevronDown, FiMenu, FiShoppingCart, FiUser, FiX } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { login } from '@/lib/api-auth';
+import { signIn, useSession, signOut } from 'next-auth/react';
 
 import { useLocale } from '@/lib/locale-context';
 
@@ -22,21 +25,61 @@ const currency = [
 
 const Header = () => {
   const { locale, setLocale, t } = useLocale();
+  const { data: session } = useSession();
+  const APP_NAME = 'app3534482538357';
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(currency[0]);
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [loginForm, setLoginForm] = useState({ name: '', password: '' });
+  const [isLoading, setIsLoading] = useState(false);
 
   const cartItems = ["Item 1", "Item 2", "Item 3"];
-  const userOptions = [
-    { label: t('header.login'), href: '/login' },
-    { label: t('header.profile'), href: '/profile' },
+  const handleLogout = async () => {
+    // Clear local storage for regular login
+    localStorage.removeItem(`${APP_NAME}_accessToken`);
+    localStorage.removeItem(`${APP_NAME}_refreshToken`);
+    localStorage.removeItem(`${APP_NAME}_user`);
+    localStorage.removeItem(`${APP_NAME}_accessTokenExpiry`);
+    localStorage.removeItem(`${APP_NAME}_refreshTokenExpiry`);
+    
+    // Sign out from NextAuth (Google/Facebook)
+    await signOut({ callbackUrl: '/' });
+  };
+
+  const userOptions = session ? [
+    { label: session.user?.name || 'User', href: '/profile' },
     { label: t('header.settings'), href: '/settings' },
-    { label: t('header.logout'), href: '/logout' }
+    { label: t('header.logout'), action: handleLogout }
+  ] : [
+    { label: t('header.login'), action: () => setShowLoginModal(true) }
   ];
 
-  // Determine current locale from session
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await login(loginForm, APP_NAME);
+      setShowLoginModal(false);
+      setLoginForm({ name: '', password: '' });
+    } catch (error: any) {
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    signIn('google', { callbackUrl: '/' });
+  };
+
+  const handleFacebookLogin = () => {
+    signIn('facebook', { callbackUrl: '/' });
+  };
+
   useEffect(() => {
     const currentCountry = currency.find(c => c.locale === locale) || currency[0];
     setSelectedCountry(currentCountry);
@@ -160,13 +203,25 @@ const Header = () => {
                 </div>
                 {userOptions.map((option) => (
                   <li key={option.label}>
-                    <Link
-                      href={option.href}
-                      onClick={() => setShowUserDropdown(false)}
-                      className="block px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer"
-                    >
-                      {option.label}
-                    </Link>
+                    {option.href ? (
+                      <Link
+                        href={option.href}
+                        onClick={() => setShowUserDropdown(false)}
+                        className="block px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer"
+                      >
+                        {option.label}
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          option.action?.();
+                          setShowUserDropdown(false);
+                        }}
+                        className="block w-full text-left px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer"
+                      >
+                        {option.label}
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -214,6 +269,127 @@ const Header = () => {
               </Link>
             </li>
           </ul>
+        </div>
+      )}
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-gray-800">Login</h2>
+              <button onClick={() => setShowLoginModal(false)} className="text-gray-500 hover:text-gray-700">
+                <FiX size={24} />
+              </button>
+            </div>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <input
+                type="text"
+                placeholder="Username"
+                value={loginForm.name}
+                onChange={(e) => setLoginForm({ ...loginForm, name: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={loginForm.password}
+                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
+              >
+                {isLoading ? 'Logging in...' : 'Login'}
+              </button>
+            </form>
+            <div className="mt-4 space-y-2">
+              <button onClick={handleGoogleLogin} className="w-full flex items-center justify-center gap-2 bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition-colors">
+                <FaGoogle /> Login with Google
+              </button>
+              <button onClick={handleFacebookLogin} className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">
+                <FaFacebook /> Login with Facebook
+              </button>
+            </div>
+            <p className="mt-4 text-center text-sm text-gray-600">
+              Don't have an account?{' '}
+              <button
+                onClick={() => {
+                  setShowLoginModal(false);
+                  setShowRegisterModal(true);
+                }}
+                className="text-green-600 hover:underline"
+              >
+                Register
+              </button>
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Register Modal */}
+      {showRegisterModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold text-gray-800">Register</h2>
+              <button onClick={() => setShowRegisterModal(false)} className="text-gray-500 hover:text-gray-700">
+                <FiX size={24} />
+              </button>
+            </div>
+            <form className="space-y-4">
+              <input
+                type="text"
+                placeholder="Full Name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <button
+                type="submit"
+                className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors"
+              >
+                Register
+              </button>
+            </form>
+            <div className="mt-4 space-y-2">
+              <button className="w-full flex items-center justify-center gap-2 bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition-colors">
+                <FaGoogle /> Register with Google
+              </button>
+              <button className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">
+                <FaFacebook /> Register with Facebook
+              </button>
+            </div>
+            <p className="mt-4 text-center text-sm text-gray-600">
+              Already have an account?{' '}
+              <button
+                onClick={() => {
+                  setShowRegisterModal(false);
+                  setShowLoginModal(true);
+                }}
+                className="text-green-600 hover:underline"
+              >
+                Login
+              </button>
+            </p>
+          </div>
         </div>
       )}
     </header>

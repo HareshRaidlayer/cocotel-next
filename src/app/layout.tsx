@@ -3,7 +3,10 @@ import "./globals.css";
 import { Poppins } from 'next/font/google';
 import ClientLayout from "@/components/common/clientLayout"; // New Client Component
 import { LocaleProvider } from "@/lib/locale-context";
+import AuthProvider from "@/components/AuthProvider";
 import "../../public/css/style.css";
+import "../../public/css/login.css"
+import "react-phone-number-input/style.css";
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -113,9 +116,11 @@ export default function RootLayout({
         />
       </head>
       <body className={poppins.className}>
-        <LocaleProvider>
-          <ClientLayout>{children}</ClientLayout>
-        </LocaleProvider>
+        <AuthProvider>
+          <LocaleProvider>
+            <ClientLayout>{children}</ClientLayout>
+          </LocaleProvider>
+        </AuthProvider>
       </body>
     </html>
   );
