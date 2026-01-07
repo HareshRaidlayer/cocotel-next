@@ -5,7 +5,7 @@ import ClientLayout from "@/components/common/clientLayout"; // New Client Compo
 import { LocaleProvider } from "@/lib/locale-context";
 import AuthProvider from "@/components/AuthProvider";
 import "../../public/css/style.css";
-import "../../public/css/login.css"
+import "../../public/css/login.css";
 import "react-phone-number-input/style.css";
 
 const poppins = Poppins({
