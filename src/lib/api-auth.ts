@@ -12,9 +12,8 @@ interface LoginResponse {
   token?: string;
   accessToken?: string;
   refreshToken?: string;
-  user?: any;
+  user?: Record<string, unknown>;
   message?: string;
- 
 }
 
 export const login = async (
@@ -23,11 +22,11 @@ export const login = async (
   token: string | null = null
 ) => {
   try {
-    let headers: Record<string, string> = {
+    const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
 
-    let body: any = {
+    const body: Record<string, unknown> = {
       appName,
       ...credentials,
     };
@@ -35,7 +34,6 @@ export const login = async (
     if (token) {
       console.debug("Logging in with token...");
       headers.Authorization = `Bearer ${token}`;
-      body = { appName, ...credentials };
     } else {
       console.debug("Logging in with credentials...");
     }
@@ -81,8 +79,9 @@ export const login = async (
     // If API returns just { success: true, token: "..." } or something else
     return data;
 
-  } catch (error: any) {
-    console.error("Login error:", error.message || error);
-    throw new Error(error.message || "Something went wrong. Please try again.");
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error("Login error:", errorMessage);
+    throw new Error(errorMessage || "Something went wrong. Please try again.");
   }
 };

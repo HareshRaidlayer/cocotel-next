@@ -14,10 +14,10 @@ export default NextAuth({
     })
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn() {
       return true
     },
-    async session({ session, token }) {
+    async session({ session }) {
       return session
     },
   },

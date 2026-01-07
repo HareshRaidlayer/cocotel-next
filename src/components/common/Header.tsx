@@ -38,6 +38,12 @@ const Header = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const cartItems = ["Item 1", "Item 2", "Item 3"];
+  type UserOption = {
+    label: string;
+    href?: string;
+    action?: () => void | Promise<void>;
+  };
+
   const handleLogout = async () => {
     // Clear local storage for regular login
     localStorage.removeItem(`${APP_NAME}_accessToken`);
@@ -50,7 +56,7 @@ const Header = () => {
     await signOut({ callbackUrl: '/' });
   };
 
-  const userOptions = session ? [
+  const userOptions: UserOption[] = session ? [
     { label: session.user?.name || 'User', href: '/profile' },
     { label: t('header.settings'), href: '/settings' },
     { label: t('header.logout'), action: handleLogout }
@@ -65,8 +71,9 @@ const Header = () => {
       await login(loginForm, APP_NAME);
       setShowLoginModal(false);
       setLoginForm({ name: '', password: '' });
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Login failed";
+      alert(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -316,7 +323,7 @@ const Header = () => {
               </button>
             </div>
             <p className="mt-4 text-center text-sm text-gray-600">
-              Don't have an account?{' '}
+              Dont have an account?{' '}
               <button
                 onClick={() => {
                   setShowLoginModal(false);
