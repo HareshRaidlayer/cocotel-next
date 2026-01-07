@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight } from "lucide-react"; // Recommended: use lucide-react for icons (install if needed)
 
 export default function CocotelOffers() {
 	return (
