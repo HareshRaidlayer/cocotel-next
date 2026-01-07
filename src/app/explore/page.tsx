@@ -90,7 +90,7 @@ const ImageWithErrorBoundary: React.FC<{
 // Client component that uses useSearchParams
 const ExplorePageContent: React.FC = () => {
   const searchParams = useSearchParams();
-  const province = searchParams.get("province") || undefined;
+  const province = searchParams?.get("province") || undefined;
 
   const [hotels, setHotels] = useState<ExtendedHotel[]>([]);
   const [currentImage, setCurrentImage] = useState<{ [key: string]: number }>(
