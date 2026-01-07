@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FiChevronDown, FiMenu, FiShoppingCart, FiUser, FiX } from "react-icons/fi";
@@ -8,6 +8,8 @@ import { RxCross2 } from "react-icons/rx";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { login } from '@/lib/api-auth';
 import { signIn, useSession, signOut } from 'next-auth/react';
+import Button from "@/components/ui/Button";
+import PhoneInput from "react-phone-number-input";
 
 import { useLocale } from '@/lib/locale-context';
 
@@ -33,9 +35,24 @@ const Header = () => {
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [loginForm, setLoginForm] = useState({ name: '', password: '' });
+  const [loginForm, setLoginForm] = useState({ name: '', password: '', email: '' });
+  const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '' });
   const [isLoading, setIsLoading] = useState(false);
+
+  const [phone, setPhone] = useState<string | undefined>();
+    const wrapperRef = useRef<HTMLDivElement>(null);
+  
+    const handleRegisterClick = () => {
+      if (wrapperRef.current) {
+        wrapperRef.current.classList.add('active');
+      }
+    };
+  
+    const handleLoginClick = () => {
+      if (wrapperRef.current) {
+        wrapperRef.current.classList.remove('active');
+      }
+    };
 
   const cartItems = ["Item 1", "Item 2", "Item 3"];
   type UserOption = {
@@ -68,11 +85,32 @@ const Header = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await login(loginForm, APP_NAME);
+      const result = await login(loginForm, APP_NAME);
+      console.log('Login successful:', result);
       setShowLoginModal(false);
-      setLoginForm({ name: '', password: '' });
+      setLoginForm({ name: '', password: '', email: '' });
+      alert('Login successful!');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Login failed";
+      alert(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (registerForm.password !== registerForm.confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+    setIsLoading(true);
+    try {
+      // You can create a register API call here
+      console.log('Register form:', registerForm);
+      alert('Registration functionality to be implemented');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Registration failed";
       alert(errorMessage);
     } finally {
       setIsLoading(false);
@@ -282,123 +320,172 @@ const Header = () => {
       {/* Login Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-800">Login</h2>
-              <button onClick={() => setShowLoginModal(false)} className="text-gray-500 hover:text-gray-700">
+          
+          <div ref={wrapperRef} className="wrapper">
+            <button onClick={() => setShowLoginModal(false)} className="text-white hover:text-gray-300 absolute z-10 right-3 top-3">
                 <FiX size={24} />
               </button>
-            </div>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <input
-                type="text"
-                placeholder="Username"
-                value={loginForm.name}
-                onChange={(e) => setLoginForm({ ...loginForm, name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                required
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={loginForm.password}
-                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                required
-              />
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
-              >
-                {isLoading ? 'Logging in...' : 'Login'}
-              </button>
-            </form>
-            <div className="mt-4 space-y-2">
-              <button onClick={handleGoogleLogin} className="w-full flex items-center justify-center gap-2 bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition-colors">
-                <FaGoogle /> Login with Google
-              </button>
-              <button onClick={handleFacebookLogin} className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">
-                <FaFacebook /> Login with Facebook
-              </button>
-            </div>
-            <p className="mt-4 text-center text-sm text-gray-600">
-              Dont have an account?{' '}
-              <button
-                onClick={() => {
-                  setShowLoginModal(false);
-                  setShowRegisterModal(true);
-                }}
-                className="text-green-600 hover:underline"
-              >
-                Register
-              </button>
-            </p>
+              <span className="bg-animate"></span>
+              <span className="bg-animate2"></span>
+
+              <div className="form-box login">
+                  <h2 className="animation" style={{ "--i": 0, "--j": 21 } as React.CSSProperties}>Login</h2>
+                  <form onSubmit={handleLogin}>
+                      <div className="input-box animation" style={{ "--i": 1, "--j": 22 } as React.CSSProperties}>
+                          <input 
+                            type="text" 
+                            value={loginForm.name}
+                            onChange={(e) => setLoginForm({ ...loginForm, name: e.target.value })}
+                            required 
+                          />
+                          <label>Username</label>
+                          <i className='bx bxs-user'></i>
+                      </div>
+                      <div className="input-box animation" style={{ "--i": 2, "--j": 23 } as React.CSSProperties}>
+                          <input 
+                            type="email" 
+                            value={loginForm.email}
+                            onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+                            required 
+                          />
+                          <label>Email</label>
+                          <i className='bx bxs-envelope'></i>
+                      </div>
+                      <div className="input-box animation" style={{ "--i": 3, "--j": 24 } as React.CSSProperties}>
+                          <input 
+                            type="password" 
+                            value={loginForm.password}
+                            onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                            required 
+                          />
+                          <label>Password</label>
+                          <i className='bx bxs-lock-alt' ></i>
+                      </div>
+                      <button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="px-4 py-2 btn-magnetic font-medium rounded focus:outline-none text-white w-full animation disabled:opacity-50" 
+                        style={{ "--i": 4, "--j": 25 } as React.CSSProperties}
+                      >
+                        {isLoading ? 'Logging in...' : 'Login'}
+                      </button>
+                      <div className="logreg-link animation" style={{ "--i": 5, "--j": 26 } as React.CSSProperties}>
+                          <Link href="#" className="text-blue-500">Forgot Your Password?</Link>
+                          <p>Dont have an account?  
+                          <Link href="javascript:void(0)" onClick={handleRegisterClick} className="register-link"> Sign up</Link></p>
+                      </div>
+                  </form>
+                  <div className="mt-4 text-white flex justify-center items-center animation" style={{ "--i": 6, "--j": 27 } as React.CSSProperties}>
+                    <button title="Google login" onClick={handleGoogleLogin} className=" flex items-center justify-center gap-2  py-2 " >
+                      <Image
+                          src="/logo/google-icon.svg"
+                          alt="Google Login"
+                          width={40}
+                          height={40}
+                          className="object-contain animation"
+                          loading="lazy"
+                      />
+                    </button>
+                    {/* <p className="mx-5">OR</p> */}
+                    <button title="Facebook login" onClick={handleFacebookLogin} className=" ms-6 flex items-center justify-center gap-2  py-2" >
+                      <Image
+                          src="/logo/Facebook-Icon.svg"
+                          alt="Facebool Login"
+                          width={40}
+                          height={40}
+                          className="object-contain animation"
+                          loading="lazy"
+                      />
+                    </button>
+                  </div>
+              </div>
+              <div className="info-text login">
+                  <Image
+                      src="/logo/footer.svg"
+                      alt="Cocotel Logo"
+                      width={200}
+                      height={54}
+                      className="object-contain animation"
+                      loading="lazy"
+                      style={{ "--i": 0, "--j": 22 } as React.CSSProperties}
+                  />
+                  <h2 className="animation " style={{ "--i": 1, "--j": 21 } as React.CSSProperties}>Welcome back!</h2>
+              </div>
+
+              <div className="form-box register ">
+                  <h2 className="animation" style={{ "--i": 17, "--j": 0 } as React.CSSProperties}>Sign up</h2>
+                  <form action="#">
+                      <div className="input-box animation" style={{ "--i": 18, "--j": 1 } as React.CSSProperties} >
+                          <input type="text" required />
+                          <label>Username</label>
+                          <i className='bx bxs-user'></i>
+                      </div>
+                      <div className="input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
+                          <input type="text" required />
+                          <label>Email</label>
+                          <i className='bx bxs-envelope' ></i>
+                      </div>
+                      {/* <div
+                          className="select-box animation"
+                          style={{ "--i": 19, "--j": 2 } as React.CSSProperties}
+                          >
+                          <select required>
+                              <option value="+91">India (+91)</option>
+                              <option value="+1">USA (+1)</option>
+                              <option value="+44">UK (+44)</option>
+                              <option value="+61">Australia (+61)</option>
+                          </select>
+                          <label>Country Code</label>
+                      </div>
+                      <div className="input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
+                          <input type="number" required />
+                          <label>Phone</label>
+                          <i className='bx bxs-envelope' ></i>
+                      </div> */}
+                      <div className="phone-input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
+                          <PhoneInput
+                              international
+                              defaultCountry="IN"
+                              value={phone}
+                              onChange={setPhone}
+                              className="flex "
+                          />
+                          <label>Phone Number</label>
+                      </div>
+                      <div className="input-box animation" style={{ "--i": 20, "--j": 3 } as React.CSSProperties}>
+                          <input type="password" required />
+                          <label>Password</label>
+                          <i className='bx bxs-lock-alt' ></i>
+                      </div>
+                      <div className=" form-check animation mb-2" style={{ "--i": 20, "--j": 3 } as React.CSSProperties}>
+                          <input type="checkbox" required checked/>  I agree to the <Link className='text-blue-500' href="#"> Terms and Conditions</Link>
+                      </div>
+                      {/* <button className="px-4 py-2 btn-magnetic font-medium rounded focus:outline-none text-white w-full animation" style={{ "--i": 21, "--j": 4 } as React.CSSProperties} type="submit" >Sign up</button> */}
+                      <Button className="w-full animation" name="Sign up"  style={{ "--i": 21, "--j": 4 } as React.CSSProperties}/>
+                      <div className="logreg-link animation" style={{ "--i": 22, "--j": 5 } as React.CSSProperties}>
+                          <p>Already have an account?
+                          <Link href="javascript:void(0)" onClick={handleLoginClick} className="login-link"> Login</Link></p>
+                      </div>
+                  </form>
+              </div>
+
+              <div className="info-text register">
+                  <Image
+                      src="/logo/footer.svg"
+                      alt="Cocotel Logo"
+                      width={200}
+                      height={54}
+                      className="object-contain animation"
+                      loading="lazy"
+                      style={{ "--i": 17, "--j": 0 } as React.CSSProperties}
+                  />
+                  <h2 className="animation" style={{ "--i": 17, "--j": 0 } as React.CSSProperties}>Welcome!</h2>
+              </div>
           </div>
         </div>
       )}
 
-      {/* Register Modal */}
-      {showRegisterModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-800">Register</h2>
-              <button onClick={() => setShowRegisterModal(false)} className="text-gray-500 hover:text-gray-700">
-                <FiX size={24} />
-              </button>
-            </div>
-            <form className="space-y-4">
-              <input
-                type="text"
-                placeholder="Full Name"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              <button
-                type="submit"
-                className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-colors"
-              >
-                Register
-              </button>
-            </form>
-            <div className="mt-4 space-y-2">
-              <button className="w-full flex items-center justify-center gap-2 bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition-colors">
-                <FaGoogle /> Register with Google
-              </button>
-              <button className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors">
-                <FaFacebook /> Register with Facebook
-              </button>
-            </div>
-            <p className="mt-4 text-center text-sm text-gray-600">
-              Already have an account?{' '}
-              <button
-                onClick={() => {
-                  setShowRegisterModal(false);
-                  setShowLoginModal(true);
-                }}
-                className="text-green-600 hover:underline"
-              >
-                Login
-              </button>
-            </p>
-          </div>
-        </div>
-      )}
+      
     </header>
   );
 };
