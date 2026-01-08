@@ -5,38 +5,34 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiChevronDown, FiMenu, FiShoppingCart, FiUser, FiX } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
-import { FaGoogle, FaFacebook } from "react-icons/fa";
-import { login } from '@/lib/api-auth';
 import { signIn, useSession, signOut } from 'next-auth/react';
 import Button from "@/components/ui/Button";
 import PhoneInput from "react-phone-number-input";
+import { signupUser, formLogin } from '@/lib/api';
 
+import { fetchFromAPI } from "@/lib/api";
 import { useLocale } from '@/lib/locale-context';
 
-// Define the Country interface
-interface Country {
+// Define the Language interface
+interface Language {
   code: string;
   name: string;
   locale: string;
 }
-const currency = [
-  { code: "ph", name: "Filipino", locale: "ph" },
-  { code: "id", name: "Indonesian",  locale: "id" },
-  { code: "en", name: "English", locale: "en" },
-];
 
 const Header = () => {
   const { locale, setLocale, t } = useLocale();
   const { data: session } = useSession();
   const APP_NAME = 'app3534482538357';
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState(currency[0]);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<Language | null>(null);
+  const [languages, setLanguages] = useState<Language[]>([]);
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginForm, setLoginForm] = useState({ name: '', password: '', email: '' });
-  const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '' });
+  // const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '' });
   const [isLoading, setIsLoading] = useState(false);
 
   const [phone, setPhone] = useState<string | undefined>();
@@ -85,37 +81,57 @@ const Header = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const result = await login(loginForm, APP_NAME);
-      console.log('Login successful:', result);
-      setShowLoginModal(false);
-      setLoginForm({ name: '', password: '', email: '' });
-      alert('Login successful!');
+      const loginResult = await formLogin({
+        email: loginForm.email || '',
+        password: loginForm.password,
+      });
+      
+      if (loginResult.success) {
+        setShowLoginModal(false);
+        setLoginForm({ name: '', password: '', email: '' });
+        alert('Login successful!');
+      } else {
+        const signupResult = await signupUser({
+          name: loginForm.name,
+          legalname: loginForm.name,
+          email: loginForm.email || '',
+          password: loginForm.password,
+          role: '1749109628034',
+          mobile: phone || '',
+        });
+        
+        if (signupResult.success) {
+          alert('Account created successfully. Please login.');
+        } else {
+          alert('Authentication failed: ' + signupResult.message);
+        }
+      }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Login failed";
-      alert(errorMessage);
+      const errorMessage = error instanceof Error ? error.message : "Authentication failed";
+      alert('Error: ' + errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (registerForm.password !== registerForm.confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
-    setIsLoading(true);
-    try {
-      // You can create a register API call here
-      console.log('Register form:', registerForm);
-      alert('Registration functionality to be implemented');
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Registration failed";
-      alert(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const handleRegister = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (registerForm.password !== registerForm.confirmPassword) {
+  //     alert('Passwords do not match');
+  //     return;
+  //   }
+  //   setIsLoading(true);
+  //   try {
+  //     // You can create a register API call here
+  //     console.log('Register form:', registerForm);
+  //     alert('Registration functionality to be implemented');
+  //   } catch (error: unknown) {
+  //     const errorMessage = error instanceof Error ? error.message : "Registration failed";
+  //     alert(errorMessage);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleGoogleLogin = () => {
     signIn('google', { callbackUrl: '/' });
@@ -125,16 +141,52 @@ const Header = () => {
     signIn('facebook', { callbackUrl: '/' });
   };
 
+  // Fetch languages from API
   useEffect(() => {
-    const currentCountry = currency.find(c => c.locale === locale) || currency[0];
-    setSelectedCountry(currentCountry);
+    const fetchLanguages = async () => {
+      try {
+        const languageRes = await fetchFromAPI({
+          appName: "app3534482538357",
+          moduleName: "language",
+          query: {
+            "sectionData.language.is_active": true,
+            "sectionData.language.tag": "show"
+          },
+        });
+
+        if (languageRes && Array.isArray(languageRes)) {
+          const formattedLanguages = languageRes.map((lang: { sectionData: { language: { languagecode: string; languagename: string } } }) => ({
+            code: lang.sectionData.language.languagecode,
+            name: lang.sectionData.language.languagename,
+            locale: lang.sectionData.language.languagecode
+          }));
+          setLanguages(formattedLanguages);
+          
+          // Set current language
+          const currentLang = formattedLanguages.find((l: Language) => l.locale === locale) || formattedLanguages[0];
+          setSelectedLanguage(currentLang);
+        }
+      } catch (error) {
+        console.error("Error fetching languages:", error);
+      }
+    };
+
+    fetchLanguages();
   }, [locale]);
 
-  // Handle country change
-  const handleCountryChange = (country: Country) => {
-    setSelectedCountry(country);
-    setShowCountryDropdown(false);
-    setLocale(country.locale);
+  // Update selected language when locale changes
+  useEffect(() => {
+    if (languages.length > 0) {
+      const currentLanguage = languages.find(l => l.locale === locale) || languages[0];
+      setSelectedLanguage(currentLanguage);
+    }
+  }, [locale, languages]);
+
+  // Handle language change
+  const handleLanguageChange = (language: Language) => {
+    setSelectedLanguage(language);
+    setShowLanguageDropdown(false);
+    setLocale(language.locale);
   };
 
   return (
@@ -160,32 +212,32 @@ const Header = () => {
 
         {/* Right Buttons */}
         <div className="flex items-center space-x-4">
-          {/* Country Dropdown */}
+          {/* Language Dropdown */}
           <div className="relative">
             <button
-              onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
               className="flex items-center gap-2 px-3 py-1 rounded text-sm font-medium text-white bg-[#4CAA42] hover:bg-green-600"
             >
-              {selectedCountry.name} <FiChevronDown />
+              {selectedLanguage?.name || 'Language'} <FiChevronDown />
             </button>
-            {showCountryDropdown && (
+            {showLanguageDropdown && (
               <ul className="absolute right-0 mt-2 bg-white border rounded shadow w-44 z-50">
                 <div className="bg-[#4CAA42] rounded-t-[5px] text-white font-semibold p-2 flex items-center justify-between">
-                  <span>{t('header.currency')}</span>
+                  <span>{t('header.language')}</span>
                   <div
-                    onClick={() => setShowCountryDropdown(false)}
+                    onClick={() => setShowLanguageDropdown(false)}
                     className="bg-white text-[#4CAA42] cursor-pointer text-sm font-bold p-1 rounded-full"
                   >
                     <RxCross2 />
                   </div>
                 </div>
-                {currency.map((country) => (
+                {languages.map((language) => (
                   <li
-                    key={country.code}
-                    onClick={() => handleCountryChange(country)}
+                    key={language.code}
+                    onClick={() => handleLanguageChange(language)}
                     className="px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer flex items-center gap-2"
                   >
-                    {country.name}
+                    {language.name}
                   </li>
                 ))}
               </ul>

@@ -69,13 +69,14 @@ export default async function Home() {
     <div>
       <Header />
       <Hero data={data.hero}/>
-      <TopThingsToDo data={data.topThingsToDo} />
+      <TopThingsToDo />
       <CocotelOffers/>
       <Features content={data} locale="ph" />
-      <Attractions data={data.attractions} />
+      <Attractions />
       <DiscoverSection/>
       <WhyUs />
-      <Photos data={data.photos} />
+      <Photos />
+      {/* <Photos data={data.photos} /> */}
       
       <Footer data={data.footer} />
     </div>
