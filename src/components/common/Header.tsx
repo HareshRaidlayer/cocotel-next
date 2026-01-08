@@ -10,6 +10,8 @@ import { login } from '@/lib/api-auth';
 import { signIn, useSession, signOut } from 'next-auth/react';
 import Button from "@/components/ui/Button";
 import PhoneInput from "react-phone-number-input";
+import { useToast } from "@/hooks/use-toast";
+import { signupUser, formLogin } from '@/lib/api';
 
 import { fetchFromAPI } from "@/lib/api";
 import { useLocale } from '@/lib/locale-context';
@@ -24,6 +26,7 @@ interface Language {
 const Header = () => {
   const { locale, setLocale, t } = useLocale();
   const { data: session } = useSession();
+  const { toast } = useToast();
   const APP_NAME = 'app3534482538357';
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -82,14 +85,50 @@ const Header = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const result = await login(loginForm, APP_NAME);
-      console.log('Login successful:', result);
-      setShowLoginModal(false);
-      setLoginForm({ name: '', password: '', email: '' });
-      alert('Login successful!');
+      const loginResult = await formLogin({
+        email: loginForm.email || '',
+        password: loginForm.password,
+      });
+      
+      if (loginResult.success) {
+        setShowLoginModal(false);
+        setLoginForm({ name: '', password: '', email: '' });
+        toast({
+          variant: "success",
+          title: "Login Successful",
+          description: "You have been logged in successfully.",
+        });
+      } else {
+        const signupResult = await signupUser({
+          name: loginForm.name,
+          legalname: loginForm.name,
+          email: loginForm.email || '',
+          password: loginForm.password,
+          role: '1749109628034',
+          mobile: phone || '',
+        });
+        
+        if (signupResult.success) {
+          toast({
+            variant: "success",
+            title: "Account Created",
+            description: "Your account has been created successfully. Please login.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Authentication Failed",
+            description: signupResult.message,
+          });
+        }
+      }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Login failed";
-      alert(errorMessage);
+      const errorMessage = error instanceof Error ? error.message : "Authentication failed";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -114,12 +153,38 @@ const Header = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    signIn('google', { callbackUrl: '/' });
+  const handleGoogleLogin = async () => {
+    const result = await signIn('google', { callbackUrl: '/', redirect: false });
+    if (result?.ok) {
+      toast({
+        variant: "success",
+        title: "Login Successful",
+        description: "You have been logged in with Google.",
+      });
+    } else if (result?.error) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Failed to login with Google. Please try again.",
+      });
+    }
   };
 
-  const handleFacebookLogin = () => {
-    signIn('facebook', { callbackUrl: '/' });
+  const handleFacebookLogin = async () => {
+    const result = await signIn('facebook', { callbackUrl: '/', redirect: false });
+    if (result?.ok) {
+      toast({
+        variant: "success",
+        title: "Login Successful",
+        description: "You have been logged in with Facebook.",
+      });
+    } else if (result?.error) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Failed to login with Facebook. Please try again.",
+      });
+    }
   };
 
   // Fetch languages from API
