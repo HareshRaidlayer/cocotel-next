@@ -56,6 +56,22 @@ interface ApiRequest {
   lookups?: Array<Record<string, unknown>>;
   cacheKey?: string; // Optional for caching
 }
+interface SignupUserData {
+  name: string;
+  legalname: string;
+  email: string;
+  password: string;
+  role: string;
+  mobile?: string;
+  otpMethod?: "email" | "mobile";
+}
+
+interface SignupResponse {
+  success: boolean;
+  message: string;
+  data?: any;
+  alreadyExists?: boolean;
+}
 
 export async function getFeaturedHotels(province?: string): Promise<Hotel[]> {
   // const cacheKey = province ? `hotels_${province}` : "hotels_all"; // This line was removed as it was unused.
@@ -443,5 +459,130 @@ export async function fetchFromAPI<T>({
   } catch (err) {
     console.error("API Fetch Error:", err instanceof Error ? err.message : err);
     throw err;
+  }
+}
+
+
+interface SignupUserData {
+  name: string;
+  legalname: string;
+  email: string;
+  password: string;
+  role: string;
+  mobile?: string;
+  otpMethod?: "email" | "mobile";
+}
+
+interface SignupResponse {
+  message: string;
+  data?: any;
+  alreadyExists?: boolean; // Optional flag to indicate it was a duplicate
+}
+
+
+
+/**
+ * Signs up a user.
+ * If the user already exists (email or mobile), it returns success (idempotent behavior).
+ */
+export async function signupUser(userData: SignupUserData): Promise<SignupResponse> {
+  const appName = "app3534482538357";
+  
+  try {
+    const response = await fetch(`${NEST_URL}/api/auth/signup/password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": NEST_KEY,
+      },
+      body: JSON.stringify({
+        appName,
+        ...userData,
+        otpMethod: userData.otpMethod || "email",
+      }),
+    });
+
+    const result = await response.json();
+
+    // Successful creation
+    if (response.ok) {
+      return {
+        success: true,
+        message: result.message || "User signed up successfully",
+        data: result.data,
+      };
+    }
+
+    // Handle "user already exists" as success (idempotent behavior)
+    const errorMessage = (result.message || "").toLowerCase();
+
+    if (errorMessage.includes("already exists") || 
+        errorMessage.includes("user with this email or mobile")) {
+      return {
+        success: true,
+        message: "User already exists – no action taken",
+        alreadyExists: true,
+      };
+    }
+
+    // Any other error is a real failure
+    return {
+      success: false,
+      message: result.message || `Signup failed (status: ${response.status})`,
+    };
+
+  } catch (error) {
+    console.error("Network error during signup:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Network or unexpected error",
+    };
+  }
+}
+
+/**
+ * Form login API - checks if user exists and validates password
+ */
+export async function formLogin(credentials: {
+  email: string;
+  password: string;
+}): Promise<{ success: boolean; message: string; data?: any }> {
+  const appName = "app3534482538357";
+  
+  try {
+    const response = await fetch(`${NEST_URL}/api/auth/login/password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": NEST_KEY,
+      },
+      body: JSON.stringify({
+        appName,
+        email: credentials.email,
+        password: credentials.password,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      return {
+        success: true,
+        message: "Login successful",
+        data: result.data,
+      };
+    }
+
+    return {
+      success: false,
+      message: result.message || "Login failed",
+    };
+
+  } catch (error) {
+    console.error("Network error during login:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Network error",
+    };
   }
 }
