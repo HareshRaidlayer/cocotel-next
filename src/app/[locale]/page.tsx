@@ -70,13 +70,13 @@ const Home: NextPage<PageProps> = async ({ params }) => {
     <div>
       <Header />
       <Hero data={data.hero}/>
-      <TopThingsToDo data={data.topThingsToDo} />
+      <TopThingsToDo />
       <CocotelOffers/>
       <Features content={data} locale={locale} />
       <DiscoverSection/>
-      <Attractions data={data.attractions} />
+      <Attractions />
       <WhyUs />
-      <Photos data={data.photos} />
+      <Photos />
       
       <Footer data={data.footer} />
     </div>
