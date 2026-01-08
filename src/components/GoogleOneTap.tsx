@@ -3,16 +3,40 @@
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
+
+interface GoogleAccounts {
+  id: {
+    initialize: (config: {
+      client_id: string;
+      callback: (response: { credential: string }) => void;
+      auto_select?: boolean;
+      cancel_on_tap_outside?: boolean;
+      use_fedcm_for_prompt?: boolean;
+      context?: string;
+    }) => void;
+    prompt: (callback?: (notification: {
+      isNotDisplayed: () => boolean;
+      isSkippedMoment: () => boolean;
+      getNotDisplayedReason: () => string;
+      getSkippedReason: () => string;
+    }) => void) => void;
+    cancel: () => void;
+  };
+}
 
 declare global {
   interface Window {
-    google?: any;
+    google?: {
+      accounts?: GoogleAccounts;
+    };
     onGoogleScriptLoad?: () => void;
   }
 }
 
 const GoogleOneTap = () => {
   const { status } = useSession();
+  const { toast } = useToast();
 
   useEffect(() => {
     // Only run if user is NOT authenticated
@@ -43,11 +67,24 @@ const GoogleOneTap = () => {
       window.google.accounts.id.initialize({
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
     callback: async (response: { credential: string }) => {
-        await signIn("google-one-tap", {
+        const result = await signIn("google-one-tap", {
         credential: response.credential,
         redirect: false,
         });
-        // window.location.reload();  // Uncomment if needed
+        
+        if (result?.ok) {
+          toast({
+            variant: "success",
+            title: "Login Successful",
+            description: "You have been logged in with Google.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: "Failed to login with Google. Please try again.",
+          });
+        }
     },
     auto_select: false,
     cancel_on_tap_outside: true,
@@ -56,7 +93,7 @@ const GoogleOneTap = () => {
     });
 
       // Show the One Tap prompt only if not logged in
-      window.google.accounts.id.prompt((notification: any) => {
+      window.google.accounts.id.prompt((notification) => {
         // Optional: handle cases where prompt is blocked/suppressed
         if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
           console.log("One Tap not shown:", notification.getNotDisplayedReason() || notification.getSkippedReason());
