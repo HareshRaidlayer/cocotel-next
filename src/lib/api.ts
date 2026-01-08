@@ -69,7 +69,7 @@ interface SignupUserData {
 interface SignupResponse {
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown;
   alreadyExists?: boolean;
 }
 
@@ -474,9 +474,10 @@ interface SignupUserData {
 }
 
 interface SignupResponse {
+  success: boolean;
   message: string;
-  data?: any;
-  alreadyExists?: boolean; // Optional flag to indicate it was a duplicate
+  data?: unknown;
+  alreadyExists?: boolean;
 }
 
 
@@ -546,7 +547,7 @@ export async function signupUser(userData: SignupUserData): Promise<SignupRespon
 export async function formLogin(credentials: {
   email: string;
   password: string;
-}): Promise<{ success: boolean; message: string; data?: any }> {
+}): Promise<{ success: boolean; message: string; data?: unknown }> {
   const appName = "app3534482538357";
   
   try {
