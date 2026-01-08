@@ -51,7 +51,7 @@ const Photos = () => {
         console.log('Country resolved:', countryDoc?._id, countryName);
 
         // 2) Query topgallery by country _id (if we found one), otherwise query active topgallery items
-        const topgalleryQuery: any = {
+        const topgalleryQuery: Record<string, unknown> = {
           "sectionData.topgallery.is_active": true,
         };
         if (countryId) topgalleryQuery["sectionData.topgallery.country"] = countryId;
@@ -67,7 +67,7 @@ const Photos = () => {
 
         if (Array.isArray(topRes) && topRes.length) {
           // Map results to tours and ensure we always have at least 6 items by padding with fallbacks
-          const mappedTours = topRes.map((item: any, index: number) => ({
+          const mappedTours = topRes.map((item: { sectionData?: { topgallery?: { title?: string; image?: string } } }, index: number) => ({
             title: item.sectionData?.topgallery?.title || `Photo ${index + 1}`,
             src: item.sectionData?.topgallery?.image || "/fallback-image.jpg",
           }));

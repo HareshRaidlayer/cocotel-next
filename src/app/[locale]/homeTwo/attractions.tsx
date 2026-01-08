@@ -71,7 +71,7 @@ const Attractions: React.FC = () => {
 					title: `Top Attractions in ${countryName}`,
 					subtitle: `Discover the most amazing attractions in ${countryName}`,
 					tours: Array.isArray(blogs)
-						? blogs.map((item: any) => ({
+						? blogs.map((item: { sectionData?: { blog?: { title?: string; image?: string } } }) => ({
 								title: item?.sectionData?.blog?.title || "Untitled",
 								src: item?.sectionData?.blog?.image || "/fallback-image.jpg",
 						  }))

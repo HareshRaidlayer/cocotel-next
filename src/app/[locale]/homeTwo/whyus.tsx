@@ -91,15 +91,23 @@ const WhyUs = () => {
         }
 
         // Find whyUs data from all homesection records
-        let whyUsData: any[] = [];
-        homesectionRes.forEach((section: any) => {
+        let whyUsData: Array<{
+          whyuscountry: string;
+          whyuslanguage: string;
+          whyusisactive: boolean;
+          whyustitle?: string;
+          whyusdescription?: string;
+          whyusimage_one?: string;
+          whyustext?: string;
+        }> = [];
+        homesectionRes.forEach((section: { sectionData?: { homesection?: { whyUs?: unknown[] } } }) => {
           if (section?.sectionData?.homesection?.whyUs) {
-            whyUsData = [...whyUsData, ...section.sectionData.homesection.whyUs];
+            whyUsData = [...whyUsData, ...section.sectionData.homesection.whyUs as typeof whyUsData];
           }
         });
         
         // Filter whyUs items for current country and language
-        const filteredWhyUs = whyUsData.filter((item: any) => 
+        const filteredWhyUs = whyUsData.filter((item) => 
           item.whyuscountry === countryId && 
           item.whyuslanguage === languageId && 
           item.whyusisactive
@@ -119,7 +127,7 @@ const WhyUs = () => {
         setData({
           title: `Why Choose ${countryRes[0].sectionData.country.countryname}`,
           subtitle: "Discover what makes us the perfect choice for your travel needs",
-          cards: filteredWhyUs.map((item: any, index: number) => ({
+          cards: filteredWhyUs.map((item, index: number) => ({
             title: item.whyustitle || "Untitled",
             desc: item.whyusdescription || "No description",
             icon: item.whyusimage_one || "/images/icon-1.png",

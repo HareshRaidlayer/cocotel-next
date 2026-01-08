@@ -5,12 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiChevronDown, FiMenu, FiShoppingCart, FiUser, FiX } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
-import { FaGoogle, FaFacebook } from "react-icons/fa";
-import { login } from '@/lib/api-auth';
 import { signIn, useSession, signOut } from 'next-auth/react';
 import Button from "@/components/ui/Button";
 import PhoneInput from "react-phone-number-input";
-import { useToast } from "@/hooks/use-toast";
 import { signupUser, formLogin } from '@/lib/api';
 
 import { fetchFromAPI } from "@/lib/api";
@@ -26,7 +23,6 @@ interface Language {
 const Header = () => {
   const { locale, setLocale, t } = useLocale();
   const { data: session } = useSession();
-  const { toast } = useToast();
   const APP_NAME = 'app3534482538357';
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
@@ -36,7 +32,7 @@ const Header = () => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginForm, setLoginForm] = useState({ name: '', password: '', email: '' });
-  const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '' });
+  // const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '' });
   const [isLoading, setIsLoading] = useState(false);
 
   const [phone, setPhone] = useState<string | undefined>();
@@ -93,11 +89,7 @@ const Header = () => {
       if (loginResult.success) {
         setShowLoginModal(false);
         setLoginForm({ name: '', password: '', email: '' });
-        toast({
-          variant: "success",
-          title: "Login Successful",
-          description: "You have been logged in successfully.",
-        });
+        alert('Login successful!');
       } else {
         const signupResult = await signupUser({
           name: loginForm.name,
@@ -109,82 +101,44 @@ const Header = () => {
         });
         
         if (signupResult.success) {
-          toast({
-            variant: "success",
-            title: "Account Created",
-            description: "Your account has been created successfully. Please login.",
-          });
+          alert('Account created successfully. Please login.');
         } else {
-          toast({
-            variant: "destructive",
-            title: "Authentication Failed",
-            description: signupResult.message,
-          });
+          alert('Authentication failed: ' + signupResult.message);
         }
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Authentication failed";
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: errorMessage,
-      });
+      alert('Error: ' + errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (registerForm.password !== registerForm.confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
-    setIsLoading(true);
-    try {
-      // You can create a register API call here
-      console.log('Register form:', registerForm);
-      alert('Registration functionality to be implemented');
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Registration failed";
-      alert(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
+  // const handleRegister = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (registerForm.password !== registerForm.confirmPassword) {
+  //     alert('Passwords do not match');
+  //     return;
+  //   }
+  //   setIsLoading(true);
+  //   try {
+  //     // You can create a register API call here
+  //     console.log('Register form:', registerForm);
+  //     alert('Registration functionality to be implemented');
+  //   } catch (error: unknown) {
+  //     const errorMessage = error instanceof Error ? error.message : "Registration failed";
+  //     alert(errorMessage);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const handleGoogleLogin = () => {
+    signIn('google', { callbackUrl: '/' });
   };
 
-  const handleGoogleLogin = async () => {
-    const result = await signIn('google', { callbackUrl: '/', redirect: false });
-    if (result?.ok) {
-      toast({
-        variant: "success",
-        title: "Login Successful",
-        description: "You have been logged in with Google.",
-      });
-    } else if (result?.error) {
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
-        description: "Failed to login with Google. Please try again.",
-      });
-    }
-  };
-
-  const handleFacebookLogin = async () => {
-    const result = await signIn('facebook', { callbackUrl: '/', redirect: false });
-    if (result?.ok) {
-      toast({
-        variant: "success",
-        title: "Login Successful",
-        description: "You have been logged in with Facebook.",
-      });
-    } else if (result?.error) {
-      toast({
-        variant: "destructive",
-        title: "Login Failed",
-        description: "Failed to login with Facebook. Please try again.",
-      });
-    }
+  const handleFacebookLogin = () => {
+    signIn('facebook', { callbackUrl: '/' });
   };
 
   // Fetch languages from API
@@ -201,7 +155,7 @@ const Header = () => {
         });
 
         if (languageRes && Array.isArray(languageRes)) {
-          const formattedLanguages = languageRes.map((lang: any) => ({
+          const formattedLanguages = languageRes.map((lang: { sectionData: { language: { languagecode: string; languagename: string } } }) => ({
             code: lang.sectionData.language.languagecode,
             name: lang.sectionData.language.languagename,
             locale: lang.sectionData.language.languagecode
@@ -218,7 +172,7 @@ const Header = () => {
     };
 
     fetchLanguages();
-  }, []);
+  }, [locale]);
 
   // Update selected language when locale changes
   useEffect(() => {

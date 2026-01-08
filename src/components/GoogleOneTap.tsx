@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
-import { useToast } from "@/hooks/use-toast";
 
 interface GoogleAccounts {
   id: {
@@ -36,7 +35,6 @@ declare global {
 
 const GoogleOneTap = () => {
   const { status } = useSession();
-  const { toast } = useToast();
 
   useEffect(() => {
     // Only run if user is NOT authenticated
@@ -67,24 +65,10 @@ const GoogleOneTap = () => {
       window.google.accounts.id.initialize({
     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!,
     callback: async (response: { credential: string }) => {
-        const result = await signIn("google-one-tap", {
+        await signIn("google-one-tap", {
         credential: response.credential,
         redirect: false,
         });
-        
-        if (result?.ok) {
-          toast({
-            variant: "success",
-            title: "Login Successful",
-            description: "You have been logged in with Google.",
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Login Failed",
-            description: "Failed to login with Google. Please try again.",
-          });
-        }
     },
     auto_select: false,
     cancel_on_tap_outside: true,
