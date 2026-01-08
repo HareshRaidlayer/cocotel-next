@@ -7,6 +7,7 @@ import AuthProvider from "@/components/AuthProvider";
 import "../../public/css/style.css";
 import "../../public/css/login.css";
 import "react-phone-number-input/style.css";
+import GoogleOneTap from "@/components/GoogleOneTap";
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -76,6 +77,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="referrer" content="no-referrer-when-downgrade" />
         {/* Google Analytics */}
         {/* <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
         <script
@@ -119,6 +121,7 @@ export default function RootLayout({
         <AuthProvider>
           <LocaleProvider>
             <ClientLayout>{children}</ClientLayout>
+            <GoogleOneTap />
           </LocaleProvider>
         </AuthProvider>
       </body>
