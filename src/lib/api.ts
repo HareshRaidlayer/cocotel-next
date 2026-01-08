@@ -2,6 +2,10 @@ import NodeCache from "node-cache";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY || "w5K4iw1tRCTbnOrkprhs";
+
+const NEST_URL = process.env.NEXT_PUBLIC_NEST_API_BASE_URL || "https://api.hanaplatform.com"
+const NEST_KEY= process.env.NEXT_PUBLIC_NEST_API_KEY || "hc894t387gu3hfg409yvryfvhr44"
+
 // Initialize cache
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 120 });
 
@@ -380,3 +384,64 @@ export async function getProvinces(): Promise<string[]> {
 //     return null;
 //   }
 // }
+
+// USED NEST API
+export async function fetchFromAPI<T>({
+  appName,
+  moduleName,
+  query = {},
+  projection = {},
+  limit = 0,
+  skip = 0,
+  sortBy = "_id",
+  order = "acending",
+  // order = "descending",
+  fromCache = true,
+  lookups = [],
+}: {
+  appName: string;
+  moduleName: string;
+  query?: object;
+  projection?: object;
+  limit?: number;
+  skip?: number;
+  sortBy?: string;
+  order?: string;
+  fromCache?: boolean;
+  lookups?: object[];
+}): Promise<T> {
+  try {
+    const response = await fetch(
+      `${NEST_URL}/api/dynamic/getdata/public`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": NEST_KEY,
+        },
+        body: JSON.stringify({
+          appName,
+          moduleName,
+          query,
+          projection,
+          limit,
+          skip,
+          sortBy,
+          order,
+          fromCache,
+          lookups,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    return result?.data as T;
+  } catch (err) {
+    console.error("API Fetch Error:", err instanceof Error ? err.message : err);
+    throw err;
+  }
+}

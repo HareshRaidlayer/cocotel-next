@@ -5,26 +5,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiChevronDown, FiMenu, FiShoppingCart, FiUser } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
-
+import { fetchFromAPI } from "@/lib/api";
 import { useLocale } from '@/lib/locale-context';
 
-// Define the Country interface
-interface Country {
+// Define the Language interface
+interface Language {
   code: string;
   name: string;
   locale: string;
 }
-const currency = [
-  { code: "ph", name: "Filipino", locale: "ph" },
-  { code: "id", name: "Indonesian",  locale: "id" },
-  { code: "en", name: "English", locale: "en" },
-];
 
 const Header = () => {
   const { locale, setLocale, t } = useLocale();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState(currency[0]);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<Language | null>(null);
+  const [languages, setLanguages] = useState<Language[]>([]);
   const [showCartDropdown, setShowCartDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
@@ -36,17 +32,52 @@ const Header = () => {
     { label: t('header.logout'), href: '/logout' }
   ];
 
-  // Determine current locale from session
+  // Fetch languages from API
   useEffect(() => {
-    const currentCountry = currency.find(c => c.locale === locale) || currency[0];
-    setSelectedCountry(currentCountry);
-  }, [locale]);
+    const fetchLanguages = async () => {
+      try {
+        const languageRes = await fetchFromAPI({
+          appName: "app3534482538357",
+          moduleName: "language",
+          query: {
+            "sectionData.language.is_active": true,
+            "sectionData.language.tag": "show"
+          },
+        });
 
-  // Handle country change
-  const handleCountryChange = (country: Country) => {
-    setSelectedCountry(country);
-    setShowCountryDropdown(false);
-    setLocale(country.locale);
+        if (languageRes && Array.isArray(languageRes)) {
+          const formattedLanguages = languageRes.map((lang: any) => ({
+            code: lang.sectionData.language.languagecode,
+            name: lang.sectionData.language.languagename,
+            locale: lang.sectionData.language.languagecode
+          }));
+          setLanguages(formattedLanguages);
+          
+          // Set current language
+          const currentLang = formattedLanguages.find((l: Language) => l.locale === locale) || formattedLanguages[0];
+          setSelectedLanguage(currentLang);
+        }
+      } catch (error) {
+        console.error("Error fetching languages:", error);
+      }
+    };
+
+    fetchLanguages();
+  }, []);
+
+  // Update selected language when locale changes
+  useEffect(() => {
+    if (languages.length > 0) {
+      const currentLanguage = languages.find(l => l.locale === locale) || languages[0];
+      setSelectedLanguage(currentLanguage);
+    }
+  }, [locale, languages]);
+
+  // Handle language change
+  const handleLanguageChange = (language: Language) => {
+    setSelectedLanguage(language);
+    setShowLanguageDropdown(false);
+    setLocale(language.locale);
   };
 
   return (
@@ -72,32 +103,32 @@ const Header = () => {
 
         {/* Right Buttons */}
         <div className="flex items-center space-x-4">
-          {/* Country Dropdown */}
+          {/* Language Dropdown */}
           <div className="relative">
             <button
-              onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
               className="flex items-center gap-2 px-3 py-1 rounded text-sm font-medium text-white bg-[#4CAA42] hover:bg-green-600"
             >
-              {selectedCountry.name} <FiChevronDown />
+              {selectedLanguage?.name || 'Language'} <FiChevronDown />
             </button>
-            {showCountryDropdown && (
+            {showLanguageDropdown && (
               <ul className="absolute right-0 mt-2 bg-white border rounded shadow w-44 z-50">
                 <div className="bg-[#4CAA42] rounded-t-[5px] text-white font-semibold p-2 flex items-center justify-between">
-                  <span>{t('header.currency')}</span>
+                  <span>{t('header.language')}</span>
                   <div
-                    onClick={() => setShowCountryDropdown(false)}
+                    onClick={() => setShowLanguageDropdown(false)}
                     className="bg-white text-[#4CAA42] cursor-pointer text-sm font-bold p-1 rounded-full"
                   >
                     <RxCross2 />
                   </div>
                 </div>
-                {currency.map((country) => (
+                {languages.map((language) => (
                   <li
-                    key={country.code}
-                    onClick={() => handleCountryChange(country)}
+                    key={language.code}
+                    onClick={() => handleLanguageChange(language)}
                     className="px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer flex items-center gap-2"
                   >
-                    {country.name}
+                    {language.name}
                   </li>
                 ))}
               </ul>

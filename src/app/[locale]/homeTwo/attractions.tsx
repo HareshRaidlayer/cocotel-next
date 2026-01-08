@@ -1,28 +1,95 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useParams } from "next/navigation";
+import { fetchFromAPI } from "@/lib/api";
 
 interface Tour {
 	src: string;
 	title: string;
 }
 
-interface AttractionsProps {
-	data: {
+const Attractions: React.FC = () => {
+	const params = useParams();
+	const locale = Array.isArray(params?.locale) ? params.locale[0] : params?.locale || "ph";
+
+	const [data, setData] = useState<{
 		title: string;
 		subtitle: string;
 		tours: Tour[];
-	};
-}
+	} | null>(null);
+	const [loading, setLoading] = useState(true);
 
-const Attractions: React.FC<AttractionsProps> = ({ data }) => {
-	// Validate data
-	if (!data || !data.tours || !Array.isArray(data.tours)) {
-		console.warn("Invalid or missing attractions data");
-		return null;
-	}
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				// Map locale to country code
+				const countryCodeMap: { [key: string]: string } = {
+					ph: "PH",
+					id: "ID",
+					aus: "AUS"
+				};
+				const countryCode = countryCodeMap[locale.toLowerCase()] || "PH";
+
+				// Fetch country data
+				const countryRes = await fetchFromAPI({
+					appName: "app3534482538357",
+					moduleName: "country",
+					query: {
+						"sectionData.country.countrycode": countryCode,
+						"sectionData.country.is_active": true,
+					},
+					limit: 1,
+				});
+
+				if (!countryRes || !Array.isArray(countryRes) || countryRes.length === 0) {
+					setLoading(false);
+					return;
+				}
+
+				const countryId = countryRes[0]._id;
+				const countryName = countryRes[0].sectionData.country.countryname;
+
+				// Fetch blogs with "top attraction" tag
+				const blogs = await fetchFromAPI({
+					appName: "app3534482538357",
+					moduleName: "blog",
+					query: {
+						"sectionData.blog.country": countryId,
+						"sectionData.blog.is_active": true,
+						"sectionData.blog.tags": "top attraction",
+					},
+					sortBy: "sectionData.blog.order",
+					order: "asc",
+					limit: 8,
+				});
+
+				// Format data
+				setData({
+					title: `Top Attractions in ${countryName}`,
+					subtitle: `Discover the most amazing attractions in ${countryName}`,
+					tours: Array.isArray(blogs)
+						? blogs.map((item: any) => ({
+								title: item?.sectionData?.blog?.title || "Untitled",
+								src: item?.sectionData?.blog?.image || "/fallback-image.jpg",
+						  }))
+						: [],
+				});
+			} catch (error) {
+				console.error("Error fetching attractions:", error);
+				setData(null);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, [locale]);
+
+	if (loading) return <div className="text-center py-8">Loading...</div>;
+	if (!data || !data.tours.length) return null;
 
 	const { title, subtitle, tours } = data;
 
