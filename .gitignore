@@ -31,9 +31,9 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env
-.env.local
-.env.production
+/.env
+/.env.local
+/.env.production
 
 # vercel
 .vercel
@@ -44,5 +44,5 @@ next-env.d.ts
 public/images/australiya-1080.mp4
 public/images/philippines-1080.mov
 public/images/indonesia-1080.mp4
-.env
-.env
+
+
