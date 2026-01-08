@@ -3,6 +3,7 @@
 
 import { useState, useEffect, createContext, ReactNode } from "react";
 import Loader from "@/components/Loader"; // Adjust path if needed
+import { Toaster } from "@/components/ui/toaster";
 
 // Define the context type for TypeScript test
 interface LoadingContextType {
@@ -48,6 +49,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
       <main className={isLoading ? "opacity-0" : "opacity-100 transition-opacity duration-500"}>
         {children}
       </main>
+      <Toaster />
     </LoadingContext.Provider>
   );
 }

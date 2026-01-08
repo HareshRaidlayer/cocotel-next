@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google'
 import FacebookProvider from 'next-auth/providers/facebook'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { OAuth2Client } from 'google-auth-library'
+import { addData } from '@/lib/api'
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
@@ -54,7 +55,22 @@ export default NextAuth({
     }),
   ],
   callbacks: {
-    async signIn() {
+    async signIn({ user, account }) {
+      if (account?.provider === 'google' || account?.provider === 'facebook' || account?.provider === 'google-one-tap') {
+        try {
+          // Add user to database if they don't exist
+          await addData({
+            name: user.name || 'Unknown',
+            legalname: user.name || 'Unknown',
+            email: user.email || '',
+            password: 'social_login', // Placeholder for social login
+            mobile: '', // Will be empty for social login
+          });
+        } catch (error) {
+          console.log('User might already exist or error adding to database:', error);
+          // Continue with login even if database add fails
+        }
+      }
       return true
     },
     async session({ session }) {
