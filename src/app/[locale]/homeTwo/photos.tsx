@@ -16,6 +16,22 @@ interface PageData {
   subtitle: string;
   tours: Tour[];
 }
+interface TopGalleryItem {
+  _id: string;
+  sectionData: {
+    topgallery: {
+      title?: string;
+      image?: string;
+      country?: string;
+      is_active?: boolean;
+    };
+  };
+}
+
+type TopGalleryQuery = {
+  "sectionData.topgallery.is_active": boolean;
+  "sectionData.topgallery.country"?: string;
+};
 
 const Photos = () => {
   const params = useParams();
@@ -51,9 +67,12 @@ const Photos = () => {
         console.log('Country resolved:', countryDoc?._id, countryName);
 
         // 2) Query topgallery by country _id (if we found one), otherwise query active topgallery items
-        const topgalleryQuery: any = {
-          "sectionData.topgallery.is_active": true,
-        };
+        // const topgalleryQuery: any = {
+        //   "sectionData.topgallery.is_active": true,
+        // };
+        const topgalleryQuery: TopGalleryQuery = {
+  "sectionData.topgallery.is_active": true,
+};
         if (countryId) topgalleryQuery["sectionData.topgallery.country"] = countryId;
 
         const topRes = await fetchFromAPI({
@@ -67,10 +86,16 @@ const Photos = () => {
 
         if (Array.isArray(topRes) && topRes.length) {
           // Map results to tours and ensure we always have at least 6 items by padding with fallbacks
-          const mappedTours = topRes.map((item: any, index: number) => ({
-            title: item.sectionData?.topgallery?.title || `Photo ${index + 1}`,
-            src: item.sectionData?.topgallery?.image || "/fallback-image.jpg",
-          }));
+          // const mappedTours = topRes.map((item: any, index: number) => ({
+          //   title: item.sectionData?.topgallery?.title || `Photo ${index + 1}`,
+          //   src: item.sectionData?.topgallery?.image || "/fallback-image.jpg",
+          // }));
+          const mappedTours = (topRes as TopGalleryItem[]).map(
+  (item, index: number) => ({
+    title: item.sectionData?.topgallery?.title || `Photo ${index + 1}`,
+    src: item.sectionData?.topgallery?.image || "/fallback-image.jpg",
+  })
+);
 
           const fallbackImgs = [
             "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",

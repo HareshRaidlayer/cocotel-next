@@ -14,6 +14,17 @@ interface Language {
   name: string;
   locale: string;
 }
+interface LanguageApiItem {
+  sectionData: {
+    language: {
+      languagecode: string;
+      languagename: string;
+      is_active?: boolean;
+      tag?: string;
+    };
+  };
+}
+
 
 const Header = () => {
   const { locale, setLocale, t } = useLocale();
@@ -46,11 +57,13 @@ const Header = () => {
         });
 
         if (languageRes && Array.isArray(languageRes)) {
-          const formattedLanguages = languageRes.map((lang: any) => ({
-            code: lang.sectionData.language.languagecode,
-            name: lang.sectionData.language.languagename,
-            locale: lang.sectionData.language.languagecode
-          }));
+          const formattedLanguages = (languageRes as LanguageApiItem[]).map(
+  (lang) => ({
+    code: lang.sectionData.language.languagecode,
+    name: lang.sectionData.language.languagename,
+    locale: lang.sectionData.language.languagecode,
+  })
+);
           setLanguages(formattedLanguages);
           
           // Set current language
@@ -63,7 +76,7 @@ const Header = () => {
     };
 
     fetchLanguages();
-  }, []);
+  }, [locale]);
 
   // Update selected language when locale changes
   useEffect(() => {

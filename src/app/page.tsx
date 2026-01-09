@@ -71,7 +71,7 @@ export default async function Home() {
       <Hero data={data.hero}/>
       <TopThingsToDo />
       <CocotelOffers/>
-      <Features content={data} locale="ph" />
+      <Features />
       <Attractions />
       <DiscoverSection/>
       <WhyUs />
