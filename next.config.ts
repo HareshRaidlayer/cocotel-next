@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'hel1.your-objectstorage.com',
-        port: '', // Leave empty if no port
-        pathname: '/**', // Allows any path; adjust as needed (e.g., '/images/**')
+        port: '',
+        pathname: '/**',
       },
        {
         protocol: 'https',
@@ -15,10 +15,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
-      // {
-      //   protocol: 'https',
-      //   hostname: 'images.unsplash.com',
-      // },
+      {
+        protocol: 'https',
+        hostname: 'img.cocotel.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
     unoptimized: true,
   },

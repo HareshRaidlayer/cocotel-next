@@ -10,6 +10,16 @@ interface Tour {
 	src: string;
 	title: string;
 }
+interface BlogItem {
+	_id: string;
+	sectionData: {
+		blog: {
+			title?: string;
+			image?: string;
+		};
+	};
+}
+
 
 const Attractions: React.FC = () => {
 	const params = useParams();
@@ -71,11 +81,17 @@ const Attractions: React.FC = () => {
 					title: `Top Attractions in ${countryName}`,
 					subtitle: `Discover the most amazing attractions in ${countryName}`,
 					tours: Array.isArray(blogs)
-						? blogs.map((item: { sectionData?: { blog?: { title?: string; image?: string } } }) => ({
-								title: item?.sectionData?.blog?.title || "Untitled",
-								src: item?.sectionData?.blog?.image || "/fallback-image.jpg",
-						  }))
-						: [],
+	? (blogs as BlogItem[]).map((item) => ({
+			title: item.sectionData?.blog?.title || "Untitled",
+			src: item.sectionData?.blog?.image || "/fallback-image.jpg",
+	  }))
+	: [],
+					// tours: Array.isArray(blogs)
+					// 	? blogs.map((item: any) => ({
+					// 			title: item?.sectionData?.blog?.title || "Untitled",
+					// 			src: item?.sectionData?.blog?.image || "/fallback-image.jpg",
+					// 	  }))
+					// 	: [],
 				});
 			} catch (error) {
 				console.error("Error fetching attractions:", error);
