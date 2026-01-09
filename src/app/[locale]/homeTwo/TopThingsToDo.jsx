@@ -1,32 +1,86 @@
 "use client";
-import React from "react";
+
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-const TopThingsToDo = ({ data }) => {
-	const containerVariants = {
-		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: {
-				staggerChildren: 0.04, // letter delay
-			},
-		},
-	};
+import { useParams } from "next/navigation";
+import { fetchFromAPI } from "@/lib/api";
 
-	const letterVariants = {
-		hidden: { opacity: 0, y: 40 },
-		visible: {
-			opacity: 1,
-			y: 0,
-			transition: {
-				duration: 0.6,
-				ease: "easeOut",
-			},
-		},
-	};
+const TopThingsToDo = () => {
+	const params = useParams();
+	const locale = params?.locale?.toLowerCase() || "ph";
 
-	if (!data) return null;
+	const [data, setData] = useState(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				/* 1️⃣ Resolve country by locale */
+				const countryCode = locale === "id" ? "ID" : "PH";
+
+				const countryRes = await fetchFromAPI({
+					appName: "app3534482538357",
+					moduleName: "country",
+					query: {
+						"sectionData.country.countrycode": countryCode,
+						"sectionData.country.is_active": true,
+					},
+					limit: 1,
+				});
+
+				if (!countryRes || !countryRes.length) {
+					setLoading(false);
+					return;
+				}
+
+				const countryId = countryRes[0]._id;
+
+				/* 2️⃣ Fetch blogs by country + tag */
+				const blogs = await fetchFromAPI({
+					appName: "app3534482538357",
+					moduleName: "blog",
+					query: {
+						"sectionData.blog.country": countryId,
+						"sectionData.blog.is_active": true,
+						"sectionData.blog.tags": "top things to do",
+					},
+					sort: { "sectionData.blog.order": 1 },
+					limit: 8,
+				});
+
+				/* 3️⃣ Format UI data */
+				setData({
+					title:
+						countryCode === "ID"
+							? "Top Things to Do in Indonesia"
+							: "Top Things to Do in Philippines",
+					subtitle:
+						countryCode === "ID"
+							? "Discover amazing destinations in Indonesia"
+							: "Explore beautiful places in the Philippines",
+					tours: Array.isArray(blogs)
+						? blogs.map((item) => ({
+							title: item?.sectionData?.blog?.title || "Untitled",
+							src:
+								item?.sectionData?.blog?.image ||
+								"/placeholder-image.jpg",
+						}))
+						: [],
+				});
+			} catch (error) {
+				console.error("Error fetching Top Things to Do:", error);
+				setData(null);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, [locale]);
+
+	if (loading) return <div className="text-center py-8">Loading...</div>;
+	if (!data || !data.tours.length) return null;
 
 	return (
 		<section className="container mx-auto bg-white mt-4 md:mt-10 p-2 xl:p-0">

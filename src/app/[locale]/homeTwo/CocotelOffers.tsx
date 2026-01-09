@@ -1,100 +1,118 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react"; // Recommended: use lucide-react for icons (install if needed)
+import { fetchFromAPI } from "@/lib/api";
+
+interface PromoItem {
+	_id: string;
+	sectionData: {
+		promocode: {
+			promoname: string;
+			DiscountValue: string;
+			DiscountIn: string;
+			image: string;
+			tags: string[];
+			is_active: boolean;
+		};
+	};
+}
 
 export default function CocotelOffers() {
+	const [offers, setOffers] = useState<PromoItem[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchOffers = async () => {
+			try {
+				const res = await fetchFromAPI({
+					appName: "app3534482538357",
+					moduleName: "promocode",
+					query: {
+						"sectionData.promocode.is_active": true,
+						"sectionData.promocode.tags": { $in: ["Home"] },
+					},
+					limit: 2,
+				});
+				setOffers((res as PromoItem[]) || []);
+
+			} catch (error) {
+				console.error("Failed to fetch offers", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchOffers();
+	}, []);
+
+	if (loading || offers.length === 0) return null;
 	return (
 		<section className="container mx-auto mt-6 md:mt-10 w-full p-2 xl:p-0">
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-				<div className="relative rounded-2xl bg-[#299e60] overflow-hidden p-2 md:p-8 block md:flex items-center gap-4  z-0">
-					{/* Background shape */}
-					<Image
-						src="/images/offer-shape.png"
-						alt=""
-						fill
-						className="absolute inset-0 z-[-1] object-cover opacity-10"
-					/>
-					<div className="flex items-center justify-between  gap-10 ">
-						<Image
-							src="/images/cocotel-offers-3.png"
-							alt="COUPON DEALS"
-							width={150}
-							height={100}
-							className=" w-50 h-auto hidden md:block"
-						/>
-					{/* Content */}
-					<div className=" w-full flex flex-col items-center md:items-center justify-center">
-						<Image
-							src="/images/offers-icon-7.png"
-							alt="COUPON DEALS"
-							height={100}
-							width={100}
-							className=" "
-						/>
-						<h4 className="text-white mb-1 text-2xl font-bold">
-							SALACIA PROMO CODE
-						</h4>
-						
-						<div className="flex items-center gap-2">
-							<span className="text-sm text-white font-semibold">Starting at Jan 5</span>
-							<ArrowRight className="h-4 w-4 text-white" />
-							<span className="text-sm text-white font-semibold">expired Aug 5</span>
-						</div>
-						<a href="#"
-							className="mt-4 inline-flex items-center gap-3 rounded bg-white px-4 py-2 font-medium text-green-800 transition-colors hover:bg-green-300 "
-						>
-							AVAIL TODAY
-							<ArrowRight className="h-5 w-5" />
-						</a>
-					</div>
-					</div>
-				</div>
+				{offers.map((item) => {
+					const promo = item.sectionData.promocode;
 
-				<div className="relative rounded-2xl bg-[#299e60] overflow-hidden p-2 md:p-8 block md:flex items-center gap-4  z-0">
-					{/* Background shape */}
-					<Image
-						src="/images/offer-shape.png"
-						alt=""
-						fill
-						className="absolute inset-0 z-[-1] object-cover opacity-10 "
-					/>
-					<div className="flex items-center justify-between  gap-10 ">
-						<Image
-							src="/images/cocotel-offers-1.png"
-							alt="COUPON DEALS"
-							width={150}
-							height={100}
-							className=" w-50 h-auto hidden md:block"
-						/>
-					{/* Content */}
-					<div className=" w-full flex flex-col items-center md:items-center justify-center">
-						<Image
-							src="/images/offers-icon-8.png"
-							alt="COUPON DEALS"
-							height={100}
-							width={100}
-							className=" "
-						/>
-						<h4 className="text-white mb-1 text-2xl font-bold">
-							SALACIA PROMO CODE
-						</h4>
-						
-						<div className="flex items-center gap-2">
-							<span className="text-sm text-white font-semibold">Starting at Jan 5</span>
-							<ArrowRight className="h-4 w-4 text-white" />
-							<span className="text-sm text-white font-semibold">expired Aug 5</span>
-						</div>
-						<a href="#"
-							className="mt-4 inline-flex items-center gap-3 rounded bg-white px-4 py-2 font-medium text-green-800 transition-colors hover:bg-green-300 "
+					return (
+						<div
+							key={item._id}
+							className="relative rounded-2xl h-60 overflow-hidden p-2 md:p-8 flex items-center gap-4 z-0"
 						>
-							AVAIL TODAY
-							<ArrowRight className="h-5 w-5" />
-						</a>
-					</div>
-					</div>
-				</div>
+							{/* Background Image */}
+							<Image
+								src={promo.image || "/images/offers-banner-2.png"}
+								alt={promo.promoname}
+								fill
+								priority={false}
+								className="object-cover object-center -z-10"
+							/>
+
+							{/* Content goes here (unchanged UI placeholder) */}
+							<div className="relative z-10 text-white">
+								{/* your content */}
+							</div>
+						</div>
+					);
+				})}
 			</div>
 		</section>
 	);
 }
+// 	return (
+// 		<section className="container mx-auto mt-6 md:mt-10 w-full p-2 xl:p-0">
+// 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+// 				<div className="relative rounded-2xl h-60 overflow-hidden p-2 md:p-8 flex items-center gap-4 z-0">
+// 					{/* Background Image */}
+// 					<Image
+// 						src="/images/offers-banner-2.png"
+// 						alt="offers banner"
+// 						fill
+// 						priority={false}
+// 						className="object-cover object-center -z-10"
+// 					/>
+
+// 					{/* Content goes here */}
+// 					<div className="relative z-10 text-white">
+// 						{/* your content */}
+// 					</div>
+// 				</div>
+
+// 				<div className="relative rounded-2xl h-60 overflow-hidden p-2 md:p-8 flex items-center gap-4 z-0">
+// 					{/* Background Image */}
+// 					<Image
+// 						src="/images/offers-banner-2.png"
+// 						alt="offers banner"
+// 						fill
+// 						priority={false}
+// 						className="object-cover object-center -z-10"
+// 					/>
+
+// 					{/* Content goes here */}
+// 					<div className="relative z-10 text-white">
+// 						{/* your content */}
+// 					</div>
+// 				</div>
+// 			</div>
+// 		</section>
+// 	);
+// }

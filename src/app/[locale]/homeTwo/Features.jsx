@@ -1,26 +1,83 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaStar, FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
-// import { LeftRatting } from "/images/raring-left.svg";
-// import { RightRatting } from "/images/raring-right.svg";
+import { fetchFromAPI } from "@/lib/api";
 
 const Features = ({ locale = "ph", content }) => {
-	// Validate content
-	if (!content || !content.features || !Array.isArray(content.features.tours)) {
+	const params = useParams();
+	const [tours, setTours] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [currentSlides, setCurrentSlides] = useState([]);
+	const [quickViewIndex, setQuickViewIndex] = useState(null);
+	const [currentSlide, setCurrentSlide] = useState(0);
+
+	// Get country from URL locale
+	const urlLocale = Array.isArray(params?.locale) ? params.locale[0] : params?.locale || "ph";
+	const countryCodeMap = {
+		ph: "PH",
+		id: "ID",
+		aus: "AUS"
+	};
+	const countryCode = countryCodeMap[urlLocale.toLowerCase()] || "PH";
+	const currencySymbol = countryCode === "ID" ? "IDR" : "PHP";
+
+	useEffect(() => {
+		const fetchCompanies = async () => {
+			try {
+				const companiesRes = await fetchFromAPI({
+					appName: "app3534482538357",
+					moduleName: "company",
+					query: {
+						"sectionData.Company.country": countryCode,
+						"sectionData.Company.is_deleted": false
+					},
+					limit: 8,
+				});
+
+				if (companiesRes && Array.isArray(companiesRes)) {
+					const formattedTours = companiesRes.map((company) => {
+						const companyData = company.sectionData.Company;
+						const galleryImages = companyData.gallery_image ? companyData.gallery_image.split(',') : [companyData.primary_image];
+						
+						return {
+							title: companyData.name || companyData.web_title || "Hotel",
+							city: companyData.web_city || companyData.city || "",
+							country: companyData.country || countryCode,
+							src: galleryImages.filter(img => img && img.trim()),
+							price: "2,500",
+							originalPrice: "500",
+							discount: "20% OFF",
+							category: "Resort"
+						};
+					});
+					setTours(formattedTours);
+					setCurrentSlides(formattedTours.map(() => 0));
+				}
+			} catch (error) {
+				console.error("Error fetching companies:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchCompanies();
+	}, [countryCode]);
+
+	// Validate content for static data
+	if (!content || !content.features) {
 		console.warn("Invalid or missing features data for locale:", locale);
 		return null;
 	}
 
-	const { title, subtitle, tours } = content.features;
-	const currencySymbol = locale === "in" ? "IDR" : "PHP";
+	const { title, subtitle } = content.features;
 
-	const [currentSlides, setCurrentSlides] = useState(tours.map(() => 0));
-	const [quickViewIndex, setQuickViewIndex] = useState(null); // index of tour for quick view
-	const [currentSlide, setCurrentSlide] = useState(0); // image index inside quick view
+	if (loading) return <div className="text-center py-8">Loading...</div>;
+	if (!tours.length) return null;
 
 	const handlePrev = (index) => {
 		setCurrentSlides((prev) =>

@@ -7,7 +7,6 @@ import Header from "../../components/common/Header";
 import Hero from "./homeTwo/Hero";
 import Features from "./homeTwo/Features";
 import CocotelOffers from "./homeTwo/CocotelOffers";
-import CocotelOffers2 from "./homeTwo/CocotelOffers2";
 import TopThingsToDo from "./homeTwo/TopThingsToDo";
 import Attractions from "./homeTwo/attractions";
 import WhyUs from "./homeTwo/whyus";
@@ -71,14 +70,15 @@ const Home: NextPage<PageProps> = async ({ params }) => {
     <div>
       <Header />
       <Hero data={data.hero}/>
-      <TopThingsToDo data={data.topThingsToDo} />
+      <TopThingsToDo />
+      {/* <TopThingsToDo data={data.topThingsToDo} /> */}
       <CocotelOffers/>
       {/* <CocotelOffers2/> */}
       <Features content={data} locale={locale} />
       <DiscoverSection/>
-      <Attractions data={data.attractions} />
+      <Attractions />
       <WhyUs />
-      <Photos data={data.photos} />
+      <Photos />
       
       <Footer data={data.footer} />
     </div>
