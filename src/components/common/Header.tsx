@@ -6,9 +6,10 @@ import Link from "next/link";
 import { FiChevronDown, FiMenu, FiShoppingCart, FiUser, FiX } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import { signIn, useSession, signOut } from 'next-auth/react';
+import { toast } from 'react-hot-toast';
 import Button from "@/components/ui/Button";
 import PhoneInput from "react-phone-number-input";
-import { signupUser, formLogin } from '@/lib/api';
+import { loginUser } from '@/lib/api-auth';
 
 import { fetchFromAPI } from "@/lib/api";
 import { useLocale } from '@/lib/locale-context';
@@ -32,6 +33,7 @@ const Header = () => {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginForm, setLoginForm] = useState({ name: '', password: '', email: '' });
+  const [loginError, setLoginError] = useState('');
   // const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '' });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -80,35 +82,28 @@ const Header = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setLoginError('');
     try {
-      const loginResult = await formLogin({
-        email: loginForm.email || '',
+      const loginResult = await loginUser({
+        name: loginForm.email || '',
         password: loginForm.password,
       });
       
       if (loginResult.success) {
+        await signIn('credentials', {
+          email: loginForm.email,
+          password: loginForm.password,
+          redirect: false,
+        });
         setShowLoginModal(false);
         setLoginForm({ name: '', password: '', email: '' });
-        alert('Login successful!');
+        toast.success('Login successful!');
       } else {
-        const signupResult = await signupUser({
-          name: loginForm.name,
-          legalname: loginForm.name,
-          email: loginForm.email || '',
-          password: loginForm.password,
-          role: '1749109628034',
-          mobile: phone || '',
-        });
-        
-        if (signupResult.success) {
-          alert('Account created successfully. Please login.');
-        } else {
-          alert('Authentication failed: ' + signupResult.message);
-        }
+        setLoginError(loginResult.message || 'Login failed');
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Authentication failed";
-      alert('Error: ' + errorMessage);
+      setLoginError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -304,7 +299,7 @@ const Header = () => {
                       <Link
                         href={option.href}
                         onClick={() => setShowUserDropdown(false)}
-                        className="block px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer"
+                        className="block px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer truncate"
                       >
                         {option.label}
                       </Link>
@@ -383,16 +378,7 @@ const Header = () => {
               <div className="form-box login">
                   <h2 className="animation" style={{ "--i": 0, "--j": 21 } as React.CSSProperties}>Login</h2>
                   <form onSubmit={handleLogin}>
-                      <div className="input-box animation" style={{ "--i": 1, "--j": 22 } as React.CSSProperties}>
-                          <input 
-                            type="text" 
-                            value={loginForm.name}
-                            onChange={(e) => setLoginForm({ ...loginForm, name: e.target.value })}
-                            required 
-                          />
-                          <label>Username</label>
-                          <i className='bx bxs-user'></i>
-                      </div>
+                      
                       <div className="input-box animation" style={{ "--i": 2, "--j": 23 } as React.CSSProperties}>
                           <input 
                             type="email" 
@@ -413,6 +399,11 @@ const Header = () => {
                           <label>Password</label>
                           <i className='bx bxs-lock-alt' ></i>
                       </div>
+                      {loginError && (
+                        <div className="text-red-500 text-sm mt-1 px-2">
+                          {loginError}
+                        </div>
+                      )}
                       <button 
                         type="submit" 
                         disabled={isLoading}
