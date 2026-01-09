@@ -7,6 +7,8 @@ import { FiChevronDown, FiMenu, FiShoppingCart, FiUser, FiX } from "react-icons/
 import { RxCross2 } from "react-icons/rx";
 import { signIn, useSession, signOut } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
+import PhoneInput from "react-phone-number-input";
+import { loginUser, registerUser } from '@/lib/api-auth';
 import Button from "@/components/ui/Button";
 import PhoneInput from "react-phone-number-input";
 import { loginUser } from '@/lib/api-auth';
@@ -45,6 +47,8 @@ const Header = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginForm, setLoginForm] = useState({ name: '', password: '', email: '' });
   const [loginError, setLoginError] = useState('');
+  const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '' });
+  const [registerError, setRegisterError] = useState('');
   // const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '', confirmPassword: '', phone: '' });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -120,24 +124,33 @@ const Header = () => {
     }
   };
 
-  // const handleRegister = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (registerForm.password !== registerForm.confirmPassword) {
-  //     alert('Passwords do not match');
-  //     return;
-  //   }
-  //   setIsLoading(true);
-  //   try {
-  //     // You can create a register API call here
-  //     console.log('Register form:', registerForm);
-  //     alert('Registration functionality to be implemented');
-  //   } catch (error: unknown) {
-  //     const errorMessage = error instanceof Error ? error.message : "Registration failed";
-  //     alert(errorMessage);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setRegisterError('');
+    try {
+      const registerResult = await registerUser({
+        name: registerForm.name,
+        email: registerForm.email,
+        password: registerForm.password,
+        phone: phone,
+      });
+      
+      if (registerResult.success) {
+        setShowLoginModal(false);
+        setRegisterForm({ name: '', email: '', password: '' });
+        setPhone(undefined);
+        toast.success('Registration successful!');
+      } else {
+        setRegisterError(registerResult.message || 'Registration failed');
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Registration failed";
+      setRegisterError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleGoogleLogin = () => {
     signIn('google', { callbackUrl: '/' });
@@ -413,6 +426,7 @@ const Header = () => {
                           <i className='bx bxs-lock-alt' ></i>
                       </div>
                       {loginError && (
+                        <div className="text-red-500 text-sm mt-1 animation px-2" style={{ "--i": 3, "--j": 24 } as React.CSSProperties}>
                         <div className="text-red-500 text-sm mt-1 px-2">
                           {loginError}
                         </div>
@@ -425,11 +439,7 @@ const Header = () => {
                       >
                         {isLoading ? 'Logging in...' : 'Login'}
                       </button>
-                      <div className="logreg-link animation" style={{ "--i": 5, "--j": 26 } as React.CSSProperties}>
-                          <Link href="#" className="text-blue-500">Forgot Your Password?</Link>
-                          <p>Dont have an account?  
-                          <Link href="javascript:void(0)" onClick={handleRegisterClick} className="register-link"> Sign up</Link></p>
-                      </div>
+                      
                   </form>
                   <div className="mt-4 text-white flex justify-center items-center animation" style={{ "--i": 6, "--j": 27 } as React.CSSProperties}>
                     <button title="Google login" onClick={handleGoogleLogin} className=" flex items-center justify-center gap-2  py-2 " >
@@ -454,6 +464,11 @@ const Header = () => {
                       />
                     </button>
                   </div>
+                  <div className="logreg-link animation" style={{ "--i": 5, "--j": 26 } as React.CSSProperties}>
+                          <Link href="#" className="text-blue-500">Forgot Your Password?</Link>
+                          <p>Dont have an account?  
+                          <Link href="javascript:void(0)" onClick={handleRegisterClick} className="register-link"> Sign up</Link></p>
+                      </div>
               </div>
               <div className="info-text login">
                   <Image
@@ -470,34 +485,28 @@ const Header = () => {
 
               <div className="form-box register ">
                   <h2 className="animation" style={{ "--i": 17, "--j": 0 } as React.CSSProperties}>Sign up</h2>
-                  <form action="#">
+                  <form onSubmit={handleRegister}>
                       <div className="input-box animation" style={{ "--i": 18, "--j": 1 } as React.CSSProperties} >
-                          <input type="text" required />
+                          <input 
+                            type="text" 
+                            value={registerForm.name}
+                            onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}
+                            required 
+                          />
                           <label>Username</label>
                           <i className='bx bxs-user'></i>
                       </div>
                       <div className="input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
-                          <input type="text" required />
+                          <input 
+                            type="email" 
+                            value={registerForm.email}
+                            onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
+                            required 
+                          />
                           <label>Email</label>
                           <i className='bx bxs-envelope' ></i>
                       </div>
-                      {/* <div
-                          className="select-box animation"
-                          style={{ "--i": 19, "--j": 2 } as React.CSSProperties}
-                          >
-                          <select required>
-                              <option value="+91">India (+91)</option>
-                              <option value="+1">USA (+1)</option>
-                              <option value="+44">UK (+44)</option>
-                              <option value="+61">Australia (+61)</option>
-                          </select>
-                          <label>Country Code</label>
-                      </div>
-                      <div className="input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
-                          <input type="number" required />
-                          <label>Phone</label>
-                          <i className='bx bxs-envelope' ></i>
-                      </div> */}
+                      
                       <div className="phone-input-box animation" style={{ "--i": 19, "--j": 2 } as React.CSSProperties}>
                           <PhoneInput
                               international
@@ -509,15 +518,31 @@ const Header = () => {
                           <label>Phone Number</label>
                       </div>
                       <div className="input-box animation" style={{ "--i": 20, "--j": 3 } as React.CSSProperties}>
-                          <input type="password" required />
+                          <input 
+                            type="password" 
+                            value={registerForm.password}
+                            onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
+                            required 
+                          />
                           <label>Password</label>
                           <i className='bx bxs-lock-alt' ></i>
                       </div>
-                      <div className=" form-check animation mb-2" style={{ "--i": 20, "--j": 3 } as React.CSSProperties}>
+                      {registerError && (
+                        <div className="text-red-500 text-sm mt-1 px-2 animation" style={{ "--i": 20, "--j": 3 } as React.CSSProperties}>
+                          {registerError}
+                        </div>
+                      )}
+                      <div className=" form-check animation mb-2" style={{ "--i": 21, "--j": 4 } as React.CSSProperties}>
                           <input type="checkbox" required checked/>  I agree to the <Link className='text-blue-500' href="#"> Terms and Conditions</Link>
                       </div>
-                      {/* <button className="px-4 py-2 btn-magnetic font-medium rounded focus:outline-none text-white w-full animation" style={{ "--i": 21, "--j": 4 } as React.CSSProperties} type="submit" >Sign up</button> */}
-                      <Button className="w-full animation" name="Sign up"  style={{ "--i": 21, "--j": 4 } as React.CSSProperties}/>
+                      <button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="px-4 py-2 btn-magnetic font-medium rounded focus:outline-none text-white w-full animation disabled:opacity-50" 
+                        style={{ "--i": 21, "--j": 4 } as React.CSSProperties}
+                      >
+                        {isLoading ? 'Signing up...' : 'Sign up'}
+                      </button>
                       <div className="logreg-link animation" style={{ "--i": 22, "--j": 5 } as React.CSSProperties}>
                           <p>Already have an account?
                           <Link href="javascript:void(0)" onClick={handleLoginClick} className="login-link"> Login</Link></p>
