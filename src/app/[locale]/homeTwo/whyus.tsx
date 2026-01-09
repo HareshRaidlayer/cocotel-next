@@ -14,6 +14,24 @@ interface WhyUsCard {
   bg: string;
 }
 
+interface WhyUsItem {
+  whyuscountry: string;
+  whyuslanguage: string;
+  whyusisactive: boolean;
+  whyustitle?: string;
+  whyusdescription?: string;
+  whyusimage_one?: string;
+  whyustext?: string;
+}
+
+interface HomeSection {
+  sectionData?: {
+    homesection?: {
+      whyUs?: WhyUsItem[];
+    };
+  };
+}
+
 const WhyUs = () => {
   const params = useParams();
   const { locale } = useLocale();
@@ -91,19 +109,37 @@ const WhyUs = () => {
         }
 
         // Find whyUs data from all homesection records
-        let whyUsData: any[] = [];
-        homesectionRes.forEach((section: any) => {
-          if (section?.sectionData?.homesection?.whyUs) {
-            whyUsData = [...whyUsData, ...section.sectionData.homesection.whyUs];
-          }
-        });
+        // let whyUsData: any[] = [];
+        // homesectionRes.forEach((section: any) => {
+        //   if (section?.sectionData?.homesection?.whyUs) {
+        //     whyUsData = [...whyUsData, ...section.sectionData.homesection.whyUs];
+        //   }
+        // });
+        let whyUsData: WhyUsItem[] = [];
+
+(homesectionRes as HomeSection[]).forEach((section) => {
+  if (section?.sectionData?.homesection?.whyUs) {
+    whyUsData = [
+      ...whyUsData,
+      ...section.sectionData.homesection.whyUs,
+    ];
+  }
+});
+
         
         // Filter whyUs items for current country and language
-        const filteredWhyUs = whyUsData.filter((item: any) => 
-          item.whyuscountry === countryId && 
-          item.whyuslanguage === languageId && 
-          item.whyusisactive
-        );
+        const filteredWhyUs = whyUsData.filter(
+  (item) =>
+    item.whyuscountry === countryId &&
+    item.whyuslanguage === languageId &&
+    item.whyusisactive
+);
+
+        // const filteredWhyUs = whyUsData.filter((item: any) => 
+        //   item.whyuscountry === countryId && 
+        //   item.whyuslanguage === languageId && 
+        //   item.whyusisactive
+        // );
 
         // Background color mapping
         const bgColors = [
@@ -119,12 +155,16 @@ const WhyUs = () => {
         setData({
           title: `Why Choose ${countryRes[0].sectionData.country.countryname}`,
           subtitle: "Discover what makes us the perfect choice for your travel needs",
-          cards: filteredWhyUs.map((item: any, index: number) => ({
-            title: item.whyustitle || "Untitled",
-            desc: item.whyusdescription || "No description",
-            icon: item.whyusimage_one || "/images/icon-1.png",
-            bg: item.whyustext && item.whyustext.startsWith('#') ? item.whyustext : bgColors[index % bgColors.length]
-          }))
+         cards: filteredWhyUs.map((item, index: number) => ({
+  title: item.whyustitle || "Untitled",
+  desc: item.whyusdescription || "No description",
+  icon: item.whyusimage_one || "/images/icon-1.png",
+  bg:
+    item.whyustext && item.whyustext.startsWith("#")
+      ? item.whyustext
+      : bgColors[index % bgColors.length],
+}))
+
         });
       } catch (error) {
         console.error("Error fetching WhyUs data:", error);

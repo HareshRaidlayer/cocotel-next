@@ -74,7 +74,8 @@ const Home: NextPage<PageProps> = async ({ params }) => {
       {/* <TopThingsToDo data={data.topThingsToDo} /> */}
       <CocotelOffers/>
       {/* <CocotelOffers2/> */}
-      <Features content={data} locale={locale} />
+      
+      <Features />
       <DiscoverSection/>
       <Attractions />
       <WhyUs />

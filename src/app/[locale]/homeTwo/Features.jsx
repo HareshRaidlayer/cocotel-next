@@ -5,10 +5,11 @@ import Image from "next/image";
 import { FaStar, FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
-import Button from "@/components/ui/Button";
+// import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { fetchFromAPI } from "@/lib/api";
 
-const Features = ({ locale = "ph", content }) => {
+const Features = () => {
 	const params = useParams();
 	const [tours, setTours] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -26,6 +27,10 @@ const Features = ({ locale = "ph", content }) => {
 	const countryCode = countryCodeMap[urlLocale.toLowerCase()] || "PH";
 	const currencySymbol = countryCode === "ID" ? "IDR" : "PHP";
 
+	// Dynamic titles based on country
+	const title = countryCode === "ID" ? "Featured Hotels in Indonesia" : "Featured Hotels in Philippines";
+	const subtitle = countryCode === "ID" ? "Discover amazing accommodations across Indonesia" : "Explore the best hotels in the Philippines";
+
 	useEffect(() => {
 		const fetchCompanies = async () => {
 			try {
@@ -36,7 +41,7 @@ const Features = ({ locale = "ph", content }) => {
 						"sectionData.Company.country": countryCode,
 						"sectionData.Company.is_deleted": false
 					},
-					limit: 8,
+					limit: 4,
 				});
 
 				if (companiesRes && Array.isArray(companiesRes)) {
@@ -67,14 +72,6 @@ const Features = ({ locale = "ph", content }) => {
 
 		fetchCompanies();
 	}, [countryCode]);
-
-	// Validate content for static data
-	if (!content || !content.features) {
-		console.warn("Invalid or missing features data for locale:", locale);
-		return null;
-	}
-
-	const { title, subtitle } = content.features;
 
 	if (loading) return <div className="text-center py-8">Loading...</div>;
 	if (!tours.length) return null;
