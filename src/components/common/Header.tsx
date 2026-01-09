@@ -9,6 +9,9 @@ import { signIn, useSession, signOut } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import PhoneInput from "react-phone-number-input";
 import { loginUser, registerUser } from '@/lib/api-auth';
+import Button from "@/components/ui/Button";
+import PhoneInput from "react-phone-number-input";
+import { loginUser } from '@/lib/api-auth';
 
 import { fetchFromAPI } from "@/lib/api";
 import { useLocale } from '@/lib/locale-context';
@@ -424,6 +427,7 @@ const Header = () => {
                       </div>
                       {loginError && (
                         <div className="text-red-500 text-sm mt-1 animation px-2" style={{ "--i": 3, "--j": 24 } as React.CSSProperties}>
+                        <div className="text-red-500 text-sm mt-1 px-2">
                           {loginError}
                         </div>
                       )}
