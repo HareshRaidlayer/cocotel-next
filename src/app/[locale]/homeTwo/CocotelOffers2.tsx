@@ -31,7 +31,7 @@ export default function CocotelOffers2() {
                 <p className="text-base text-center text-[#eac285]">
                   DiSCOUNT UP TO
                 </p>
-                <h3 className="text-5xl text-[#eac285] font-bold">30% OFF</h3>
+                <h3 className="text-5xl text-[#eac285] font-bold">40% OFF</h3>
                 
                 <Image src={qrCodeImage} alt="QR Code" width={100} height={100} className="m-auto"/>
             </div>
