@@ -423,7 +423,7 @@ const Header = () => {
                           <i className='bx bxs-lock-alt' ></i>
                       </div>
                       {loginError && (
-                        <div className="text-red-500 text-sm mt-1 animation px-2" style={{ "--i": 3, "--j": 24 } as React.CSSProperties}>
+                        <div className="text-red-500 text-sm mt-1 px-2">
                           {loginError}
                         </div>
                       )}
