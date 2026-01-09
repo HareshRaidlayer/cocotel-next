@@ -96,10 +96,10 @@ export default NextAuth({
           })
 
           if (loginResult.success && loginResult.data) {
-            const userData = loginResult.data
+            const userData = loginResult.data as Record<string, unknown>
             return {
-              id: userData.id || userData._id || credentials.email,
-              name: userData.name || userData.username || credentials.email,
+              id: (userData.id || userData._id || credentials.email) as string,
+              name: (userData.name || userData.username || credentials.email) as string,
               email: credentials.email,
             }
           }
