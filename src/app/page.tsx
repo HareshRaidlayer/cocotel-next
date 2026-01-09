@@ -6,7 +6,7 @@ import Header from "../components/common/Header";
 import Hero from "./[locale]/homeTwo/Hero";
 import Features from "./[locale]/homeTwo/Features";
 import TopThingsToDo from "./[locale]/homeTwo/TopThingsToDo";
-import CocotelOffers from "./[locale]//homeTwo/CocotelOffers";
+import CocotelOffers from "./[locale]/homeTwo/CocotelOffers";
 import WhyUs from "./[locale]/homeTwo/whyus";
 import Attractions from "./[locale]/homeTwo/attractions";
 import Photos from "./[locale]/homeTwo/photos";
@@ -71,7 +71,7 @@ export default async function Home() {
       <Hero data={data.hero}/>
       <TopThingsToDo />
       <CocotelOffers/>
-      <Features content={data} locale="ph" />
+      <Features />
       <Attractions />
       <DiscoverSection/>
       <WhyUs />
