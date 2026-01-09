@@ -6,7 +6,7 @@ interface LoginCredentials {
 interface LoginResponse {
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown;
 }
 const NEST_URL = process.env.NEXT_PUBLIC_NEST_API_BASE_URL || "https://neoneapi.hanaplatform.com"
 export async function loginUser(credentials: LoginCredentials): Promise<LoginResponse> {
