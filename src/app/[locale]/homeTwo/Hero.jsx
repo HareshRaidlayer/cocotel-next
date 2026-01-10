@@ -8,7 +8,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Button } from "@/components/ui/button";
+import Button  from "@/components/ui/Button";
 import { useLocale } from '@/lib/locale-context';
 import Head from "next/head";
 import { fetchFromAPI } from "@/lib/api";
@@ -68,13 +68,17 @@ const Hero = ({ data }) => {
 
         /* 2️⃣ Fetch countries */
         const countryRes = await fetchFromAPI({
-          appName: "app3534482538357",
-          moduleName: "country",
-          query: {
-            _id: { $in: allowedCountryIds },
-            "sectionData.country.is_active": true,
-          },
-        });
+        appName: "app3534482538357",
+        moduleName: "country",
+        query: {
+          _id: { $in: allowedCountryIds },
+          "sectionData.country.is_active": true,
+        },
+      }, {
+        next: { 
+          revalidate: 86400     // or 24 hours
+        }
+      });
 
         /* 3️⃣ Format for UI */
         const formattedCountries = countryRes.map((item) => ({
@@ -150,21 +154,18 @@ const Hero = ({ data }) => {
           </p>
 
           {/* Search Bar */}
-          <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="w-full max-w-5xl mx-auto hidden sm:block"
+          <div className="w-full max-w-5xl mx-auto hidden sm:block"
           >
             <div>
               <div className="flex flex-col bg-white rounded-xl shadow-xl gap-3">
                 {/* Country Tabs inside box */}
                 <div className="flex space-x-4 p-4 md:p-6 bg-green-100/50 rounded-t-xl">
                   {countries.map((c) => (
-                    <Button
+                    <button
                       key={c.id}
+                      
                       onClick={() => handleCountryClick(c.code)}
-                      className={`flex items-center gap-2 px-4 py-5 rounded-lg text-base font-medium transition country-button-shdow ${activeCountry === c.code
+                      className={`flex items-center gap-2 px-2 py-2 rounded-lg text-base font-medium transition country-button-shdow ${activeCountry === c.code
                           ? "bg-green-600 text-white hover:bg-green-700"
                           : "bg-white text-gray-700 hover:bg-green-600 hover:text-white"
                         }`}
@@ -177,7 +178,7 @@ const Hero = ({ data }) => {
                         height={20}
                       />
                       {c.name}
-                    </Button>
+                    </button>
                   ))}
                 </div>
 
@@ -349,7 +350,7 @@ const Hero = ({ data }) => {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
       {/* Mobile search */}
