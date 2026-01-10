@@ -1,7 +1,13 @@
 "use client";
 import React from "react";
 
-const Button = ({ 
+interface ButtonProps {
+  name: string;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+const Button: React.FC<ButtonProps> = ({ 
   name,
   className,
   style
