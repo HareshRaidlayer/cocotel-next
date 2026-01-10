@@ -5,7 +5,7 @@ import "../../../public/css/login.css"
 import Link from 'next/link';
 import Image from 'next/image';
 // import Button from "@/components/ui/Button";
-import { Button } from "@/components/ui/button";
+import  Button  from "@/components/ui/Button";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
