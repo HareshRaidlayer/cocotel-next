@@ -1,18 +1,4 @@
-body{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    /* background: #081b29; */
 
-    background: linear-gradient(rgb(116 192 76 / 59%), rgb(80 192 69 / 29%)), url(/images/Beach1.jpg);
-    /* background: linear-gradient(rgba(222, 243, 210, 0.8), rgb(222, 243, 210, 0.8)), url(/images/Beach1.jpg); */
-
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    position: relative;
-}
 .wrapper{
     position: relative;
     width: 800px;

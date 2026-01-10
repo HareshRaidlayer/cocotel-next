@@ -18,7 +18,8 @@ interface Event {
 }
 
 const EventPage = () => {
-  const { slug } = useParams();
+  const params = useParams();
+  const slug = params?.slug as string[] | string | undefined;
   const eventName = Array.isArray(slug)
     ? decodeURIComponent(slug.join("/"))
     : decodeURIComponent(slug || "");

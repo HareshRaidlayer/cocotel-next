@@ -5,8 +5,7 @@ import Image from "next/image";
 import { FaStar, FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
-// import Button from "@/components/ui/Button";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/Button";
 import { fetchFromAPI } from "@/lib/api";
 
 const Features = () => {
