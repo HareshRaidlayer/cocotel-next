@@ -26,11 +26,6 @@ const NEST_URL = process.env.NEXT_PUBLIC_NEST_API_BASE_URL || "https://neoneapi.
 export async function registerUser(credentials: RegisterCredentials): Promise<RegisterResponse> {
   try {
     const response = await fetch(`${NEST_URL}/api/auth/signup/password`, {
-}
-const NEST_URL = process.env.NEXT_PUBLIC_NEST_API_BASE_URL || "https://neoneapi.hanaplatform.com"
-export async function loginUser(credentials: LoginCredentials): Promise<LoginResponse> {
-  try {
-    const response = await fetch(`${NEST_URL}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -44,8 +39,6 @@ export async function loginUser(credentials: LoginCredentials): Promise<LoginRes
         role: '1749109628034',
         mobile: credentials.phone || 'null',
          otpMethod: "email"
-        name: credentials.name,
-        password: credentials.password,
       }),
     });
 
