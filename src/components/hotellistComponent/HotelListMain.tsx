@@ -5,19 +5,18 @@ import HotelFilterUI from "./HotelFilter";
 import HotelCardBlock from "./HotelCardBlock";
 import HotelCardRow from "./HotelCardRow";
 import { Hotel } from "@/types/hotel";
-import { useLocale } from '@/lib/locale-context';
 import Header from "../common/Header";
 import SubHeader from "../common/subHeaderSearch";
-import { Star, MapPin, Coffee, ParkingCircle, TrendingUp, TrendingDown, Flame } from "lucide-react";
+import { Star, TrendingUp, TrendingDown, Flame } from "lucide-react";
+import Image from "next/image";
 
 
 interface Props {
     hotels: Hotel[];
-    sortOptions?: { label: string; value: string }[]; // Optional prop
+    // sortOptions?: { label: string; value: string }[]; // Optional prop
 }
 
-export default function HotelListMain({ hotels, sortOptions }: Props) {
-    const { t } = useLocale();
+export default function HotelListMain({ hotels }: Props) {
     const [view, setView] = useState<"card" | "list">("card");
     // const [selectedSort, setSelectedSort] = useState(sortOptions?.[0]?.value || "");
     const [quickViewIndex, setQuickViewIndex] = useState<number | null>(null);
@@ -50,6 +49,7 @@ export default function HotelListMain({ hotels, sortOptions }: Props) {
 
     const [selectedSort, setSelectedSort] = useState(options[0].value);
     const [open, setOpen] = useState(false);
+    const [filterOpen, setFilterOpen] = useState(false);
 
 
     const getGallery = (index: number) => {
@@ -58,10 +58,10 @@ export default function HotelListMain({ hotels, sortOptions }: Props) {
             ? hotel.gallery
             : [hotel.image];
     };
-    const handleSortChange = (value: string) => {
-        setSelectedSort(value);
-        // Here you can implement sorting logic based on value
-    };
+    // const handleSortChange = (value: string) => {
+    //     setSelectedSort(value);
+       
+    // };
 
     const openQuickView = (index: number) => {
         setQuickViewIndex(index);
@@ -97,7 +97,7 @@ export default function HotelListMain({ hotels, sortOptions }: Props) {
             <Header />
             <SubHeader />
             {/* top header green section */}
-            <section className="container mx-auto">
+            {/* <section className="container mx-auto">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-around bg-white border-b border-green-500 text-green-600 pt-0 md:pt-5 pb-5 px-2 lg:px-0">
                     <div className="flex items-start space-x-2 p-2 sm:p-0">
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -126,22 +126,46 @@ export default function HotelListMain({ hotels, sortOptions }: Props) {
                         <span className="text-sm font-semibold">{t('hero.feature4')}</span>
                     </div>
                 </div>
-            </section>
+            </section> */}
 
             <div className="bg-gray-50 min-h-screen py-8" >
                 <div className="max-w-screen-2xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
 
                     {/* FILTER (ONLY ONCE) */}
-                    <HotelFilterUI />
+                    <div className="hidden lg:block">
+                        <HotelFilterUI />
+                    </div>
+
+                    {/* Mobile Filter Sidebar */}
+                    {filterOpen && (
+                        <div className="fixed inset-0 z-50 lg:hidden">
+                            <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setFilterOpen(false)} />
+                            <div className="absolute left-0 top-0 h-full w-80 bg-white shadow-xl overflow-y-auto">
+                                <div className="p-4 border-b">
+                                    <div className="flex justify-between items-center">
+                                        <h2 className="text-lg font-semibold">Filters</h2>
+                                        <button onClick={() => setFilterOpen(false)} className="text-2xl">&times;</button>
+                                    </div>
+                                </div>
+                                <HotelFilterUI />
+                            </div>
+                        </div>
+                    )}
 
                     {/* CONTENT */}
                     <div className="lg:col-span-3">
                         <div className="flex flex-col sm:flex-row items-center justify-between bg-white mb-5 text-green-600 pt-5 pb-5 px-2 lg:px-0 gap-4">
-                            {/* LEFT: VIEW TOGGLE */}
+                            {/* LEFT: VIEW TOGGLE & FILTER BUTTON */}
                             <div className="flex gap-2">
                                 <button
+                                    onClick={() => setFilterOpen(true)}
+                                    className="lg:hidden border px-3 py-2 rounded-md bg-green-600 text-white"
+                                >
+                                    🔍 Filters
+                                </button>
+                                <button
                                     onClick={() => setView("card")}
-                                    className={`border px-3 py-2 rounded-md ${view === "card" ? "bg-green-600 text-white" : ""
+                                    className={`border hidden md:block px-3 py-2 rounded-md ${view === "card" ? "bg-green-600 text-white" : ""
                                         }`}
                                 >
                                     ▦
@@ -149,7 +173,7 @@ export default function HotelListMain({ hotels, sortOptions }: Props) {
 
                                 <button
                                     onClick={() => setView("list")}
-                                    className={`border px-3 py-2 rounded-md ${view === "list" ? "bg-green-600 text-white" : ""
+                                    className={`border hidden md:block px-3 py-2 rounded-md ${view === "list" ? "bg-green-600 text-white" : ""
                                         }`}
                                 >
                                     ☰
@@ -269,8 +293,11 @@ export default function HotelListMain({ hotels, sortOptions }: Props) {
                             &#10094;
                         </button>
 
-                        <img
+                        <Image
                             src={getGallery(quickViewIndex)[currentSlide]}
+                            alt="Hotel gallery image"
+                            width={800}
+                            height={600}
                             className="max-h-[80vh] object-contain"
                         />
 
@@ -286,9 +313,12 @@ export default function HotelListMain({ hotels, sortOptions }: Props) {
                     <div className="flex gap-2 mt-4 overflow-x-auto px-4">
                         {getGallery(quickViewIndex).map((img, i) => (
 
-                            <img
+                            <Image
                                 key={i}
                                 src={img}
+                                alt={`Hotel gallery thumbnail ${i + 1}`}
+                                width={80}
+                                height={80}
                                 className={`h-20 cursor-pointer border rounded ${currentSlide === i ? "border-green-500" : "border-gray-300"
                                     }`}
                                 onClick={() => setCurrentSlide(i)}
