@@ -20,13 +20,13 @@ export default function HotelFilterUI() {
               className="flex items-center gap-1 px-3 py-1 rounded-full border hover:bg-blue-50"
             >
               <Star className="w-3 h-3 text-yellow-500" />
-              {star}
+              {star} Star
             </button>
           ))}
         </div>
       </div>
 
-      <hr />
+      <hr className="border border-green-400"/>
 
       {/* ⭐ Review Score */}
       <div>
@@ -53,7 +53,7 @@ export default function HotelFilterUI() {
         </div>
       </div>
 
-      <hr />
+      <hr  className="border border-green-400"/>
 
       {/* 🏨 Categories */}
       <div>
@@ -74,7 +74,7 @@ export default function HotelFilterUI() {
           ].map((cat) => (
             <button
               key={cat}
-              className="px-3 py-1 border rounded-full hover:bg-blue-50"
+              className="px-3 py-1 border border-green-400 rounded-full hover:bg-blue-50"
             >
               {cat}
             </button>
@@ -82,7 +82,7 @@ export default function HotelFilterUI() {
         </div>
       </div>
 
-      <hr />
+      <hr className="border border-green-400"/>
 
       {/* ❌ Cancellations */}
       <div>
@@ -97,7 +97,7 @@ export default function HotelFilterUI() {
         </label>
       </div>
 
-      <hr />
+      <hr className="border border-green-400"/>
 
       {/* 🍽 Meals Included */}
       <div>
