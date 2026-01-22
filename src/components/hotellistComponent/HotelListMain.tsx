@@ -60,7 +60,7 @@ export default function HotelListMain({ hotels }: Props) {
     };
     // const handleSortChange = (value: string) => {
     //     setSelectedSort(value);
-       
+
     // };
 
     const openQuickView = (index: number) => {
