@@ -11,6 +11,7 @@ import { Star, TrendingUp, TrendingDown, Flame } from "lucide-react";
 import Image from "next/image";
 
 
+
 interface Props {
     hotels: Hotel[];
     // sortOptions?: { label: string; value: string }[]; // Optional prop
@@ -60,7 +61,6 @@ export default function HotelListMain({ hotels }: Props) {
     };
     // const handleSortChange = (value: string) => {
     //     setSelectedSort(value);
-
     // };
 
     const openQuickView = (index: number) => {
