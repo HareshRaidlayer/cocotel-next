@@ -5,7 +5,12 @@ import { useState } from "react";
 import Image from "next/image";
 import Button from "@/components/ui/Button"; // your existing Button
 import { Hotel } from "@/types/hotel";
-import DOMPurify from "dompurify";
+
+interface ExtendedHotel extends Hotel {
+  images?: string[];          // multiple images (optional)
+  description?: string;       // short description
+  amenities?: { name: string; icon: string }[]; // e.g. [{name: "Swimming Pool", icon: "...svg"}]
+}
 
 interface ExtendedHotel extends Hotel {
   images?: string[];          // multiple images (optional)
