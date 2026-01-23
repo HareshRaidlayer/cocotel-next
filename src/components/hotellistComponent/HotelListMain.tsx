@@ -10,6 +10,7 @@ import { Star, TrendingUp, TrendingDown, Flame } from "lucide-react";
 import Image from "next/image";
 import { Hotel, AmenityApiItem, TagApiItem } from "@/types/hotel";
 
+
 interface Props {
     hotels: Hotel[];
     amenities: AmenityApiItem[];
