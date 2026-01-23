@@ -1,23 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import HotelFilterUI from "./HotelFilter";
 import HotelCardBlock from "./HotelCardBlock";
 import HotelCardRow from "./HotelCardRow";
-import { Hotel } from "@/types/hotel";
 import Header from "../common/Header";
 import SubHeader from "../common/subHeaderSearch";
 import { Star, TrendingUp, TrendingDown, Flame } from "lucide-react";
 import Image from "next/image";
-
+import { Hotel, AmenityApiItem, TagApiItem } from "@/types/hotel";
 
 interface Props {
     hotels: Hotel[];
-    // sortOptions?: { label: string; value: string }[]; // Optional prop
+    amenities: AmenityApiItem[];
+    tags: TagApiItem[];
+    selectedAmenities: string[];
+    selectedTags: string[];
+    onAmenityChange: (ids: string[]) => void;
+    onTagChange: (ids: string[]) => void;
 }
 
-export default function HotelListMain({ hotels }: Props) {
+export default function HotelListMain({
+    hotels,
+    amenities,
+    tags,
+    selectedAmenities,
+    selectedTags,
+    onAmenityChange,
+    onTagChange
+}: Props) {
     const [view, setView] = useState<"card" | "list">("card");
+
+    const filteredHotels = useMemo(() => {
+        return hotels.filter(hotel => {
+            // Check amenities filter - ALL selected amenities must be present
+            if (selectedAmenities.length > 0) {
+                const hasAllAmenities = selectedAmenities.every(amenityId =>
+                    hotel.hotelamenities?.includes(amenityId)
+                );
+                if (!hasAllAmenities) return false;
+            }
+
+            // Check tags filter - ALL selected tags must be present
+            if (selectedTags.length > 0) {
+                const hasAllTags = selectedTags.every(tagId =>
+                    hotel.hoteltag?.includes(tagId)
+                );
+                if (!hasAllTags) return false;
+            }
+
+            return true;
+        });
+    }, [hotels, selectedAmenities, selectedTags]);
+
+    // Show message when no hotels match filters
+    const showNoResults = filteredHotels.length === 0 && (selectedAmenities.length > 0 || selectedTags.length > 0);
+
     // const [selectedSort, setSelectedSort] = useState(sortOptions?.[0]?.value || "");
     const [quickViewIndex, setQuickViewIndex] = useState<number | null>(null);
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -53,7 +91,7 @@ export default function HotelListMain({ hotels }: Props) {
 
 
     const getGallery = (index: number) => {
-        const hotel = hotels[index];
+        const hotel = filteredHotels[index];
         return hotel.gallery && hotel.gallery.length > 0
             ? hotel.gallery
             : [hotel.image];
@@ -133,7 +171,14 @@ export default function HotelListMain({ hotels }: Props) {
 
                     {/* FILTER (ONLY ONCE) */}
                     <div className="hidden lg:block">
-                        <HotelFilterUI />
+                        <HotelFilterUI
+                            amenities={amenities}
+                            tags={tags}
+                            selectedAmenities={selectedAmenities}
+                            selectedTags={selectedTags}
+                            onAmenityChange={onAmenityChange}
+                            onTagChange={onTagChange}
+                        />
                     </div>
 
                     {/* Mobile Filter Sidebar */}
@@ -147,7 +192,16 @@ export default function HotelListMain({ hotels }: Props) {
                                         <button onClick={() => setFilterOpen(false)} className="text-2xl">&times;</button>
                                     </div>
                                 </div>
-                                <HotelFilterUI />
+                                {/* <HotelFilterUI /> */}
+                                <HotelFilterUI
+                                    amenities={amenities}
+                                    tags={tags}
+                                    selectedAmenities={selectedAmenities}
+                                    selectedTags={selectedTags}
+                                    onAmenityChange={onAmenityChange}
+                                    onTagChange={onTagChange}
+                                />
+
                             </div>
                         </div>
                     )}
@@ -253,12 +307,14 @@ export default function HotelListMain({ hotels }: Props) {
 
 
                         {/* VIEW CONTENT */}
-                        {view === "card" ? (
+                        {showNoResults ? (
+                            <div className="text-center py-12">
+                                <h3 className="text-xl font-semibold text-gray-600 mb-2">No hotels found</h3>
+                                <p className="text-gray-500">Try adjusting your filters to see more results.</p>
+                            </div>
+                        ) : view === "card" ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                                {/* {hotels.map((hotel) => (
-                                    <HotelCardBlock key={hotel.id} hotel={hotel} />
-                                ))} */}
-                                {hotels.map((hotel, index) => (
+                                {filteredHotels.map((hotel, index) => (
                                     <HotelCardBlock
                                         key={hotel.id}
                                         hotel={hotel}
@@ -268,7 +324,7 @@ export default function HotelListMain({ hotels }: Props) {
                             </div>
                         ) : (
                             <div className="space-y-4">
-                                {hotels.map((hotel) => (
+                                {filteredHotels.map((hotel) => (
                                     <HotelCardRow key={hotel.id} hotel={hotel} />
                                 ))}
                             </div>
