@@ -36,12 +36,6 @@ export default function HotelCardRow({ hotel }: Props) {
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
-  const cleanDescription = hotel.description
-    ? DOMPurify.sanitize(hotel.description, {
-      FORBID_TAGS: ["font"],
-      FORBID_ATTR: ["style"],
-    })
-    : "";
 
   return (
     <div className="bg-white rounded-3xl shadow-xl border border-gray-200 mb-4 overflow-hidden">
@@ -151,22 +145,9 @@ export default function HotelCardRow({ hotel }: Props) {
 
             {/* Description */}
             {hotel.description && (
-              //    <div
-              //   className="text-gray-700 text-sm leading-relaxed"
-              //   dangerouslySetInnerHTML={{
-              //     __html: DOMPurify.sanitize(hotel.description),
-              //   }}
-              // />
-
-              <div
-                className="hotel-description text-gray-700 text-sm leading-relaxed line-clamp-3"
-                dangerouslySetInnerHTML={{ __html: cleanDescription }}
-              />
-
-
-              // <p className="text-gray-600 text-sm line-clamp-3 mt-2">
-              //   {hotel.description}
-              // </p>
+              <p className="text-gray-600 text-sm line-clamp-3 mt-2">
+                {hotel.description}
+              </p>
             )}
           </div>
 
