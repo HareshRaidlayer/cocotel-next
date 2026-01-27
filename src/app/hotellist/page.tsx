@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import HotelListMain from "@/components/hotellistComponent/HotelListMain";
 import { fetchFromAPI } from "@/lib/api";
-import { Hotel, ApiResponseItem, AmenityApiItem, TagApiItem } from "@/types/hotel";
+import { Hotel, ApiResponseItem, AmenityApiItem, TagApiItem, MeiliHotelHit, MeiliSearchResponse } from "@/types/hotel";
 
 const ITEMS_PER_PAGE = 12;
 // interface Props {
@@ -16,37 +17,80 @@ const ITEMS_PER_PAGE = 12;
 //   onTagChange: (ids: string[]) => void;
 // }
 
-export default function HotelListPage() {
+function HotelListContent() {
+  const searchParams = useSearchParams();
   const [initialLoading, setInitialLoading] = useState(true);
   const [allHotels, setAllHotels] = useState<Hotel[]>([]);
+  const [searchResults, setSearchResults] = useState<MeiliSearchResponse<MeiliHotelHit> | null>(null);
+
+
+  // const [searchResults, setSearchResults] = useState<Record<string, unknown> | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [amenities, setAmenities] = useState<AmenityApiItem[]>([]);
   const [tags, setTags] = useState<TagApiItem[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [isSearchMode, setIsSearchMode] = useState(false);
+
+  // Transform Meilisearch hit to Hotel format
+  // const transformSearchHitToHotel = (hit: Record<string, unknown>): Hotel => {
+  const transformSearchHitToHotel = (hit: MeiliHotelHit): Hotel => {
+
+    return {
+      id: hit.id,
+      name: hit.name,
+      location: `${hit.address}, ${hit.province}`,
+      price: 0,
+      rating: 5,
+      reviews: 0,
+      discount: "40% OFF",
+      description: hit.description,
+      save: hit.promo_active ? "Best Deal" : "",
+      image: hit.primary_image?.trim() || "/images/hotel-placeholder.jpg",
+      gallery: hit.gallery_images ?? [],
+      category: hit.classification || "Hotel",
+      distance: hit.city?.trim() || "",
+      breakfast: hit.description?.toLowerCase().includes("breakfast") || false,
+      parking: hit.description?.toLowerCase().includes("parking")
+        ? "Available"
+        : "Not available",
+      hotelamenities: hit.amenities ?? [],
+      hoteltag: hit.tags ?? [],
+    };
+  };
 
   // Filter hotels based on selected amenities and tags
   const filteredHotels = useMemo(() => {
-    return allHotels.filter(hotel => {
+    const hotelsToFilter = isSearchMode && searchResults ? 
+      // searchResults.hits.map((hit: Record<string, unknown>) => transformSearchHitToHotel(hit)) : 
+      searchResults.hits.map((hit) =>
+  transformSearchHitToHotel(hit)
+)
+:
+      allHotels;
+
+    return hotelsToFilter.filter((hotel: Hotel) => {
       // Check amenities filter - ALL selected amenities must be present
       if (selectedAmenities.length > 0) {
+        const hotelAmenities = hotel.hotelamenities || [];
         const hasAllAmenities = selectedAmenities.every(amenityId =>
-          hotel.hotelamenities?.includes(amenityId)
+          hotelAmenities.includes(amenityId)
         );
         if (!hasAllAmenities) return false;
       }
 
       // Check tags filter - ALL selected tags must be present
       if (selectedTags.length > 0) {
+        const hotelTags = hotel.hoteltag || [];
         const hasAllTags = selectedTags.every(tagId =>
-          hotel.hoteltag?.includes(tagId)
+          hotelTags.includes(tagId)
         );
         if (!hasAllTags) return false;
       }
 
       return true;
     });
-  }, [allHotels, selectedAmenities, selectedTags]);
+  }, [allHotels, searchResults, selectedAmenities, selectedTags, isSearchMode]);
 
   const handleAmenityChange = (ids: string[]) => {
     setSelectedAmenities(ids);
@@ -55,10 +99,48 @@ export default function HotelListPage() {
 
   const handleTagChange = (ids: string[]) => {
     setSelectedTags(ids);
-    setCurrentPage(1);
   };
 
+  // Perform search using Meilisearch
+  const performSearch = useCallback(async () => {
+    if (!searchParams) return;
+    
+    const query = searchParams.get('q') || '';
+    const country = searchParams.get('country');
+    const city = searchParams.get('city');
+    const province = searchParams.get('province');
+    
+    if (!query && !country && !city && !province) {
+      setIsSearchMode(false);
+      return;
+    }
 
+    try {
+      setIsSearchMode(true);
+      const params = new URLSearchParams();
+      if (query) params.set('q', query);
+      if (country) params.set('country', country);
+      if (city) params.set('city', city);
+      if (province) params.set('province', province);
+      params.set('limit', '100'); // Get more results for client-side filtering
+
+      const response = await fetch(`/api/search/hotels?${params.toString()}`);
+      if (response.ok) {
+        const results = await response.json();
+        setSearchResults(results);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      setIsSearchMode(false);
+    }
+  }, [searchParams]);
+
+
+  useEffect(() => {
+    performSearch();
+  }, [performSearch]);
+
+  //hotellist fetch
   useEffect(() => {
     async function loadHotels() {
       try {
@@ -78,23 +160,22 @@ export default function HotelListPage() {
             id: item._id,
             name: c.web_title || c.companyName,
             location: `${c.address_line1}, ${c.web_province}`,
-            price: 0,
-            rating: 5,
+            price: 2300,
+            rating: 4.5,
             reviews: 0,
-            discount: "20% OFF",
+            discount: "25% OFF",
             description: c.description,
             save: c.promo_active ? "Best Deal" : "",
             image: c.primary_image?.trim() || "/images/hotel-placeholder.jpg",
-            // image: c.primary_image,
             gallery: c.gallery_image?.split(",") ?? [],
             category: c.prop_classification || "Hotel",
             distance: c.web_city?.trim() || "",
-            breakfast: c.description?.toLowerCase().includes("breakfast"),
+            breakfast: c.description?.toLowerCase().includes("breakfast") || false,
             parking: c.description?.toLowerCase().includes("parking")
               ? "Available"
               : "Not available",
-            hotelamenities: c.hotelamenities ?? [],
-            hoteltag: c.hoteltag ?? [],
+            hotelamenities: c.hotelamenities || [],
+            hoteltag: c.hoteltag || [],
           };
         });
 
@@ -102,7 +183,7 @@ export default function HotelListPage() {
       } catch (error) {
         console.error("Hotel fetch error:", error);
       } finally {
-        setInitialLoading(false); // ✅ only once
+        setInitialLoading(false);
       }
     }
 
@@ -186,6 +267,23 @@ export default function HotelListPage() {
 
   return (
     <>
+      {/* Search Results Info */}
+      {/* {isSearchMode && searchResults && (
+        <div className="container mx-auto px-4 py-4">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <h2 className="text-lg font-semibold text-green-800 mb-2">
+              Search Results
+            </h2>
+            <p className="text-green-700">
+              Found {searchResults.totalHits} hotels in {searchResults.processingTimeMs}ms
+              {searchParams && searchParams.get('q') && (
+                <span> for &ldquo;{searchParams.get('q')}&rdquo;</span>
+              )}
+            </p>
+          </div>
+        </div>
+      )} */}
+
       <HotelListMain
         hotels={hotelsToShow}
         amenities={amenities}
@@ -195,7 +293,6 @@ export default function HotelListPage() {
         onAmenityChange={handleAmenityChange}
         onTagChange={handleTagChange}
       />
-
 
       {/* Pagination */}
       <div className="flex justify-center gap-2 mt-5 mb-5 flex-wrap">
@@ -211,14 +308,14 @@ export default function HotelListPage() {
         {getPaginationPages(currentPage, totalPages).map((page, i) =>
           page === "..." ? (
             <span
-              key={`dots-${i}`}   // ✅ unique key
+              key={`dots-${i}`}
               className="px-3 py-2 text-gray-500"
             >
               ...
             </span>
           ) : (
             <button
-              key={`page-${page}-${i}`} // ✅ unique key
+              key={`page-${page}-${i}`}
               onClick={() => setCurrentPage(page)}
               className={`px-3 py-2 rounded-md border text-sm ${page === currentPage
                   ? "bg-green-500 text-white"
@@ -230,7 +327,6 @@ export default function HotelListPage() {
           )
         )}
 
-
         {/* Next */}
         <button
           disabled={currentPage === totalPages}
@@ -240,39 +336,23 @@ export default function HotelListPage() {
           Next
         </button>
       </div>
-
-
-      {/* <div className="flex justify-center gap-2 mt-10 flex-wrap">
-        <button
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage((p) => p - 1)}
-          className="px-4 py-2 border rounded disabled:opacity-40"
-        >
-          Prev
-        </button>
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <button
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            className={`px-4 py-2 border rounded ${
-              currentPage === page
-                ? "bg-green-600 text-white"
-                : "bg-white hover:bg-gray-100"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
-
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((p) => p + 1)}
-          className="px-4 py-2 border rounded disabled:opacity-40"
-        >
-          Next
-        </button>
-      </div> */}
     </>
+  );
+}
+
+export default function HotelListPage() {
+  return (
+    <Suspense fallback={
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 p-4">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-72 bg-gray-200 animate-pulse rounded-xl"
+          />
+        ))}
+      </div>
+    }>
+      <HotelListContent />
+    </Suspense>
   );
 }

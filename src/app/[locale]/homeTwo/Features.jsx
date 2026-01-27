@@ -2,78 +2,38 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { FaStar, FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 import Button from "@/components/ui/Button";
-import { fetchFromAPI } from "@/lib/api";
+// import { fetchFromAPI } from "@/lib/api";
+const getPrimaryImageSrc = (tour) => {
+  // For main card view - show primary image only
+  if (tour.primaryImage && tour.primaryImage.trim() && tour.primaryImage !== 'null' && tour.primaryImage !== 'undefined') {
+    return tour.primaryImage;
+  }
+  return "/images/defualtimg.webp";
+};
 
-const Features = () => {
-	const params = useParams();
-	const [tours, setTours] = useState([]);
-	const [loading, setLoading] = useState(true);
-	const [currentSlides, setCurrentSlides] = useState([]);
+const getGalleryImageSrc = (tour, slideIndex = 0) => {
+  // For quick view - show gallery images
+  if (tour.src && Array.isArray(tour.src) && tour.src.length > 0) {
+    const validImages = tour.src.filter(img => img && img.trim() && img !== 'null' && img !== 'undefined');
+    if (validImages.length > 0) {
+      return validImages[slideIndex] || validImages[0];
+    }
+  }
+  return "/images/defualtimg.webp";
+};
+
+const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-cols-4" }) => {
+	const [currentSlides, setCurrentSlides] = useState(
+		tours.map(() => 0)
+	);
 	const [quickViewIndex, setQuickViewIndex] = useState(null);
 	const [currentSlide, setCurrentSlide] = useState(0);
 
-	// Get country from URL locale
-	const urlLocale = Array.isArray(params?.locale) ? params.locale[0] : params?.locale || "ph";
-	const countryCodeMap = {
-		ph: "PH",
-		id: "ID",
-		aus: "AUS"
-	};
-	const countryCode = countryCodeMap[urlLocale.toLowerCase()] || "PH";
-	const currencySymbol = countryCode === "ID" ? "IDR" : "PHP";
-
-	// Dynamic titles based on country
-	const title = countryCode === "ID" ? "Featured Hotels in Indonesia" : "Featured Hotels in Philippines";
-	const subtitle = countryCode === "ID" ? "Discover amazing accommodations across Indonesia" : "Explore the best hotels in the Philippines";
-
-	useEffect(() => {
-		const fetchCompanies = async () => {
-			try {
-				const companiesRes = await fetchFromAPI({
-					appName: "app3534482538357",
-					moduleName: "company",
-					query: {
-						"sectionData.Company.country": countryCode,
-						"sectionData.Company.is_deleted": false
-					},
-					limit: 4,
-				});
-
-				if (companiesRes && Array.isArray(companiesRes)) {
-					const formattedTours = companiesRes.map((company) => {
-						const companyData = company.sectionData.Company;
-						const galleryImages = companyData.gallery_image ? companyData.gallery_image.split(',') : [companyData.primary_image];
-						
-						return {
-							title: companyData.name || companyData.web_title || "Hotel",
-							city: companyData.web_city || companyData.city || "",
-							country: companyData.country || countryCode,
-							src: galleryImages.filter(img => img && img.trim()),
-							price: "2,500",
-							originalPrice: "500",
-							discount: "20% OFF",
-							category: "Resort"
-						};
-					});
-					setTours(formattedTours);
-					setCurrentSlides(formattedTours.map(() => 0));
-				}
-			} catch (error) {
-				console.error("Error fetching companies:", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchCompanies();
-	}, [countryCode]);
-
-	if (loading) return <div className="text-center py-8">Loading...</div>;
-	if (!tours.length) return null;
+	if (!tours?.length) return null;
 
 	const handlePrev = (index) => {
 		setCurrentSlides((prev) =>
@@ -90,8 +50,7 @@ const Features = () => {
 			)
 		);
 	};
-
-	const openQuickView = (index) => {
+		const openQuickView = (index) => {
 		setQuickViewIndex(index);
 		setCurrentSlide(0);
 	};
@@ -113,6 +72,111 @@ const Features = () => {
 			prev < tours[quickViewIndex].src.length - 1 ? prev + 1 : 0
 		);
 	};
+// const Features = () => {
+// 	const params = useParams();
+// 	const [tours, setTours] = useState([]);
+// 	const [loading, setLoading] = useState(true);
+// 	const [currentSlides, setCurrentSlides] = useState([]);
+// 	const [quickViewIndex, setQuickViewIndex] = useState(null);
+// 	const [currentSlide, setCurrentSlide] = useState(0);
+
+// 	// Get country from URL locale
+// 	const urlLocale = Array.isArray(params?.locale) ? params.locale[0] : params?.locale || "ph";
+// 	const countryCodeMap = {
+// 		ph: "PH",
+// 		id: "ID",
+// 		aus: "AUS"
+// 	};
+// 	const countryCode = countryCodeMap[urlLocale.toLowerCase()] || "PH";
+// 	const currencySymbol = countryCode === "ID" ? "IDR" : "PHP";
+
+// 	// Dynamic titles based on country
+// 	const title = countryCode === "ID" ? "Featured Hotels in Indonesia" : "Featured Hotels in Philippines";
+// 	const subtitle = countryCode === "ID" ? "Discover amazing accommodations across Indonesia" : "Explore the best hotels in the Philippines";
+
+// 	useEffect(() => {
+// 		const fetchCompanies = async () => {
+// 			try {
+// 				const companiesRes = await fetchFromAPI({
+// 					appName: "app3534482538357",
+// 					moduleName: "company",
+// 					query: {
+// 						"sectionData.Company.country": countryCode,
+// 						"sectionData.Company.is_deleted": false
+// 					},
+// 					limit: 4,
+// 				});
+
+// 				if (companiesRes && Array.isArray(companiesRes)) {
+// 					const formattedTours = companiesRes.map((company) => {
+// 						const companyData = company.sectionData.Company;
+// 						const galleryImages = companyData.gallery_image ? companyData.gallery_image.split(',') : [companyData.primary_image];
+						
+// 						return {
+// 							title: companyData.name || companyData.web_title || "Hotel",
+// 							city: companyData.web_city || companyData.city || "",
+// 							country: companyData.country || countryCode,
+// 							src: galleryImages.filter(img => img && img.trim()),
+// 							price: "2,500",
+// 							originalPrice: "500",
+// 							discount: "20% OFF",
+// 							category: "Resort"
+// 						};
+// 					});
+// 					setTours(formattedTours);
+// 					setCurrentSlides(formattedTours.map(() => 0));
+// 				}
+// 			} catch (error) {
+// 				console.error("Error fetching companies:", error);
+// 			} finally {
+// 				setLoading(false);
+// 			}
+// 		};
+
+// 		fetchCompanies();
+// 	}, [countryCode]);
+
+// 	if (loading) return <div className="text-center py-8">Loading...</div>;
+// 	if (!tours.length) return null;
+
+// 	const handlePrev = (index) => {
+// 		setCurrentSlides((prev) =>
+// 			prev.map((slide, i) =>
+// 				i === index ? (slide > 0 ? slide - 1 : tours[i].src.length - 1) : slide
+// 			)
+// 		);
+// 	};
+
+// 	const handleNext = (index) => {
+// 		setCurrentSlides((prev) =>
+// 			prev.map((slide, i) =>
+// 				i === index ? (slide < tours[i].src.length - 1 ? slide + 1 : 0) : slide
+// 			)
+// 		);
+// 	};
+
+// 	const openQuickView = (index) => {
+// 		setQuickViewIndex(index);
+// 		setCurrentSlide(0);
+// 	};
+
+// 	const closeQuickView = () => {
+// 		setQuickViewIndex(null);
+// 	};
+
+// 	const quickPrev = () => {
+// 		if (quickViewIndex === null) return;
+// 		setCurrentSlide((prev) =>
+// 			prev > 0 ? prev - 1 : tours[quickViewIndex].src.length - 1
+// 		);
+// 	};
+
+// 	const quickNext = () => {
+// 		if (quickViewIndex === null) return;
+// 		setCurrentSlide((prev) =>
+// 			prev < tours[quickViewIndex].src.length - 1 ? prev + 1 : 0
+// 		);
+// 	};
 
 	return (
 		<section className="container mx-auto mt-5 md:mt-12 p-2 xl:p-0">
@@ -135,7 +199,7 @@ const Features = () => {
 				{subtitle}
 			</motion.p>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+			<div className={`grid grid-cols-1 md:grid-cols-2 ${gridCols} gap-6`}>
 				{tours.map((tour, index) => (
 					<div
 						key={index}
@@ -143,12 +207,15 @@ const Features = () => {
 					>
 						<div className="relative  linear-gradient-top-custom">
 							<Image
-								src={tour.src[currentSlides[index]]}
-								alt={tour.title}
+								src={getPrimaryImageSrc(tour)}
+								alt={tour.title || "Hotel"}
 								width={380}
 								height={207}
 								className="w-full h-[200px] object-cover"
 								loading="lazy"
+								onError={(e) => {
+									e.target.src = "/images/defualtimg.webp";
+								}}
 							/>
 
 							{/* Quick View Button */}
@@ -215,7 +282,7 @@ const Features = () => {
 									</span>
 								</div>
 								<div className="flex justify-end items-center">
-									<span className="text-gray-800 font-medium bg-green-100 px-2 py-1 rounded-md text-sm">
+								<span className="text-gray-800 font-medium bg-green-100 text-green-700 px-2 py-1 rounded-md text-sm">
 										{tour.category}
 									</span>
 								</div>
@@ -256,12 +323,15 @@ const Features = () => {
 							&#10094;
 						</button>
 						<Image
-							src={tours[quickViewIndex].src[currentSlide]}
-							alt={tours[quickViewIndex].title}
+							src={getGalleryImageSrc(tours[quickViewIndex], currentSlide)}
+							alt={tours[quickViewIndex]?.title || "Hotel"}
 							width={1000}
 							height={600}
 							className="max-w-full max-h-[80vh] object-contain"
 							loading="lazy"
+							onError={(e) => {
+								e.target.src = "/images/defualtimg.webp";
+							}}
 						/>
 						<button
 							className="absolute right-4 text-white text-4xl bg-black/50 rounded-full p-2 hover:bg-black/70"
@@ -273,7 +343,7 @@ const Features = () => {
 
 					{/* Popup Thumbnails */}
 					<div className="flex space-x-2 overflow-x-auto px-4 pb-4 mt-4">
-						{tours[quickViewIndex].src.map((img, i) => (
+						{tours[quickViewIndex]?.src?.filter(img => img && img.trim() && img !== 'null' && img !== 'undefined').map((img, i) => (
 							<div
 								key={i}
 								className="cursor-pointer"
@@ -281,16 +351,19 @@ const Features = () => {
 							>
 								<Image
 									src={img}
-									alt={tours[quickViewIndex].title}
+									alt={tours[quickViewIndex]?.title || "Hotel"}
 									width={120}
 									height={90}
 									loading="lazy"
+									onError={(e) => {
+										e.target.src = "/images/defualtimg.webp";
+									}}
 									className={`rounded-lg object-cover border ${
-										currentSlide === i ? "border-blue-500" : "border-gray-300"
+										currentSlide === i ? "border-green-600" : "border-gray-300"
 									}`}
 								/>
 							</div>
-						))}
+						)) || []}
 					</div>
 				</div>
 			)}
