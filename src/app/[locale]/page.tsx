@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import fs from "fs";
 import path from "path";
+import type { NextPage } from "next"; // Import NextPage for typing
 
 import Header from "../../components/common/Header";
 import Hero from "./homeTwo/Hero";
@@ -11,9 +12,13 @@ import Attractions from "./homeTwo/attractions";
 import WhyUs from "./homeTwo/whyus";
 import Photos from "./homeTwo/photos";
 import DiscoverSection from "./homeTwo/discoverWhat";
-import { getFeaturedTours } from "@/lib/getFeaturedTours";
 
 import Footer from "./Footer";
+
+// Define the params type to match Next.js expectations
+interface PageProps {
+  params: Promise<{ locale: string }>; // Use Promise to match Next.js type
+}
 
 async function getData(locale: string) {
   try {
@@ -50,14 +55,9 @@ async function getData(locale: string) {
 }
 
 // Page component with explicit type
-export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+const Home: NextPage<PageProps> = async ({ params }) => {
+  // Await params to resolve the Promise
   const { locale } = await params;
-
-  const featured = await getFeaturedTours(locale);
-
-  if (!featured) notFound();
-
-  const { tours, countryCode, currencySymbol } = featured;
 
   // Fetch data
   const data = await getData(locale);
@@ -74,21 +74,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       {/* <TopThingsToDo data={data.topThingsToDo} /> */}
       <CocotelOffers/>
       {/* <CocotelOffers2/> */}
-      <Features
-        tours={tours}
-        title={
-          countryCode === "ID"
-            ? "Featured Hotels in Indonesia"
-            : "Featured Hotels in Philippines"
-        }
-        subtitle={
-          countryCode === "ID"
-            ? "Discover amazing accommodations across Indonesia"
-            : "Explore the best hotels in the Philippines"
-        }
-        currencySymbol={currencySymbol}
-      />
-      {/* <Features /> */}
+      
+      <Features />
       <DiscoverSection/>
       <Attractions />
       <WhyUs />
@@ -99,4 +86,4 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   );
 };
 
-// export default Home;
+export default Home;

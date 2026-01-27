@@ -12,8 +12,6 @@ import Attractions from "./[locale]/homeTwo/attractions";
 import Photos from "./[locale]/homeTwo/photos";
 import Footer from "./[locale]/Footer";
 import DiscoverSection from "./[locale]/homeTwo/discoverWhat";
-import { getFeaturedTours } from "@/lib/getFeaturedTours";
-
 
 export const metadata = {
   title: "Hotel Booking - Find Your Perfect Stay",
@@ -61,11 +59,6 @@ async function getData() {
 }
 
 export default async function Home() {
-  const featured = await getFeaturedTours("ph"); // default locale
-
-  if (!featured) notFound();
-
-  const { tours, countryCode, currencySymbol } = featured;
   const data = await getData();
 
   if (!data) {
@@ -78,21 +71,7 @@ export default async function Home() {
       <Hero data={data.hero}/>
       <TopThingsToDo />
       <CocotelOffers/>
-      <Features
-				tours={tours}
-				title={
-					countryCode === "ID"
-						? "Featured Hotels in Indonesia"
-						: "Featured Hotels in Philippines"
-				}
-				subtitle={
-					countryCode === "ID"
-						? "Discover amazing accommodations across Indonesia"
-						: "Explore the best hotels in the Philippines"
-				}
-				currencySymbol={currencySymbol}
-			/>
-      {/* <Features /> */}
+      <Features />
       <Attractions />
       <DiscoverSection/>
       <WhyUs />
