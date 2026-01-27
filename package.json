@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sync-search": "node scripts/sync-data.js",
+    "install-meilisearch": "npm install meilisearch"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
@@ -41,7 +43,10 @@
     "framer-motion": "^12.23.22",
     "google-auth-library": "^10.5.0",
     "html-react-parser": "^5.2.6",
+    "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.544.0",
+    "meilisearch": "^0.55.0",
+    "mongodb": "^7.0.0",
     "next": "^15.5.7",
     "next-auth": "^4.24.13",
     "next-intl": "^4.6.1",

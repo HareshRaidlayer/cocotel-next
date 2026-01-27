@@ -7,7 +7,10 @@ export interface Hotel {
   rating: number;
   reviews: number;
   discount?: string;
+  description?: string;
   save?: string;
+  latitude?:string;
+  longitude?:string;
 
   image: string;        // Primary image (card image)
   gallery?: string[];   // Gallery images (quick view slider)
@@ -25,9 +28,14 @@ export interface CompanyData {
   web_hotel_code: string;
   web_title?: string;
   companyName: string;
+  name?: string;
   address_line1: string;
+  address_line2?: string;
   web_province: string;
+  province?: string;
   web_city?: string;
+  city?: string;
+  country?: string;
   description?: string;
   promo_active?: boolean;
   primary_image: string;
@@ -35,6 +43,9 @@ export interface CompanyData {
   prop_classification?: string;
   is_deleted: boolean;
   main_status: string;
+  latitude?: string;
+  longitude?: string;
+  slug?: string;
   hotelamenities?: string[];
   hoteltag?: string[];
 }
@@ -76,4 +87,28 @@ export interface TagApiItem {
   };
 }
 
+export interface MeiliHotelHit {
+  id: string;
+  name: string;
+  address?: string;
+  province?: string;
+  description?: string;
+  promo_active?: boolean;
+  primary_image?: string;
+  gallery_images?: string[];
+  classification?: string;
+  city?: string;
+  latitude?:string;
+  longitude?:string;
+  amenities?: string[];
+  tags?: string[];
+  
+}
+
+export interface MeiliSearchResponse<T> {
+  hits: T[];
+  totalHits: number;
+  processingTimeMs: number;
+  query?: string;
+}
 
