@@ -4,44 +4,44 @@ import { useState, useEffect } from "react";
 import { AmenityApiItem, TagApiItem } from "@/types/hotel";
 
 interface Props {
-  amenities: AmenityApiItem[];
-  tags: TagApiItem[];
-  selectedAmenities: string[];
-  selectedTags: string[];
-  onAmenityChange: (ids: string[]) => void;
-  onTagChange: (ids: string[]) => void;
-  onPriceChange?: (price: number) => void; // optional callback to parent
+	amenities: AmenityApiItem[];
+	tags: TagApiItem[];
+	selectedAmenities: string[];
+	selectedTags: string[];
+	onAmenityChange: (ids: string[]) => void;
+	onTagChange: (ids: string[]) => void;
+	onPriceChange?: (price: number) => void; // optional callback to parent
 }
 
 export default function HotelFilterUI({
-  amenities,
-  tags,
-  selectedAmenities,
-  selectedTags,
-  onAmenityChange,
-  onTagChange,
-  onPriceChange,
+	amenities,
+	tags,
+	selectedAmenities,
+	selectedTags,
+	onAmenityChange,
+	onTagChange,
+	onPriceChange,
 }: Props) {
-  const [price, setPrice] = useState(20000); // max default
+	const [price, setPrice] = useState(20000); // max default
 
-  const handleAmenityToggle = (amenityId: string) => {
-    const newSelected = selectedAmenities.includes(amenityId)
-      ? selectedAmenities.filter(id => id !== amenityId)
-      : [...selectedAmenities, amenityId];
-    onAmenityChange(newSelected);
-  };
+	const handleAmenityToggle = (amenityId: string) => {
+		const newSelected = selectedAmenities.includes(amenityId)
+			? selectedAmenities.filter((id) => id !== amenityId)
+			: [...selectedAmenities, amenityId];
+		onAmenityChange(newSelected);
+	};
 
-  const handleTagToggle = (tagId: string) => {
-    const newSelected = selectedTags.includes(tagId)
-      ? selectedTags.filter(id => id !== tagId)
-      : [...selectedTags, tagId];
-    onTagChange(newSelected);
-  };
+	const handleTagToggle = (tagId: string) => {
+		const newSelected = selectedTags.includes(tagId)
+			? selectedTags.filter((id) => id !== tagId)
+			: [...selectedTags, tagId];
+		onTagChange(newSelected);
+	};
 
-  // Update parent whenever price changes
-  useEffect(() => {
-    if (onPriceChange) onPriceChange(price);
-  }, [price, onPriceChange]);
+	// Update parent whenever price changes
+	useEffect(() => {
+		if (onPriceChange) onPriceChange(price);
+	}, [price, onPriceChange]);
 
   return (
     // <aside className="bg-white rounded-lg shadow-sm p-5 space-y-6 text-sm">
@@ -65,14 +65,14 @@ export default function HotelFilterUI({
           Your budget (per night)
         </h3>
 
-        <input
-          type="range"
-          min={0}
-          max={20000}
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-          className="w-full accent-white cursor-pointer"
-        />
+					<input
+						type="range"
+						min={0}
+						max={20000}
+						value={price}
+						onChange={(e) => setPrice(Number(e.target.value))}
+						className="w-full accent-white cursor-pointer"
+					/>
 
         <div className="flex justify-between text-xs font-medium mt-3">
           <span>0</span>
@@ -111,29 +111,29 @@ export default function HotelFilterUI({
         </div>
       </div>
 
-      <hr className="border border-gray-200" />
+				<hr className="border border-gray-200" />
 
-      {/* Amenities */}
-      <div>
-        <h3 className="font-semibold mb-2">Amenities filters</h3>
-        <div className="space-y-2 max-h-60 overflow-y-auto">
-          {amenities.map((amenity) => (
-            <label
-              key={amenity._id}
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                checked={selectedAmenities.includes(amenity._id)}
-                onChange={() => handleAmenityToggle(amenity._id)}
-              />
-              <span>{amenity.sectionData.amenities.amenity_name}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+				{/* Amenities */}
+				<div>
+					<h3 className="font-semibold mb-2">Amenities filters</h3>
+					<div className="space-y-2 max-h-60 overflow-y-auto">
+						{amenities.map((amenity) => (
+							<label
+								key={amenity._id}
+								className="flex items-center gap-2 cursor-pointer"
+							>
+								<input
+									type="checkbox"
+									checked={selectedAmenities.includes(amenity._id)}
+									onChange={() => handleAmenityToggle(amenity._id)}
+								/>
+								<span>{amenity.sectionData.amenities.amenity_name}</span>
+							</label>
+						))}
+					</div>
+				</div>
 
-      <hr className="border border-gray-200" />
+				<hr className="border border-gray-200" />
 
       {/*  Tags */}
       <div>
