@@ -13,6 +13,12 @@ interface ExtendedHotel extends Hotel {
   amenities?: { name: string; icon: string }[]; // e.g. [{name: "Swimming Pool", icon: "...svg"}]
 }
 
+interface ExtendedHotel extends Hotel {
+  images?: string[];          // multiple images (optional)
+  description?: string;       // short description
+  amenities?: { name: string; icon: string }[]; // e.g. [{name: "Swimming Pool", icon: "...svg"}]
+}
+
 interface Props {
   hotel: ExtendedHotel;
 }
