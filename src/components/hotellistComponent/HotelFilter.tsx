@@ -44,20 +44,9 @@ export default function HotelFilterUI({
   }, [price, onPriceChange]);
 
   return (
-    <aside
-      className="
-        w-full 
-        lg:max-w-xs 
-        bg-white 
-        border border-gray-200 
-        rounded-2xl 
-        p-4 sm:p-5 
-        text-xs sm:text-sm 
-        space-y-8 
-        shadow-sm
-      "
-    >
-      {/* 💰 Budget Filter */}
+    <aside className="bg-white rounded-lg shadow-sm p-5 space-y-6 text-sm">
+
+      {/*  Price Slider */}
       <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md">
         <h3 className="font-semibold text-sm sm:text-base mb-4">
           Your budget (per night)
