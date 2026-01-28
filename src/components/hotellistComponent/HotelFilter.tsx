@@ -113,7 +113,7 @@ export default function HotelFilterUI({
 
 				<hr className="border border-gray-200" />
 
-				{/* Amenities */}
+				{/* Amenities test*/}
 				<div>
 					<h3 className="font-semibold mb-2">Amenities filters</h3>
 					<div className="space-y-2 max-h-60 overflow-y-auto">
