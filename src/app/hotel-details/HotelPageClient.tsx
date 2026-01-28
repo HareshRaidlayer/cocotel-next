@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import {
-	Star,
 	MapPin,
 	ChevronRight,
 	X,
@@ -145,27 +144,22 @@ export default function HotelPageClient() {
 	return (
 		<main className="max-w-7xl mx-auto px-4 py-6">
 			{/* Hotel Title & Rating */}
-			<div className="mb-6">
-				<h1 className="text-3xl md:text-4xl font-bold">Belmont Hotel Manila</h1>
-				<div className="flex items-center gap-2 mt-2">
-					<div className="flex">
-						{Array(5)
-							.fill(0)
-							.map((_, i) => (
-								<Star
-									key={i}
-									className="w-5 h-5 fill-yellow-400 text-yellow-400"
-								/>
-							))}
+			<div className="mb-6 flex justify-between items-center">
+				<div>
+					<h1 className="text-3xl md:text-4xl font-bold">Belmont Hotel Manila</h1>
+					<div className="flex items-center gap-1 text-green-600 mt-1">
+						<MapPin className="w-4 h-4" />
+						<span>
+							5.7 miles (9.1 km) from downtown Manila • Newport City, Pasay
+						</span>
 					</div>
-					<span className="font-semibold">8.4</span>
-					<span className="text-gray-600">• Very good • 5,446 reviews</span>
 				</div>
-				<div className="flex items-center gap-1 text-green-600 mt-1">
-					<MapPin className="w-4 h-4" />
-					<span>
-						5.7 miles (9.1 km) from downtown Manila • Newport City, Pasay
-					</span>
+				<div className="flex items-center gap-3">
+					<span className="text-lg bg-green-600 p-1 font-semibold text-white rounded-tr-md rounded-tl-md rounded-br-md">5.0</span>
+					<div>
+					<p className="text-sm font-medium text-gray-700">Very good</p>
+					<p className="text-xs text-gray-500">0 reviews</p>
+					</div>
 				</div>
 			</div>
 
@@ -214,9 +208,9 @@ export default function HotelPageClient() {
 			</div>
 
 			{/* Summary & Quick Info */}
-			<div className="grid md:grid-cols-3 gap-8">
+			<div className="grid md:grid-cols-4 gap-4">
 				{/* Left - Description & Tabs */}
-				<div className="md:col-span-2 space-y-8">
+				<div className="md:col-span-3 space-y-8">
 					<section>
 						<h2 className="text-2xl font-bold mb-4">
 							Relax and recharge at this superb 4-star hotel
@@ -265,14 +259,14 @@ export default function HotelPageClient() {
 										Available Rooms
 									</h2>
 
-									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 										{rooms.map((room) => (
 											<div
 												key={room.id}
 												className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-200 cursor-pointer"
 											>
 												<div
-													className="relative h-50 md:h-56 overflow-hidden"
+													className="relative h-50 md:h-44 overflow-hidden"
 													onClick={() => setSelectedRoom(room)}
 												>
 													<Image
