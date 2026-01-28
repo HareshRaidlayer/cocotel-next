@@ -4,9 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { motion } from "framer-motion";
-// import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
-// import { fetchFromAPI } from "@/lib/api";
 const getPrimaryImageSrc = (tour) => {
   // For main card view - show primary image only
   if (tour.primaryImage && tour.primaryImage.trim() && tour.primaryImage !== 'null' && tour.primaryImage !== 'undefined') {
@@ -32,8 +31,17 @@ const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-
 	);
 	const [quickViewIndex, setQuickViewIndex] = useState(null);
 	const [currentSlide, setCurrentSlide] = useState(0);
+	const router = useRouter();
 
 	if (!tours?.length) return null;
+
+	const handleBookNow = (tour) => {
+		const country = tour.country?.toLowerCase() || 'ph';
+		const slug = tour.slug;
+		if (slug) {
+			router.push(`/${country}/${slug}`);
+		}
+	};
 
 	const handlePrev = (index) => {
 		setCurrentSlides((prev) =>
@@ -296,7 +304,12 @@ const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-
 										{tour.price}
 									</p>
 								</div>
-								<Button name="Book Now" />
+								<button 
+									onClick={() => handleBookNow(tour)}
+									className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition text-sm font-medium"
+								>
+									Book Now
+								</button>
 							</div>
 						</div>
 					</div>

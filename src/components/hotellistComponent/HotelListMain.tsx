@@ -377,7 +377,7 @@ export default function HotelListMain({
                                 tours={filteredHotels.map(hotel => ({
                                     title: hotel.name,
                                     city: hotel.location.split(',')[0] || hotel.location,
-                                    country: hotel.location.split(',')[1]?.trim() || "Philippines",
+                                    country: "PH",
                                     src: hotel.gallery && hotel.gallery.length > 0 
                                         ? hotel.gallery.filter(img => img && img.trim() && img !== 'null' && img !== 'undefined') 
                                         : [],
@@ -387,7 +387,8 @@ export default function HotelListMain({
                                     price: hotel.price.toLocaleString() || "2000",
                                     originalPrice: "500",
                                     discount: hotel.discount || "15% OFF",
-                                    category: hotel.category || "Hotel"
+                                    category: hotel.category || "Hotel",
+                                    slug: hotel.slug || ""
                                 }))}
                                 title=""
                                 subtitle=""

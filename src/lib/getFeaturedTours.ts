@@ -11,6 +11,7 @@ export interface TourCard {
   originalPrice: string;
   discount: string;
   category: string;
+  slug: string; // hotel slug for routing
 }
 
 const countryMap: Record<string, string> = {
@@ -67,6 +68,7 @@ export async function getFeaturedTours(locale: string) {
       originalPrice: "500",
       discount: "20% OFF",
       category: "Resort",
+      slug: data.slug ?? "", // hotel slug for routing
     };
   });
 

@@ -11,6 +11,7 @@ export interface Hotel {
   save?: string;
   latitude?:string;
   longitude?:string;
+  slug?: string;
 
   image: string;        // Primary image (card image)
   gallery?: string[];   // Gallery images (quick view slider)
@@ -26,6 +27,7 @@ export interface Hotel {
 // ✅ API Response Types
 export interface CompanyData {
   web_hotel_code: string;
+  hotel_code: string;
   web_title?: string;
   companyName: string;
   name?: string;
@@ -48,6 +50,8 @@ export interface CompanyData {
   slug?: string;
   hotelamenities?: string[];
   hoteltag?: string[];
+  google_map_url?:string;
+  terms_conditions?:string;
 }
 
 export interface ApiResponseItem {
