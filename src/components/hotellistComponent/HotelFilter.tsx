@@ -43,19 +43,27 @@ export default function HotelFilterUI({
 		if (onPriceChange) onPriceChange(price);
 	}, [price, onPriceChange]);
 
-	return (
-		<aside className="bg-white rounded-lg shadow-sm p-5 space-y-6 text-sm">
-			{/*  Price Slider */}
-			<div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md">
-				<h3 className="font-semibold text-sm sm:text-base mb-4">
-					Your budget (per night)
-				</h3>
-
-				{/*  Price Slider */}
-				<div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md">
-					<h3 className="font-semibold text-sm sm:text-base mb-4">
-						Your budget (per night)
-					</h3>
+  return (
+    // <aside className="bg-white rounded-lg shadow-sm p-5 space-y-6 text-sm">
+    <aside
+      className="
+    sticky 
+    top-24 
+    bg-white 
+    rounded-lg 
+    shadow-sm 
+    p-5 
+    space-y-6 
+    text-sm
+    max-h-[calc(100vh-6rem)]
+    overflow-y-auto
+  "
+    >
+      {/*  Price Slider */}
+      {/* <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md">
+        <h3 className="font-semibold text-sm sm:text-base mb-4">
+          Your budget (per night)
+        </h3>
 
 					<input
 						type="range"
@@ -66,18 +74,46 @@ export default function HotelFilterUI({
 						className="w-full accent-white cursor-pointer"
 					/>
 
-					<div className="flex justify-between text-xs font-medium mt-3">
-						<span>0</span>
-						{/* ₹ */}
-						<span className="bg-white/20 px-3 py-1 rounded-full">
-							{price.toLocaleString()}
-						</span>
-					</div>
-				</div>
+        <div className="flex justify-between text-xs font-medium mt-3">
+          <span>0</span>
+          
+          <span className="bg-white/20 px-3 py-1 rounded-full">
+            {price.toLocaleString()}
+          </span>
+        </div>
+      </div>  ₹ */}
+      <div className="rounded-2xl p-4 sm:p-5 bg-white shadow-sm border border-gray-100">
+        <h3 className="font-semibold text-sm sm:text-base mb-4 text-gray-800">
+          Your budget (per night)
+        </h3>
+
+        {/* Slider */}
+        <input
+          type="range"
+          min={0}
+          max={20000}
+          value={price}
+          onChange={(e) => setPrice(Number(e.target.value))}
+          className="
+      w-full
+      cursor-pointer
+      accent-green-600
+    "
+        />
+
+        {/* Price */}
+        <div className="flex justify-between text-xs font-medium mt-3 text-gray-500">
+          <span>0</span>
+
+          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">
+            ₹{price.toLocaleString()}
+          </span>
+        </div>
+      </div>
 
 				<hr className="border border-gray-200" />
 
-				{/* Amenities */}
+				{/* Amenities test*/}
 				<div>
 					<h3 className="font-semibold mb-2">Amenities filters</h3>
 					<div className="space-y-2 max-h-60 overflow-y-auto">
@@ -99,26 +135,26 @@ export default function HotelFilterUI({
 
 				<hr className="border border-gray-200" />
 
-				{/*  Tags */}
-				<div>
-					<h3 className="font-semibold mb-2">Tag filters</h3>
-					<div className="space-y-2 max-h-60 overflow-y-auto">
-						{tags.map((tag) => (
-							<label
-								key={tag._id}
-								className="flex items-center gap-2 cursor-pointer"
-							>
-								<input
-									type="checkbox"
-									checked={selectedTags.includes(tag._id)}
-									onChange={() => handleTagToggle(tag._id)}
-								/>
-								<span>{tag.sectionData.tag.title}</span>
-							</label>
-						))}
-					</div>
-				</div>
-			</div>
-		</aside>
-	);
+      {/*  Tags */}
+      <div>
+        <h3 className="font-semibold mb-2">Tag filters</h3>
+        <div className="space-y-2 max-h-60 overflow-y-auto">
+          {tags.map((tag) => (
+            <label
+              key={tag._id}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                checked={selectedTags.includes(tag._id)}
+                onChange={() => handleTagToggle(tag._id)}
+              />
+              <span>{tag.sectionData.tag.title}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+    </aside>
+  );
 }

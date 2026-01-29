@@ -85,7 +85,6 @@ export default function HotelListPage() {
             description: c.description,
             save: c.promo_active ? "Best Deal" : "",
             image: c.primary_image?.trim() || "/images/hotel-placeholder.jpg",
-            // image: c.primary_image,
             gallery: c.gallery_image?.split(",") ?? [],
             category: c.prop_classification || "Hotel",
             distance: c.web_city?.trim() || "",
@@ -95,6 +94,7 @@ export default function HotelListPage() {
               : "Not available",
             hotelamenities: c.hotelamenities ?? [],
             hoteltag: c.hoteltag ?? [],
+            slug: c.slug || "",
           };
         });
 

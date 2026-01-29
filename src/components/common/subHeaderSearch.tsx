@@ -78,6 +78,8 @@ export default function SearchSubHeader() {
         countries={countries}
         activeCountry={activeCountry}
         onCountryClick={handleCountryClick}
+        showCountries={false}
+        variant="compact"
       />
        <section className="container mx-auto px-2">
         <SearchBar 
@@ -85,6 +87,8 @@ export default function SearchSubHeader() {
           activeCountry={activeCountry}
           onCountryClick={handleCountryClick}
           isMobile={true}
+          showCountries={false}
+          variant="compact"
         />
       </section>
     </div>

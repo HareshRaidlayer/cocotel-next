@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import { useRouter, useParams } from "next/navigation"; // Import useRouter and useParams for navigation
 import { useLocale } from '@/lib/locale-context';
 import Head from "next/head";
 import { fetchFromAPI } from "@/lib/api";
@@ -16,8 +16,9 @@ const locations = {
 const Hero = ({ data }) => {
   const { t } = useLocale();
   const router = useRouter(); // Initialize useRouter
+  const params = useParams(); // Get current route params
   const [countries, setCountries] = useState([]);
-  const [activeCountry, setActiveCountry] = useState("ph");
+  const [activeCountry, setActiveCountry] = useState(params?.locale || "ph");
   const [sectionOne, setSectionOne] = useState(null);
 
   useEffect(() => {
@@ -75,10 +76,12 @@ const Hero = ({ data }) => {
   }, []);
 
 
+  // Sync activeCountry with current locale from URL params
   useEffect(() => {
-    const path = window.location.pathname.replace("/", "");
-    if (path) setActiveCountry(path);
-  }, []);
+    if (params?.locale && params.locale !== activeCountry) {
+      setActiveCountry(params.locale);
+    }
+  }, [params?.locale]);
 
   const handleCountryClick = (code) => {
     setActiveCountry(code);

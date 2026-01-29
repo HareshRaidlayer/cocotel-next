@@ -1,11 +1,11 @@
 import Header from "@/components/common/Header";
-import Footer from "../[locale]/Footer";
+import Footer from "../Footer";
 import fs from "fs";
 import path from "path";
-import HotelPageClient from "./HotelPageClientNew";
+import HotelPageClient from "./HotelPageClient";
 import { notFound } from "next/navigation";
 
-async function getFooterData(locale: string = "en") {
+async function getFooterData(locale: string = "ph") {
   try {
     const filePath = path.join(process.cwd(), "src/app/content", locale, "hometwo.json");
     const jsonData = fs.readFileSync(filePath, "utf-8");
@@ -18,25 +18,25 @@ async function getFooterData(locale: string = "en") {
 }
 
 interface PageProps {
-  searchParams: Promise<{
-    country?: string;
-    slug?: string;
+  params: Promise<{
+    locale: string;
+    slug: string;
   }>;
 }
 
-export default async function HotelPage({ searchParams }: PageProps) {
-  const { country = 'ph', slug } = await searchParams;
+export default async function HotelPage({ params }: PageProps) {
+  const { locale, slug } = await params;
   
   if (!slug) {
     notFound();
   }
   
-  const footerData = await getFooterData();
+  const footerData = await getFooterData(locale);
   
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <HotelPageClient country={country} slug={slug} />
+      <HotelPageClient locale={locale} slug={slug} />
       <Footer data={footerData} />
     </div>
   );

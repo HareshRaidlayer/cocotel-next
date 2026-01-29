@@ -2,11 +2,11 @@
 
 import { useState, useMemo } from "react";
 import HotelFilterUI from "./HotelFilter";
-import HotelCardBlock from "./HotelCardBlock";
+import Features from "@/app/[locale]/homeTwo/Features";
 import HotelCardRow from "./HotelCardRow";
 import Header from "../common/Header";
 import SubHeader from "../common/subHeaderSearch";
-import { Star, TrendingUp, TrendingDown, Flame } from "lucide-react";
+import { Filter, LayoutGrid, List, Star, TrendingUp, TrendingDown, Flame } from "lucide-react";
 import Image from "next/image";
 import { Hotel, AmenityApiItem, TagApiItem } from "@/types/hotel";
 
@@ -102,10 +102,10 @@ export default function HotelListMain({
 
     // };
 
-    const openQuickView = (index: number) => {
-        setQuickViewIndex(index);
-        setCurrentSlide(0);
-    };
+    // const openQuickView = (index: number) => {
+    //     setQuickViewIndex(index);
+    //     setCurrentSlide(0);
+    // };
 
     const closeQuickView = () => {
         setQuickViewIndex(null);
@@ -212,6 +212,65 @@ export default function HotelListMain({
                         <div className="flex flex-col sm:flex-row items-center justify-between bg-white mb-5 text-green-600 pt-5 pb-5 px-2 lg:px-0 gap-4">
                             {/* LEFT: VIEW TOGGLE & FILTER BUTTON */}
                             <div className="flex gap-2">
+  {/* Filters button (mobile) */}
+  <button
+    onClick={() => setFilterOpen(true)}
+    className="
+      lg:hidden
+      flex items-center justify-center gap-2
+      border
+      px-4 py-2.5
+      rounded-md
+      bg-green-600
+      text-white
+      text-sm
+      shadow-sm
+      hover:bg-green-700
+      active:scale-95
+    "
+  >
+    <Filter size={18} />
+    <span className="hidden sm:inline">Filters</span>
+  </button>
+
+  {/* Card View */}
+  <button
+    onClick={() => setView("card")}
+    className={`
+      hidden md:flex
+      items-center justify-center
+      border
+      w-10 h-10
+      rounded-md
+      transition
+      ${view === "card" ? "bg-green-600 text-white" : "bg-white text-gray-700"}
+      hover:bg-green-50
+    `}
+    aria-label="Card view"
+  >
+    <LayoutGrid size={20} />
+  </button>
+
+  {/* List View */}
+  <button
+    onClick={() => setView("list")}
+    className={`
+      hidden md:flex
+      items-center justify-center
+      border
+      w-10 h-10
+      rounded-md
+      transition
+      ${view === "list" ? "bg-green-600 text-white" : "bg-white text-gray-700"}
+      hover:bg-green-50
+    `}
+    aria-label="List view"
+  >
+    <List size={20} />
+  </button>
+</div>
+
+                            {/* <div className="flex gap-2">
                                 <button
                                     onClick={() => setFilterOpen(true)}
                                     className="lg:hidden border px-3 py-2 rounded-md bg-green-600 text-white"
@@ -233,7 +292,7 @@ export default function HotelListMain({
                                 >
                                     ☰
                                 </button>
-                            </div>
+                            </div> */}
 
 
                             {/* CENTER: TITLE */}
@@ -314,15 +373,28 @@ export default function HotelListMain({
                                 <p className="text-gray-500">Try adjusting your filters to see more results.</p>
                             </div>
                         ) : view === "card" ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                                {filteredHotels.map((hotel, index) => (
-                                    <HotelCardBlock
-                                        key={hotel.id}
-                                        hotel={hotel}
-                                        onQuickView={() => openQuickView(index)}
-                                    />
-                                ))}
-                            </div>
+                            <Features
+                                tours={filteredHotels.map(hotel => ({
+                                    title: hotel.name,
+                                    city: hotel.location.split(',')[0] || hotel.location,
+                                    country: "PH",
+                                    src: hotel.gallery && hotel.gallery.length > 0 
+                                        ? hotel.gallery.filter(img => img && img.trim() && img !== 'null' && img !== 'undefined') 
+                                        : [],
+                                    primaryImage: hotel.image && hotel.image.trim() && hotel.image !== 'null' && hotel.image !== 'undefined'
+                                        ? hotel.image
+                                        : "/images/defualtimg.webp",
+                                    price: hotel.price.toLocaleString() || "2000",
+                                    originalPrice: "500",
+                                    discount: hotel.discount || "15% OFF",
+                                    category: hotel.category || "Hotel",
+                                    slug: hotel.slug || ""
+                                }))}
+                                title=""
+                                subtitle=""
+                                currencySymbol="PHP"
+                                gridCols="xl:grid-cols-3"
+                            />
                         ) : (
                             <div className="space-y-4">
                                 {filteredHotels.map((hotel) => (

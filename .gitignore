@@ -45,4 +45,9 @@ public/images/australiya-1080.mp4
 public/images/philippines-1080.mov
 public/images/indonesia-1080.mp4
 
+# Meilisearch binary
+meilisearch.exe
+data.ms/
+data
+
 
