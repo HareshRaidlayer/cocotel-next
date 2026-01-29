@@ -16,6 +16,7 @@ import {
 	BedDouble,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { fetchFromAPI } from "@/lib/api";
 import { ApiResponseItem } from "@/types/hotel";
@@ -36,16 +37,39 @@ type Room = {
 };
 
 interface HotelPageClientProps {
-	locale: string;
-	slug: string;
+  locale: string;
+  slug: string;
+  checkin?: string;
+  checkout?: string;
+  roomCount: number;
+  adults: number;
+  //children: number;
 }
 
-export default function HotelPageClient({ locale, slug }: HotelPageClientProps) {
+
+export default function HotelPageClient({ locale, slug ,checkin,
+  checkout,
+  roomCount,
+  adults}: HotelPageClientProps) {
 	const [activeTab, setActiveTab] = useState("rooms");
 	const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 	const [hotelData, setHotelData] = useState<ApiResponseItem | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [rooms, setRooms] = useState<Room[]>([]);
+
+	const router = useRouter();
+
+	const handleBookNow = () => {
+		const params = new URLSearchParams();
+		if (checkin) params.set('checkin', checkin);
+		if (checkout) params.set('checkout', checkout);
+		params.set('rooms', String(roomCount || 1));
+		params.set('adults', String(adults || 1));
+		//params.set('children', String(children || 0));
+		params.set('openModal', '1');
+
+		router.push(`/${locale}/${slug}/booking?${params.toString()}`);
+	};
 
 	useEffect(() => {
 		const fetchHotelData = async () => {
@@ -306,7 +330,7 @@ export default function HotelPageClient({ locale, slug }: HotelPageClientProps) 
 																		per night
 																	</span>
 																</p>
-																<Button name="Book Now" />
+																<Button name="Book Now" onClick={() => handleBookNow()} />
 															</>
 														)}
 													</div>

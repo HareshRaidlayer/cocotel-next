@@ -25,7 +25,7 @@ interface PageProps {
 }
 
 export default async function HotelPage({ searchParams }: PageProps) {
-  const { country = 'ph', slug } = await searchParams;
+  const { slug } = await searchParams;
   
   if (!slug) {
     notFound();
@@ -36,7 +36,7 @@ export default async function HotelPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <HotelPageClient country={country} slug={slug} />
+      <HotelPageClient slug={slug} />
       <Footer data={footerData} />
     </div>
   );
