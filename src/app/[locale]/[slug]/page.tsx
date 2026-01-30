@@ -22,10 +22,25 @@ interface PageProps {
     locale: string;
     slug: string;
   }>;
+  searchParams: Promise<{
+    checkin?: string;
+    checkout?: string;
+    roomCount?: string;
+    adults?: string;
+    //children?: string;
+  }>;
 }
 
-export default async function HotelPage({ params }: PageProps) {
+export default async function HotelPage({ params, searchParams }: PageProps) {
   const { locale, slug } = await params;
+
+  const {
+    checkin,
+    checkout,
+    roomCount = "1",
+    adults = "1",
+   // children = "0",
+  } = await searchParams;
   
   if (!slug) {
     notFound();
@@ -36,7 +51,16 @@ export default async function HotelPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <HotelPageClient locale={locale} slug={slug} />
+      <HotelPageClient
+        locale={locale}
+        slug={slug}
+        checkin={checkin}
+        checkout={checkout}
+        roomCount={Number(roomCount)}
+        adults={Number(adults)}
+        //children={Number(children)}
+      />
+      {/* <HotelPageClient locale={locale} slug={slug} /> */}
       <Footer data={footerData} />
     </div>
   );

@@ -36,11 +36,10 @@ type Room = {
 };
 
 interface HotelPageClientProps {
-	country: string;
 	slug: string;
 }
 
-export default function HotelPageClient({ country, slug }: HotelPageClientProps) {
+export default function HotelPageClient({ slug }: HotelPageClientProps) {
 	const [activeTab, setActiveTab] = useState("rooms");
 	const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 	// const [hotelData, setHotelData] = useState<any>(null);
