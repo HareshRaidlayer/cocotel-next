@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState, useMemo, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState, useMemo } from "react";
+import { useParams } from "next/navigation";
 import HotelListMain from "@/components/hotellistComponent/HotelListMain";
 import { fetchFromAPI } from "@/lib/api";
 import { Hotel, ApiResponseItem, AmenityApiItem, TagApiItem } from "@/types/hotel";
 
 const ITEMS_PER_PAGE = 12;
 
-function HotelListContent() {
+export default function LocationHotelListPage() {
   const [initialLoading, setInitialLoading] = useState(true);
   const [allHotels, setAllHotels] = useState<Hotel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,46 +17,24 @@ function HotelListContent() {
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams?.get('q'); // Main search parameter
-  const country = searchParams?.get('country');
-  const checkin = searchParams?.get('checkin');
-  const checkout = searchParams?.get('checkout');
-  const rooms = searchParams?.get('rooms');
-  const adults = searchParams?.get('adults');
-  const children = searchParams?.get('children');
+  const params = useParams();
+  const location = params?.location as string;
 
-  console.log('Search params:', { searchQuery, country, checkin, checkout, rooms, adults, children });
-
-  // Filter hotels based on selected amenities, tags, and search parameters
+  // Filter hotels based on location and selected amenities/tags
   const filteredHotels = useMemo(() => {
     return allHotels.filter(hotel => {
-      // Search filter - more flexible matching
-      if (searchQuery) {
-        const searchTerm = searchQuery.toLowerCase();
+      // Location filter
+      if (location) {
+        const searchTerm = location.toLowerCase();
         const hotelName = hotel.name.toLowerCase();
         const hotelLocation = hotel.location.toLowerCase();
-        const hotelDescription = (hotel.description || '').toLowerCase();
         
-        // Check if search term matches any part of hotel name, location, or description
-        const matchesName = hotelName.includes(searchTerm);
-        const matchesLocation = hotelLocation.includes(searchTerm);
-        const matchesDescription = hotelDescription.includes(searchTerm);
-        
-        // Also check for partial word matches
-        const searchWords = searchTerm.split(' ').filter(word => word.length > 2);
-        const matchesWords = searchWords.some(word => 
-          hotelName.includes(word) || 
-          hotelLocation.includes(word) || 
-          hotelDescription.includes(word)
-        );
-        
-        if (!matchesName && !matchesLocation && !matchesDescription && !matchesWords) {
+        if (!hotelName.includes(searchTerm) && !hotelLocation.includes(searchTerm)) {
           return false;
         }
       }
       
-      // Check amenities filter - ALL selected amenities must be present
+      // Check amenities filter
       if (selectedAmenities.length > 0) {
         const hasAllAmenities = selectedAmenities.every(amenityId =>
           hotel.amenities?.includes(amenityId)
@@ -64,7 +42,7 @@ function HotelListContent() {
         if (!hasAllAmenities) return false;
       }
 
-      // Check tags filter - ALL selected tags must be present
+      // Check tags filter
       if (selectedTags.length > 0) {
         const hasAllTags = selectedTags.every(tagId =>
           hotel.tag?.includes(tagId)
@@ -74,7 +52,7 @@ function HotelListContent() {
 
       return true;
     });
-  }, [allHotels, selectedAmenities, selectedTags, searchQuery]);
+  }, [allHotels, selectedAmenities, selectedTags, location]);
 
   const handleAmenityChange = (ids: string[]) => {
     setSelectedAmenities(ids);
@@ -103,18 +81,18 @@ function HotelListContent() {
 
           return {
             id: item._id,
-            name: c.web_title || c.companyName || c.name || "Unknown Hotel",
-            location: `${c.address_line1 || c.address || ''}, ${c.web_province || c.province || c.city || ''}`.replace(/^,\s*|,\s*$/g, ''),
+            name: c.web_title || c.companyName,
+            location: `${c.address_line1}, ${c.web_province}`,
             price: 0,
             rating: 5,
             reviews: 0,
             discount: "20% OFF",
-            description: c.description || c.web_description || '',
+            description: c.description,
             save: c.promo_active ? "Best Deal" : "",
             image: c.primary_image?.trim() || "/images/hotel-placeholder.jpg",
             gallery: c.gallery_image?.split(",") ?? [],
             category: c.prop_classification || "Hotel",
-            distance: c.web_city?.trim() || c.city?.trim() || "",
+            distance: c.web_city?.trim() || "",
             breakfast: c.description?.toLowerCase().includes("breakfast"),
             parking: c.description?.toLowerCase().includes("parking")
               ? "Available"
@@ -124,8 +102,6 @@ function HotelListContent() {
             slug: c.slug || "",
           };
         });
-
-        console.log('Loaded hotels:', mappedHotels.length, mappedHotels.slice(0, 2));
 
         setAllHotels(mappedHotels);
       } catch (error) {
@@ -141,14 +117,23 @@ function HotelListContent() {
   useEffect(() => {
     async function loadFilters() {
       try {
+        console.log('Loading amenities with query:', {
+          "sectionData.amenities.is_status": "0",
+          "sectionData.amenities.is_deleted": "0",
+        });
+        
         const amenityData = await fetchFromAPI<AmenityApiItem[]>({
           appName: "app3534482538357",
           moduleName: "amenities",
-           query: {
+          query: {
             "sectionData.amenities.is_status": "0",
             "sectionData.amenities.is_deleted": "0",
           },
         });
+
+        console.log('Raw amenity data received:', amenityData);
+        console.log('Amenity data length:', amenityData?.length);
+        console.log('First few amenities:', amenityData?.slice(0, 3));
 
         const tagData = await fetchFromAPI<TagApiItem[]>({
           appName: "app3534482538357",
@@ -159,6 +144,8 @@ function HotelListContent() {
             "sectionData.tags.is_deleted": "0",
           },
         });
+
+        console.log('Tag data received:', tagData?.length);
 
         setAmenities(amenityData);
         setTags(tagData);
@@ -188,7 +175,6 @@ function HotelListContent() {
     }
 
     pages.push(1);
-
     if (current > 3) pages.push("...");
 
     const start = Math.max(2, current - 1);
@@ -199,7 +185,6 @@ function HotelListContent() {
     }
 
     if (current < total - 2) pages.push("...");
-
     pages.push(total);
 
     return pages;
@@ -228,13 +213,6 @@ function HotelListContent() {
         selectedTags={selectedTags}
         onAmenityChange={handleAmenityChange}
         onTagChange={handleTagChange}
-        searchParams={{
-          checkin,
-          checkout,
-          rooms,
-          adults,
-          children
-        }}
       />
 
       {/* Pagination */}
@@ -278,13 +256,5 @@ function HotelListContent() {
         </button>
       </div>
     </>
-  );
-}
-
-export default function HotelListPage() {
-  return (
-    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
-      <HotelListContent />
-    </Suspense>
   );
 }

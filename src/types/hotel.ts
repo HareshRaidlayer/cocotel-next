@@ -20,8 +20,8 @@ export interface Hotel {
   distance?: string;
   breakfast?: boolean;
   parking?: string;
-  hotelamenities?: string[]; // Array of amenity IDs
-  hoteltag?: string[];       //Array of tag IDs
+  amenities?: string[]; // Array of amenity IDs
+  tag?: string[];       // Array of tag IDs
 }
 
 // ✅ API Response Types
@@ -33,9 +33,11 @@ export interface CompanyData {
   name?: string;
   address_line1: string;
   address_line2?: string;
+  address?: string;
   web_province: string;
   province?: string;
   web_city?: string;
+  web_description?: string;
   city?: string;
   country?: string;
   description?: string;
@@ -48,8 +50,8 @@ export interface CompanyData {
   latitude?: string;
   longitude?: string;
   slug?: string;
-  hotelamenities?: string[];
-  hoteltag?: string[];
+  amenities?: string[];
+  tag?: string[];
   google_map_url?:string;
   terms_conditions?:string;
 }
@@ -67,12 +69,14 @@ export interface AmenityApiItem {
   _id: string;
   sectionData: {
     amenities: {
-      amenity_name: string;
+      title: string;
       associateto: string;
       amenity_type: string;
       category: string;
       available_24_7: boolean;
       additional_cost: boolean;
+      is_status?:string;
+      is_deleted?:string;
     };
   };
 }
@@ -81,12 +85,14 @@ export interface AmenityApiItem {
 export interface TagApiItem {
   _id: string;
   sectionData: {
-    tag: {
-      title: string;
+    tags: {
+      tag_name: string;
       is_active: boolean;
       bgcolor: string;
       textcolor: string;
       image: string;
+      is_status?:string;
+      is_deleted?:string;
     };
   };
 }

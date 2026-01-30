@@ -95,6 +95,24 @@ const [dateRange, setDateRange] = useState({
   }, [searchQuery, fetchSuggestions]);
 
   const handleSearch = () => {
+    // Check if searchQuery matches a specific hotel
+    if (searchQuery && suggestions.length > 0) {
+      const exactHotelMatch = suggestions.find(s => 
+        s.type === 'hotel' && s.name.toLowerCase() === searchQuery.toLowerCase()
+      );
+      
+      if (exactHotelMatch) {
+        // Redirect directly to hotel details with booking parameters
+        const country = activeCountry?.toLowerCase() || 'ph';
+        const checkinFormatted = format(dateRange.from, 'dd-MM-yyyy');
+        const checkoutFormatted = format(dateRange.to, 'dd-MM-yyyy');
+        
+        router.push(`/${country}/${exactHotelMatch.slug}/${checkinFormatted}/${checkoutFormatted}/${rooms}/${adults}/${children}`);
+        return;
+      }
+    }
+    
+    // Otherwise, go to hotel list with search parameters
     const params = new URLSearchParams();
     if (searchQuery) params.set('q', searchQuery);
     if (activeCountry) params.set('country', activeCountry.toUpperCase());
@@ -108,17 +126,20 @@ const [dateRange, setDateRange] = useState({
   };
 
   const handleSuggestionClick = (suggestion) => {
-    if (suggestion.type === 'location') {
+    if (suggestion.type === 'hotel') {
+      // For hotel clicks, redirect directly to hotel details with booking parameters
+      const country = activeCountry?.toLowerCase() || 'ph';
+      const checkinFormatted = format(dateRange.from, 'dd-MM-yyyy');
+      const checkoutFormatted = format(dateRange.to, 'dd-MM-yyyy');
+      
+      router.push(`/${country}/${suggestion.slug}/${checkinFormatted}/${checkoutFormatted}/${rooms}/${adults}/${children}`);
+    } else {
       // For location clicks, search by city name
       setSearchQuery(suggestion.name);
       setLocation(suggestion.location);
-    } else {
-      // For hotel clicks, use hotel name
-      setSearchQuery(suggestion.name);
-      setLocation(suggestion.location);
+      setLocationOpen(false);
+      setSuggestions([]);
     }
-    setLocationOpen(false);
-    setSuggestions([]);
   };
 
   return (

@@ -25,7 +25,7 @@ const getGalleryImageSrc = (tour, slideIndex = 0) => {
   return "/images/defualtimg.webp";
 };
 
-const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-cols-4" }) => {
+const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-cols-4", searchParams }) => {
 	const [currentSlides, setCurrentSlides] = useState(
 		tours.map(() => 0)
 	);
@@ -39,7 +39,14 @@ const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-
 		const country = tour.country?.toLowerCase() || 'ph';
 		const slug = tour.slug;
 		if (slug) {
-			router.push(`/${country}/${slug}`);
+			// Check if we have search parameters (from search results)
+			if (searchParams?.checkin && searchParams?.checkout && searchParams?.rooms && searchParams?.adults && searchParams?.children) {
+				// Redirect to hotel details with booking parameters
+				router.push(`/${country}/${slug}/${searchParams.checkin}/${searchParams.checkout}/${searchParams.rooms}/${searchParams.adults}/${searchParams.children}`);
+			} else {
+				// Redirect to simple hotel details (from homepage or hotel list without search)
+				router.push(`/${country}/${slug}`);
+			}
 		}
 	};
 

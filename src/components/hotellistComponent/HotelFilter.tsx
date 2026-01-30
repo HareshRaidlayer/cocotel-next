@@ -127,7 +127,7 @@ export default function HotelFilterUI({
 									checked={selectedAmenities.includes(amenity._id)}
 									onChange={() => handleAmenityToggle(amenity._id)}
 								/>
-								<span>{amenity.sectionData.amenities.amenity_name}</span>
+								<span>{amenity.sectionData.amenities.title}</span>
 							</label>
 						))}
 					</div>
@@ -149,7 +149,7 @@ export default function HotelFilterUI({
                 checked={selectedTags.includes(tag._id)}
                 onChange={() => handleTagToggle(tag._id)}
               />
-              <span>{tag.sectionData.tag.title}</span>
+              <span>{tag.sectionData.tags.tag_name}</span>
             </label>
           ))}
         </div>
