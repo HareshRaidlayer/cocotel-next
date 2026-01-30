@@ -143,25 +143,25 @@ class HotelSearchService {
       // const amenityMap = new Map();
       const amenityMap = new Map<string, string>();
       amenitiesData.forEach(item => {
-        amenityMap.set(item._id, item.sectionData.amenities.amenity_name);
+        amenityMap.set(item._id, item.sectionData.amenities.title);
       });
 
       // const tagMap = new Map();
       const tagMap = new Map<string, string>();
       tagsData.forEach(item => {
-        tagMap.set(item._id, item.sectionData.tag.title);
+        tagMap.set(item._id, item.sectionData.tags.tag_name);
       });
 
       // Transform hotels for Meilisearch
       const searchableHotels: SearchableHotel[] = hotelsData.map(item => {
   const company = item.sectionData.Company;
 
-  const amenityIds = company.hotelamenities || [];
+  const amenityIds = company.amenities || [];
   const amenityNames = amenityIds
     .map((id: string) => amenityMap.get(id))
     .filter((v): v is string => Boolean(v));
 
-  const tagIds = company.hoteltag || [];
+  const tagIds = company.tag || [];
   const tagNames = tagIds
     .map((id: string) => tagMap.get(id))
     .filter((v): v is string => Boolean(v));
@@ -327,7 +327,7 @@ class HotelSearchService {
       // Search for both hotels and locations
       const results = await this.index.search(query, {
         limit: limit * 2,
-        attributesToRetrieve: ['name', 'city', 'province', 'country', 'classification'],
+        attributesToRetrieve: ['name', 'city', 'province', 'country', 'classification', 'slug'],
         attributesToHighlight: ['name', 'city', 'province'],
       });
 
@@ -344,6 +344,7 @@ const suggestions: {
   name: string;
   location: string;
   type: 'hotel' | 'location';
+  slug?: string;
   highlighted: Record<string, unknown>;
 }[] = [];
 
@@ -357,8 +358,8 @@ const suggestions: {
           name: hit.name,
           location: `${hit.city}, ${hit.province}`,
           type: 'hotel',
+          slug: hit.slug,
           highlighted: hit._formatted ?? {}
-
         });
       });
 

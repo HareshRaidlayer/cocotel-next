@@ -91,6 +91,7 @@ export default async function Home() {
 						: "Explore the best hotels in the Philippines"
 				}
 				currencySymbol={currencySymbol}
+				searchParams={undefined}
 			/>
       {/* <Features /> */}
       <Attractions />

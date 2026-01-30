@@ -87,6 +87,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             : "Explore the best hotels in the Philippines"
         }
         currencySymbol={currencySymbol}
+        searchParams={undefined}
       />
       {/* <Features /> */}
       <DiscoverSection/>

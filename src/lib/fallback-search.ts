@@ -109,6 +109,8 @@ export class FallbackSearchService {
         id: hit.id,
         name: hit.name,
         location: `${hit.city}, ${hit.province}`,
+        type: 'hotel',
+        slug: hit.slug,
         highlighted: { name: hit.name, city: hit.city }
       }));
     } catch (error) {

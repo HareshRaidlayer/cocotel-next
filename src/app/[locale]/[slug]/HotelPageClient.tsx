@@ -41,16 +41,13 @@ interface HotelPageClientProps {
   slug: string;
   checkin?: string;
   checkout?: string;
-  roomCount: number;
-  adults: number;
-  //children: number;
+  roomCount?: number;
+  adults?: number;
+  children?: number;
+  childrenCount?: number;
 }
 
-
-export default function HotelPageClient({ locale, slug ,checkin,
-  checkout,
-  roomCount,
-  adults}: HotelPageClientProps) {
+export default function HotelPageClient({ locale, slug, checkin, checkout, roomCount, adults, children, childrenCount }: HotelPageClientProps) {
 	const [activeTab, setActiveTab] = useState("rooms");
 	const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 	const [hotelData, setHotelData] = useState<ApiResponseItem | null>(null);
@@ -65,7 +62,7 @@ export default function HotelPageClient({ locale, slug ,checkin,
 		if (checkout) params.set('checkout', checkout);
 		params.set('rooms', String(roomCount || 1));
 		params.set('adults', String(adults || 1));
-		//params.set('children', String(children || 0));
+		params.set('children', String(children || childrenCount || 0));
 		params.set('openModal', '1');
 
 		router.push(`/${locale}/${slug}/booking?${params.toString()}`);

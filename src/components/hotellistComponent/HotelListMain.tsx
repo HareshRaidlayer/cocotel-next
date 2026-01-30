@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import HotelFilterUI from "./HotelFilter";
 import Features from "@/app/[locale]/homeTwo/Features";
-import HotelCardRow from "./HotelCardRow";
 import Header from "../common/Header";
 import SubHeader from "../common/subHeaderSearch";
 import { Filter, LayoutGrid, List, Star, TrendingUp, TrendingDown, Flame } from "lucide-react";
@@ -19,6 +18,13 @@ interface Props {
     selectedTags: string[];
     onAmenityChange: (ids: string[]) => void;
     onTagChange: (ids: string[]) => void;
+    searchParams?: {
+        checkin?: string | null;
+        checkout?: string | null;
+        rooms?: string | null;
+        adults?: string | null;
+        children?: string | null;
+    };
 }
 
 export default function HotelListMain({
@@ -28,7 +34,8 @@ export default function HotelListMain({
     selectedAmenities,
     selectedTags,
     onAmenityChange,
-    onTagChange
+    onTagChange,
+    searchParams
 }: Props) {
     const [view, setView] = useState<"card" | "list">("card");
 
@@ -37,7 +44,7 @@ export default function HotelListMain({
             // Check amenities filter - ALL selected amenities must be present
             if (selectedAmenities.length > 0) {
                 const hasAllAmenities = selectedAmenities.every(amenityId =>
-                    hotel.hotelamenities?.includes(amenityId)
+                    hotel.amenities?.includes(amenityId)
                 );
                 if (!hasAllAmenities) return false;
             }
@@ -45,7 +52,7 @@ export default function HotelListMain({
             // Check tags filter - ALL selected tags must be present
             if (selectedTags.length > 0) {
                 const hasAllTags = selectedTags.every(tagId =>
-                    hotel.hoteltag?.includes(tagId)
+                    hotel.tag?.includes(tagId)
                 );
                 if (!hasAllTags) return false;
             }
@@ -394,11 +401,16 @@ export default function HotelListMain({
                                 subtitle=""
                                 currencySymbol="PHP"
                                 gridCols="xl:grid-cols-3"
+                                searchParams={searchParams}
                             />
                         ) : (
                             <div className="space-y-4">
                                 {filteredHotels.map((hotel) => (
-                                    <HotelCardRow key={hotel.id} hotel={hotel} />
+                                    <div key={hotel.id} className="bg-white rounded-lg shadow p-4">
+                                        <h3 className="text-lg font-semibold">{hotel.name}</h3>
+                                        <p className="text-gray-600">{hotel.location}</p>
+                                        <p className="text-green-600 font-bold">${hotel.price}</p>
+                                    </div>
                                 ))}
                             </div>
                         )}
