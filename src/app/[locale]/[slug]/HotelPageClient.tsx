@@ -37,14 +37,14 @@ type Room = {
 };
 
 interface HotelPageClientProps {
-  locale: string;
-  slug: string;
-  checkin?: string;
-  checkout?: string;
-  roomCount?: number;
-  adults?: number;
-  children?: number;
-  childrenCount?: number;
+	locale: string;
+	slug: string;
+	checkin?: string;
+	checkout?: string;
+	roomCount?: number;
+	adults?: number;
+	children?: number;
+	childrenCount?: number;
 }
 
 export default function HotelPageClient({ locale, slug, checkin, checkout, roomCount, adults, children, childrenCount }: HotelPageClientProps) {
@@ -115,29 +115,29 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 						currentImageIndex: 0,
 					},
 					{
-			id: 3,
-			name: "Rooftop Premier Twin Room with Pool Access",
-			size: "23m² (247 ft²)",
-			capacity: "2 persons",
-			beds: "2 Single beds",
-			view: "Pool View",
-			description:
-				"Modern twin room located on the rooftop level with direct access to the pool area. Includes premium amenities.",
-			amenities: [
-				"Free Wi-Fi",
-				"Pool Access",
-				"Air Conditioning",
-				"TV",
-				"Coffee Maker",
-			],
-			priceFrom: 145,
-			images: [
-				"https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200",
-				"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200",
-				"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200",
-			],
-			currentImageIndex: 0,
-		},
+						id: 3,
+						name: "Rooftop Premier Twin Room with Pool Access",
+						size: "23m² (247 ft²)",
+						capacity: "2 persons",
+						beds: "2 Single beds",
+						view: "Pool View",
+						description:
+							"Modern twin room located on the rooftop level with direct access to the pool area. Includes premium amenities.",
+						amenities: [
+							"Free Wi-Fi",
+							"Pool Access",
+							"Air Conditioning",
+							"TV",
+							"Coffee Maker",
+						],
+						priceFrom: 145,
+						images: [
+							"https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200",
+							"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200",
+							"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200",
+						],
+						currentImageIndex: 0,
+					},
 				]);
 
 			} catch (error) {
@@ -253,11 +253,10 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 									<button
 										key={tab.id}
 										onClick={() => setActiveTab(tab.id)}
-										className={`py-4 px-2 font-medium whitespace-nowrap transition-colors ${
-											activeTab === tab.id
+										className={`py-4 px-2 font-medium whitespace-nowrap transition-colors ${activeTab === tab.id
 												? "text-green-600 border-b-2 border-green-600"
 												: "text-gray-600 hover:text-gray-900"
-										}`}
+											}`}
 									>
 										{tab.label}
 									</button>
@@ -445,7 +444,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 						>
 							<X className="w-6 h-6 text-gray-800" />
 						</button>
-{/* Image Gallery Section */}
+						{/* Image Gallery Section */}
 						<div className="relative p-4">
 							{/* Main large image */}
 							<div className="relative h-64 md:h-96 bg-gray-100 ">
@@ -485,11 +484,10 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 											{selectedRoom.images.map((imgSrc, idx) => (
 												<div
 													key={idx}
-													className={`flex-shrink-0 w-20 h-16 md:w-24 md:h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition-all ${
-														(selectedRoom.currentImageIndex || 0) === idx
+													className={`flex-shrink-0 w-20 h-16 md:w-24 md:h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition-all ${(selectedRoom.currentImageIndex || 0) === idx
 															? "border-green-600 scale-105"
 															: "border-transparent hover:border-green-400"
-													}`}
+														}`}
 													onClick={() =>
 														setSelectedRoom({
 															...selectedRoom,
@@ -532,7 +530,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 								</div>
 							)}
 						</div>
-						
+
 						<div className="p-6 md:p-8">
 							<h2 className="text-2xl md:text-3xl font-bold mb-4">
 								{selectedRoom.name}
