@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import HotelFilterUI from "./HotelFilter";
 import Features from "@/app/[locale]/homeTwo/Features";
+import HotelCardRow from "./HotelCardRow"
 import Header from "../common/Header";
 import SubHeader from "../common/subHeaderSearch";
 import { Filter, LayoutGrid, List, Star, TrendingUp, TrendingDown, Flame } from "lucide-react";
@@ -219,10 +220,10 @@ export default function HotelListMain({
                         <div className="flex flex-col sm:flex-row items-center justify-between bg-white mb-5 text-green-600 pt-5 pb-5 px-2 lg:px-0 gap-4">
                             {/* LEFT: VIEW TOGGLE & FILTER BUTTON */}
                             <div className="flex gap-2">
-  {/* Filters button (mobile) */}
-  <button
-    onClick={() => setFilterOpen(true)}
-    className="
+                                {/* Filters button (mobile) */}
+                                <button
+                                    onClick={() => setFilterOpen(true)}
+                                    className="
       lg:hidden
       flex items-center justify-center gap-2
       border
@@ -235,15 +236,15 @@ export default function HotelListMain({
       hover:bg-green-700
       active:scale-95
     "
-  >
-    <Filter size={18} />
-    <span className="hidden sm:inline">Filters</span>
-  </button>
+                                >
+                                    <Filter size={18} />
+                                    <span className="hidden sm:inline">Filters</span>
+                                </button>
 
-  {/* Card View */}
-  <button
-    onClick={() => setView("card")}
-    className={`
+                                {/* Card View */}
+                                <button
+                                    onClick={() => setView("card")}
+                                    className={`
       hidden md:flex
       items-center justify-center
       border
@@ -253,15 +254,15 @@ export default function HotelListMain({
       ${view === "card" ? "bg-green-600 text-white" : "bg-white text-gray-700"}
       hover:bg-green-50
     `}
-    aria-label="Card view"
-  >
-    <LayoutGrid size={20} />
-  </button>
+                                    aria-label="Card view"
+                                >
+                                    <LayoutGrid size={20} />
+                                </button>
 
-  {/* List View */}
-  <button
-    onClick={() => setView("list")}
-    className={`
+                                {/* List View */}
+                                <button
+                                    onClick={() => setView("list")}
+                                    className={`
       hidden md:flex
       items-center justify-center
       border
@@ -271,11 +272,11 @@ export default function HotelListMain({
       ${view === "list" ? "bg-green-600 text-white" : "bg-white text-gray-700"}
       hover:bg-green-50
     `}
-    aria-label="List view"
-  >
-    <List size={20} />
-  </button>
-</div>
+                                    aria-label="List view"
+                                >
+                                    <List size={20} />
+                                </button>
+                            </div>
 
                             {/* <div className="flex gap-2">
                                 <button
@@ -385,8 +386,8 @@ export default function HotelListMain({
                                     title: hotel.name,
                                     city: hotel.location.split(',')[0] || hotel.location,
                                     country: "PH",
-                                    src: hotel.gallery && hotel.gallery.length > 0 
-                                        ? hotel.gallery.filter(img => img && img.trim() && img !== 'null' && img !== 'undefined') 
+                                    src: hotel.gallery && hotel.gallery.length > 0
+                                        ? hotel.gallery.filter(img => img && img.trim() && img !== 'null' && img !== 'undefined')
                                         : [],
                                     primaryImage: hotel.image && hotel.image.trim() && hotel.image !== 'null' && hotel.image !== 'undefined'
                                         ? hotel.image
@@ -406,11 +407,14 @@ export default function HotelListMain({
                         ) : (
                             <div className="space-y-4">
                                 {filteredHotels.map((hotel) => (
-                                    <div key={hotel.id} className="bg-white rounded-lg shadow p-4">
-                                        <h3 className="text-lg font-semibold">{hotel.name}</h3>
-                                        <p className="text-gray-600">{hotel.location}</p>
-                                        <p className="text-green-600 font-bold">${hotel.price}</p>
-                                    </div>
+                                    <HotelCardRow
+                                        key={hotel.id}
+                                        hotel={{
+                                            ...hotel,
+                                            images: hotel.image ? [hotel.image] : [],
+                                            amenities: undefined
+                                        }}
+                                    />
                                 ))}
                             </div>
                         )}
