@@ -6,6 +6,7 @@ import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { Hotel } from "@/types/hotel";
 import DOMPurify from "dompurify";
+import { useRouter } from "next/navigation";
 
 interface ExtendedHotel extends Omit<Hotel, 'amenities'> {
   images?: string[];
@@ -15,14 +16,34 @@ interface ExtendedHotel extends Omit<Hotel, 'amenities'> {
 
 interface Props {
   hotel: ExtendedHotel;
+  searchParams?: {
+    checkin?: string | null;
+    checkout?: string | null;
+    rooms?: string | null;
+    adults?: string | null;
+    children?: string | null;
+  };
 }
 
-export default function HotelCardRow({ hotel }: Props) {
+export default function HotelCardRow({ hotel, searchParams }: Props) {
   const images = hotel.images && hotel.images.length > 0
     ? hotel.images
-    : hotel.image ? [hotel.image] : [];
+    : hotel.image ? [hotel.image] : ["/images/defualtimg.webp"];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
+
+  const handleBookNow = () => {
+    const country = 'ph';
+    const slug = hotel.slug;
+    if (slug) {
+      if (searchParams?.checkin && searchParams?.checkout && searchParams?.rooms && searchParams?.adults && searchParams?.children) {
+        router.push(`/${country}/${slug}/${searchParams.checkin}/${searchParams.checkout}/${searchParams.rooms}/${searchParams.adults}/${searchParams.children}`);
+      } else {
+        router.push(`/${country}/${slug}`);
+      }
+    }
+  };
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -113,12 +134,7 @@ export default function HotelCardRow({ hotel }: Props) {
           <div className="flex flex-col gap-2">
             {/* Title */}
             <h3 className="text-xl md:text-xl font-semibold text-black">
-              <a
-                href="#"
-                className="hover:text-green-700 transition"
-              >
-                {hotel.name}
-              </a>
+              {hotel.name}
             </h3>
 
             {/* Location + Rating */}
@@ -199,7 +215,10 @@ export default function HotelCardRow({ hotel }: Props) {
                   {hotel.price.toLocaleString()}{" "}
                   <span className="text-xs text-gray-500">₱</span>
                 </p>
-                <Button name="Book Now" />
+                <Button 
+                  name="Book Now" 
+                  onClick={handleBookNow}
+                />
               </div>
             </div>
           </div>

@@ -147,13 +147,13 @@ const [dateRange, setDateRange] = useState({
       <div>
         {/* <div className="flex flex-col bg-white rounded-xl shadow-xl gap-3"> */}
         <div
-  className={`
-    bg-white
-    ${variant === "compact"
-      ? "rounded-lg shadow-sm border border-gray-200"
-      : "rounded-xl shadow-xl"}
-  `}
->
+          className={`
+            bg-white
+            ${variant === "compact"
+              ? "rounded-lg shadow-sm border border-gray-200"
+              : "rounded-xl shadow-xl"}
+          `}
+        >
 
           {/* Country Tabs */}
           {showCountries && ( 
@@ -178,14 +178,14 @@ const [dateRange, setDateRange] = useState({
           {/* Search Fields */}
           {/* <div className={`bg-white flex flex-col md:flex-row flex-wrap items-center gap-3 ${isMobile ? 'pb-5 px-4' : 'pb-6 px-4 md:px-6'} rounded-xl`}> */}
             <div
-  className={`
-    flex items-center
-    ${variant === "compact"
-      ? "gap-2 px-3 py-2"
-      : "flex-col md:flex-row flex-wrap gap-3 px-4 md:px-6 pb-6"}
-    ${variant !== "compact" && !showCountries ? "pt-5 md:pt-6" : ""}
-  `}
->
+              className={`
+                flex flex-col md:flex-row flex-wrap items-center
+                ${variant === "compact"
+                  ? "gap-2 px-3 py-2"
+                  : " gap-3 px-4 md:px-6 pb-6"}
+                ${variant !== "compact" && !showCountries ? "pt-5 md:pt-6" : ""}
+              `}
+            >
 
 
             {/* Location Dropdown */}
