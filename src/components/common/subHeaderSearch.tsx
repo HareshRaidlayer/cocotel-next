@@ -73,7 +73,7 @@ export default function SearchSubHeader() {
     };
 
   return (
-    <div className="bg-green-600 py-4  md:sticky md:top-0 md:z-50 w-full">
+    <div className="bg-green-600 py-4  md:sticky md:top-0 md:z-40 w-full">
       <SearchBar 
         countries={countries}
         activeCountry={activeCountry}

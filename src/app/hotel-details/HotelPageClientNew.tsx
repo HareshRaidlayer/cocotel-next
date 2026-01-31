@@ -198,7 +198,7 @@ export default function HotelPageClient({ slug }: HotelPageClientProps) {
 					{/* Tabs Navigation */}
 					<section>
 						<div className="border-b border-gray-200">
-							<nav className="flex gap-8 overflow-x-auto">
+							<nav className="w-full  items-center gap-4 sm:gap-6 md:gap-8 overflow-x-auto pb-2 md:pb-0 md:overflow-x-visible scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
 								{[
 									{ id: "rooms", label: "Rooms" },
 									{ id: "amenities", label: "Amenities" },
@@ -209,7 +209,7 @@ export default function HotelPageClient({ slug }: HotelPageClientProps) {
 									<button
 										key={tab.id}
 										onClick={() => setActiveTab(tab.id)}
-										className={`py-4 px-2 font-medium whitespace-nowrap transition-colors ${
+										className={`py-3.5 px-3 sm:px-4 md:px-5 font-medium whitespace-nowrap transition-colors flex-shrink-0 ${
 											activeTab === tab.id
 												? "text-green-600 border-b-2 border-green-600"
 												: "text-gray-600 hover:text-gray-900"

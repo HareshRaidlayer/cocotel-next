@@ -23,6 +23,8 @@ export default function HotelFilterUI({
 	onPriceChange,
 }: Props) {
 	const [price, setPrice] = useState(20000); // max default
+	const [showAllAmenities, setShowAllAmenities] = useState(false);
+	const [showAllTags, setShowAllTags] = useState(false);
 
 	const handleAmenityToggle = (amenityId: string) => {
 		const newSelected = selectedAmenities.includes(amenityId)
@@ -43,10 +45,10 @@ export default function HotelFilterUI({
 		if (onPriceChange) onPriceChange(price);
 	}, [price, onPriceChange]);
 
-  return (
-    // <aside className="bg-white rounded-lg shadow-sm p-5 space-y-6 text-sm">
-    <aside
-      className="
+	return (
+		// <aside className="bg-white rounded-lg shadow-sm p-5 space-y-6 text-sm">
+		<aside
+			className="
     sticky 
     top-24 
     bg-white 
@@ -58,9 +60,9 @@ export default function HotelFilterUI({
     max-h-[calc(100vh-6rem)]
     overflow-y-auto
   "
-    >
-      {/*  Price Slider */}
-      {/* <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md">
+		>
+			{/*  Price Slider */}
+			{/* <div className="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md">
         <h3 className="font-semibold text-sm sm:text-base mb-4">
           Your budget (per night)
         </h3>
@@ -82,79 +84,94 @@ export default function HotelFilterUI({
           </span>
         </div>
       </div>  ₹ */}
-      <div className="rounded-2xl p-4 sm:p-5 bg-white shadow-sm border border-gray-100">
-        <h3 className="font-semibold text-sm sm:text-base mb-4 text-gray-800">
-          Your budget (per night)
-        </h3>
+			<div className="rounded-2xl p-4 sm:p-5 bg-white shadow-sm border border-gray-100">
+				<h3 className="font-semibold text-sm sm:text-base mb-4 text-gray-800">
+					Your budget (per night)
+				</h3>
 
-        {/* Slider */}
-        <input
-          type="range"
-          min={0}
-          max={20000}
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-          className="
+				{/* Slider */}
+				<input
+					type="range"
+					min={0}
+					max={20000}
+					value={price}
+					onChange={(e) => setPrice(Number(e.target.value))}
+					className="
       w-full
       cursor-pointer
       accent-green-600
     "
-        />
+				/>
 
-        {/* Price */}
-        <div className="flex justify-between text-xs font-medium mt-3 text-gray-500">
-          <span>0</span>
+				{/* Price */}
+				<div className="flex justify-between text-xs font-medium mt-3 text-gray-500">
+					<span>0</span>
 
-          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">
-            ₹{price.toLocaleString()}
-          </span>
-        </div>
-      </div>
-
-				<hr className="border border-gray-200" />
-
-				{/* Amenities test*/}
-				<div>
-					<h3 className="font-semibold mb-2">Amenities filters</h3>
-					<div className="space-y-2 max-h-60 overflow-y-auto">
-						{amenities.map((amenity) => (
-							<label
-								key={amenity._id}
-								className="flex items-center gap-2 cursor-pointer"
-							>
-								<input
-									type="checkbox"
-									checked={selectedAmenities.includes(amenity._id)}
-									onChange={() => handleAmenityToggle(amenity._id)}
-								/>
-								<span>{amenity.sectionData.amenities.title}</span>
-							</label>
-						))}
-					</div>
+					<span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">
+						₹{price.toLocaleString()}
+					</span>
 				</div>
+			</div>
 
-				<hr className="border border-gray-200" />
+			<hr className="border border-green-300" />
 
-      {/*  Tags */}
-      <div>
-        <h3 className="font-semibold mb-2">Tag filters</h3>
-        <div className="space-y-2 max-h-60 overflow-y-auto">
-          {tags.map((tag) => (
-            <label
-              key={tag._id}
-              className="flex items-center gap-2 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                checked={selectedTags.includes(tag._id)}
-                onChange={() => handleTagToggle(tag._id)}
-              />
-              <span>{tag.sectionData.tags.tag_name}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+			{/* Amenities test*/}
+			<div>
+				<h3 className="font-semibold mb-2">Amenities filters</h3>
+				<div className="space-y-2">
+					{(showAllAmenities ? amenities : amenities.slice(0, 10)).map((amenity) => (
+						<label
+							key={amenity._id}
+							className="flex items-center gap-2 cursor-pointer"
+						>
+							<input
+								type="checkbox"
+								checked={selectedAmenities.includes(amenity._id)}
+								onChange={() => handleAmenityToggle(amenity._id)}
+							/>
+							<span>{amenity.sectionData.amenities.title}</span>
+						</label>
+					))}
+					{amenities.length > 10 && (
+						<button
+							onClick={() => setShowAllAmenities(!showAllAmenities)}
+							className="text-green-600 text-sm hover:underline"
+						>
+							{showAllAmenities ? 'Show less' : 'Show more'}
+						</button>
+					)}
+				</div>
+			</div>
 
-    </aside>
-  );
+			<hr className="border border-green-300" />
+
+			{/*  Tags */}
+			<div>
+				<h3 className="font-semibold mb-2">Tag filters</h3>
+				<div className="space-y-2">
+					{(showAllTags ? tags : tags.slice(0, 10)).map((tag) => (
+						<label
+							key={tag._id}
+							className="flex items-center gap-2 cursor-pointer"
+						>
+							<input
+								type="checkbox"
+								checked={selectedTags.includes(tag._id)}
+								onChange={() => handleTagToggle(tag._id)}
+							/>
+							<span>{tag.sectionData.tags.tag_name}</span>
+						</label>
+					))}
+					{tags.length > 10 && (
+						<button
+							onClick={() => setShowAllTags(!showAllTags)}
+							className="text-green-600 text-sm hover:underline"
+						>
+							{showAllTags ? 'Show less' : 'Show more'}
+						</button>
+					)}
+				</div>
+			</div>
+		</aside>
+	);
 }

@@ -306,7 +306,7 @@ const Header = () => {
               <FiUser />
             </button>
             {showUserDropdown && (
-              <ul className="absolute z-50 mt-2 bg-white border rounded shadow w-40 right-0">
+              <ul className="absolute z-100 mt-2 bg-white border rounded shadow w-40 right-0">
                 <div className="bg-[#4CAA42] rounded-t-[5px] text-white font-bold p-2 flex items-center justify-between">
                   <span>{t('header.account')}</span>
                   <div
