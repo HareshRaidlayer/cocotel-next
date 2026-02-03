@@ -19,18 +19,25 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { fetchFromAPI } from "@/lib/api";
-import { ApiResponseItem } from "@/types/hotel";
+import { ApiResponseItem, RoomApiItem, RoomGalleryApiItem, AmenityApiItem, GalleryItem} from "@/types/hotel";
+import { getRoomPrice } from "@/utils/roomPrice";
 
 type Room = {
 	id: number;
 	name: string;
 	size: string;
 	capacity: string;
+	extraperson: string;
 	beds: string;
 	view?: string;
 	description: string;
 	amenities: string[];
-	priceFrom: number;
+	price?: number;
+	rate_week_day_lean?: number;
+	rate_week_end_lean?: number;
+	rate_week_day_peak?: number;
+	rate_week_end_peak?: number;
+
 	images: string[];
 	currentImageIndex: number;
 	tag?: string;
@@ -53,6 +60,85 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 	const [hotelData, setHotelData] = useState<ApiResponseItem | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [rooms, setRooms] = useState<Room[]>([]);
+	const [hotelGalleryImages, setHotelGalleryImages] = useState<string[]>([]);
+	type Amenity = {
+		id: string;
+		title: string;
+		icon?: string;
+	};
+
+	const [amenities, setAmenities] = useState<Amenity[]>([]);
+
+
+	const NO_IMAGE = "https://www.cocotel.com/public/no-image.png";
+
+	const normalizeRoomImageUrl = (img?: string) => {
+		if (!img || img === "NULL") return NO_IMAGE;
+
+		let path = img;
+
+		// 1If full URL → extract pathname
+		if (path.startsWith("http")) {
+			try {
+				path = new URL(path).pathname;
+			} catch { }
+		}
+
+		//  Decode once (fix %2520 → %20 → space)
+		try {
+			path = decodeURIComponent(path);
+		} catch {
+			// ignore malformed encoding
+		}
+
+		// Normalize ../admin → admin
+		path = path.replace(/^\/?\.\.\/admin\//, "admin/");
+
+		// Remove duplicate public/
+		path = path.replace(/^\/?public\/+/, "");
+
+		// Remove leading slashes
+		path = path.replace(/^\/+/, "");
+
+		//  Ensure admin/
+		if (!path.startsWith("admin/")) {
+			path = `admin/${path}`;
+		}
+
+		//  Encode ONCE (correct)
+		return encodeURI(`https://www.cocotel.com/public/${path}`);
+	};
+
+	const normalizeGalleryImage = (img?: string) => {
+		if (!img || img === "NULL") return NO_IMAGE;
+
+		const url = img.trim();
+
+		// Already CDN
+		if (url.startsWith("https://img.cocotel.com/")) {
+			return encodeURI(url);
+		}
+
+		// ../admin/frontend → CDN
+		if (url.includes("/../admin/frontend/")) {
+			const path = url.split("/../admin/frontend/")[1];
+			return encodeURI(`https://img.cocotel.com/frontend/${path}`);
+		}
+
+		// admin/frontend → CDN
+		if (url.includes("/admin/frontend/")) {
+			const path = url.split("/admin/frontend/")[1];
+			return encodeURI(`https://img.cocotel.com/frontend/${path}`);
+		}
+
+		// relative frontend
+		if (url.startsWith("frontend/")) {
+			return encodeURI(`https://img.cocotel.com/${url}`);
+		}
+
+		// fallback
+		return NO_IMAGE;
+	};
 
 	const router = useRouter();
 
@@ -71,75 +157,159 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 	useEffect(() => {
 		const fetchHotelData = async () => {
 			try {
+				//  Fetch hotel
 				const companiesRes = await fetchFromAPI<ApiResponseItem[]>({
 					appName: "app3534482538357",
 					moduleName: "company",
 					query: {
 						"sectionData.Company.slug": slug,
-						"sectionData.Company.is_deleted": false
+						"sectionData.Company.is_deleted": false,
 					},
 					limit: 1,
 				});
 
-				if (companiesRes && Array.isArray(companiesRes) && companiesRes.length > 0) {
-					setHotelData(companiesRes[0]);
+				if (!companiesRes || companiesRes.length === 0) {
+					setLoading(false);
+					return;
 				}
 
-				// Mock rooms data
-				setRooms([
-					{
-						id: 1,
-						name: "Superior Day-Use Room",
-						size: "35m² (376 ft²)",
-						capacity: "2 persons",
-						beds: "1× Double bed",
-						view: "City View",
-						description: "The unit has 1 bed. This is a Day Use offer from 09:00-18:00 with a maximum of 6 hours use.",
-						amenities: ["Wireless Internet", "Wake-Up Service", "Air Conditioning", "Bath Or Shower", "Cable Channels", "Coffee Or Tea Maker", "Flat-Screen TV", "Free Toiletries", "Alarm Clock", "Desk", "Hair Dryer"],
-						priceFrom: 99,
-						images: ["https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200", "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200", "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200"],
-						currentImageIndex: 0,
-						tag: "Day Use Only",
+				const company = companiesRes[0];
+				setHotelData(company);
+				//
+				// 1️⃣ Fetch hotel gallery images
+				const hotelGalleryRes = await fetchFromAPI<GalleryItem[]>({
+					appName: "app3534482538357",
+					moduleName: "gallerys",
+					query: {
+						"sectionData.gallerys.hotel_id": company._id,
+						"sectionData.gallerys.is_deleted": "0",
+						"sectionData.gallerys.is_status": "0",
 					},
-					{
-						id: 2,
-						name: "Corner Room",
-						size: "23m² (247 ft²)",
-						capacity: "2 persons",
-						beds: "1 King-size bed",
-						view: "City View",
-						description: "Spacious corner room with excellent natural light and panoramic city views.",
-						amenities: ["Free Wi-Fi", "Air Conditioning", "Flat-Screen TV", "Minibar", "Safe", "Work Desk", "Private Bathroom"],
-						priceFrom: 120,
-						images: ["https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200", "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200", "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200"],
-						currentImageIndex: 0,
-					},
-					{
-						id: 3,
-						name: "Rooftop Premier Twin Room with Pool Access",
-						size: "23m² (247 ft²)",
-						capacity: "2 persons",
-						beds: "2 Single beds",
-						view: "Pool View",
-						description:
-							"Modern twin room located on the rooftop level with direct access to the pool area. Includes premium amenities.",
-						amenities: [
-							"Free Wi-Fi",
-							"Pool Access",
-							"Air Conditioning",
-							"TV",
-							"Coffee Maker",
-						],
-						priceFrom: 145,
-						images: [
-							"https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200",
-							"https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200",
-							"https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1200",
-						],
-						currentImageIndex: 0,
-					},
-				]);
+					limit: 100,
+				});
 
+				// 2️⃣ Normalize images
+				const galleryImages = hotelGalleryRes
+					.map(g => normalizeGalleryImage(g.sectionData.gallerys.gallery_image))
+					.filter(Boolean);
+				console.log('galleryImages:', galleryImages);
+				// 3️⃣ Fallback to primary image
+				setHotelGalleryImages(
+					galleryImages.length > 0
+						? galleryImages
+						: [normalizeGalleryImage(company.sectionData.Company.primary_image)]
+				);
+
+				const amenityIds = company.sectionData.Company.amenities || [];
+
+				if (amenityIds.length > 0) {
+					const amenitiesRes = await fetchFromAPI<AmenityApiItem[]>({
+						appName: "app3534482538357",
+						moduleName: "amenities",
+						query: {
+							"_id": { "$in": amenityIds },
+							"sectionData.amenities.is_deleted": "0",
+							"sectionData.amenities.is_status": "0",
+						},
+						limit: 200,
+					});
+
+					const mappedAmenities: Amenity[] = amenitiesRes.map(a => {
+						const data = a.sectionData.amenities;
+						return {
+							id: a._id,
+							title: data.title,
+							icon: data.icon_new || data.icon
+								? normalizeRoomImageUrl(data.icon_new || data.icon)
+								: undefined,
+						};
+					});
+
+					setAmenities(mappedAmenities);
+				}
+				// 2️⃣ Fetch rooms
+				const roomsRes = await fetchFromAPI<RoomApiItem[]>({
+					appName: "app3534482538357",
+					moduleName: "rooms",
+					query: {
+						"sectionData.rooms.hotel_id": company._id,
+						"sectionData.rooms.is_deleted": "0",
+						"sectionData.rooms.is_status": "0",
+
+					},
+					limit: 50,
+				});
+				// const rooms = roomsRes[0];
+				const roomIds = roomsRes.map(r => r._id);
+				// 3️⃣ Fetch room gallery
+				const galleryRes = await fetchFromAPI<RoomGalleryApiItem[]>({
+					appName: "app3534482538357",
+					moduleName: "room_gallery",
+					query: {
+						"sectionData.room_gallery.room_id": { "$in": roomIds },
+						"sectionData.room_gallery.is_deleted": "0",
+						"sectionData.room_gallery.is_status": "0",
+					},
+					limit: 500,
+				});
+
+				// 4️⃣ Build gallery map
+
+				const galleryMap: Record<string, string[]> = {};
+
+				galleryRes.forEach((g) => {
+					const gData = g.sectionData.room_gallery;
+					const roomId = gData.room_id;
+
+					if (!roomId) return;
+
+					if (!galleryMap[roomId]) {
+						galleryMap[roomId] = [];
+					}
+
+					galleryMap[roomId].push(
+						normalizeRoomImageUrl(gData.room_gallery_image)
+					);
+				});
+
+
+				// 5️⃣ Map rooms → UI format
+				const mappedRooms: Room[] = roomsRes.map((r) => {
+					const room = r.sectionData.rooms;
+					const roomId = r._id;
+
+					const galleryImages = galleryMap[roomId] || [];
+
+					const images =
+						galleryImages.length > 0
+							? galleryImages
+							: [normalizeRoomImageUrl(room.primary_image)];
+
+					return {
+						id: Number(room.web_rooms_id),
+						name: room.title,
+						size: "",
+						capacity: `${room.max_adults} Allowed`,
+						extraperson: `${room.extraPerson} Extra Person`,
+						beds: "Standard Bed",
+						description: room.description?.replace(/<[^>]*>/g, "") || "",
+						amenities: [
+							"Air Conditioning",
+							"Private Bathroom",
+							"Free Wi-Fi",
+						],
+						price: Number(room.price || 0),
+						rate_week_day_lean: Number(room.rate_week_day_lean || 0),
+						rate_week_end_lean: Number(room.rate_week_end_lean || 0),
+						rate_week_day_peak: Number(room.rate_week_day_peak || 0),
+						rate_week_end_peak: Number(room.rate_week_end_peak || 0),
+						images,
+						currentImageIndex: 0,
+					};
+				});
+
+				console.log("Mapped rooms:", mappedRooms);
+				setRooms(mappedRooms);
 			} catch (error) {
 				console.error("Error fetching hotel data:", error);
 			} finally {
@@ -150,6 +320,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 		fetchHotelData();
 	}, [slug]);
 
+	const currentPrice = selectedRoom ? getRoomPrice(selectedRoom, checkin) : 0;
 	if (loading) {
 		return (
 			<div className="flex justify-center items-center min-h-screen">
@@ -173,8 +344,23 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 	}
 
 	const company = hotelData.sectionData.Company;
-	const galleryImages = company.gallery_image ? company.gallery_image.split(',') : [company.primary_image];
+
 	const cleanDescription = company.description?.replace(/<[^>]*>/g, '') || '';
+	//const termsandconditions = company.terms_conditions?.replace(/<[^>]*>/g, '') || '';
+	const cleanTermsHTML = (html?: string) => {
+		if (!html) return "";
+
+		return html
+			// remove <font ...> but keep inner text
+			.replace(/<font[^>]*>/gi, "")
+			.replace(/<\/font>/gi, "")
+			// remove empty tags
+			.replace(/<p>\s*<\/p>/gi, "")
+			.trim();
+	};
+	const termsandconditionsHTML = cleanTermsHTML(
+		company.terms_conditions
+	);
 
 	return (
 		<main className="max-w-7xl mx-auto px-4 py-6">
@@ -200,18 +386,19 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 
 			{/* Gallery */}
 			<div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-8 rounded-xl overflow-hidden">
+				{/* Main Image */}
 				<div className="md:col-span-2 row-span-2 relative h-80 md:h-[500px]">
 					<Image
-						src={company.primary_image || galleryImages[0]}
+						src={hotelGalleryImages[0]}
 						alt="Hotel view"
 						fill
 						className="object-cover"
-						onError={(e) => {
-							e.currentTarget.src = "/images/defualtimg.webp";
-						}}
+						priority
 					/>
 				</div>
-				{galleryImages.slice(1, 5).map((img, index) => (
+
+				{/* Thumbnails */}
+				{hotelGalleryImages.slice(1, 5).map((img, index) => (
 					<div key={index} className="relative h-40 md:h-60">
 						<Image
 							src={img}
@@ -219,7 +406,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 							fill
 							className="object-cover"
 							onError={(e) => {
-								e.currentTarget.src = "/images/defualtimg.webp";
+								(e.target as HTMLImageElement).src = "/images/defualtimg.webp";
 							}}
 						/>
 					</div>
@@ -254,8 +441,8 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 										key={tab.id}
 										onClick={() => setActiveTab(tab.id)}
 										className={`py-4 px-2 font-medium whitespace-nowrap transition-colors ${activeTab === tab.id
-												? "text-green-600 border-b-2 border-green-600"
-												: "text-gray-600 hover:text-gray-900"
+											? "text-green-600 border-b-2 border-green-600"
+											: "text-gray-600 hover:text-gray-900"
 											}`}
 									>
 										{tab.label}
@@ -308,7 +495,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 													<div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
 														<span>{room.capacity}</span>
 														<span>•</span>
-														<span>{room.beds}</span>
+														<span>{room.extraperson}</span>
 														{room.view && (
 															<>
 																<span>•</span>
@@ -318,17 +505,20 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 													</div>
 
 													<div>
-														{room.priceFrom && (
-															<>
-																<p className="text-green-600 mb-2 text-xl font-semibold">
-																	${room.priceFrom}{" "}
-																	<span className="text-gray-500 text-sm">
-																		per night
-																	</span>
-																</p>
-																<Button name="Book Now" onClick={() => handleBookNow()} />
-															</>
-														)}
+
+
+														{/* {room.priceFrom && ( */}
+														<>
+															<p className="text-green-600 mb-2 text-xl font-semibold">
+																{/* ${room.priceFrom}{" "} */}
+																₱ {getRoomPrice(room, checkin).toLocaleString()}
+																<span className="text-gray-500 text-sm ml-2">
+																	per night
+																</span>
+															</p>
+															<Button name="Book Now" onClick={() => handleBookNow()} />
+														</>
+														{/* )} */}
 													</div>
 												</div>
 											</div>
@@ -343,24 +533,27 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 										Popular facilities & amenities
 									</h2>
 									<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-										{[
-											{ icon: Dumbbell, label: "Fitness" },
-											{ icon: Utensils, label: "Restaurant" },
-											{ icon: Wifi, label: "Free Wi-Fi" },
-											{ icon: ParkingCircle, label: "Parking" },
-											{ icon: CigaretteOff, label: "Non-smoking rooms" },
-											{ icon: BedDouble, label: "Family rooms" },
-											{ icon: ShieldCheck, label: "24-hour front desk" },
-											{ icon: Users, label: "Concierge" },
-										].map((item, i) => (
+
+										{amenities.map((item) => (
 											<div
-												key={i}
+												key={item.id}
 												className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
 											>
-												<item.icon className="w-6 h-6 text-green-600" />
-												<span>{item.label}</span>
+												{item.icon ? (
+													<Image
+														src={item.icon}
+														alt={item.title}
+														width={24}
+														height={24}
+														className="object-contain"
+													/>
+												) : (
+													<ShieldCheck className="w-6 h-6 text-green-600" />
+												)}
+												<span>{item.title}</span>
 											</div>
 										))}
+
 									</div>
 								</div>
 							)}
@@ -379,15 +572,27 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 											</div>
 										</div>
 									</div>
+									{company.google_map_url && (
+										<div className="rounded-lg overflow-hidden border">
+											<div
+												className="w-full h-[450px]"
+												dangerouslySetInnerHTML={{ __html: company.google_map_url }}
+											/>
+										</div>
+									)}
 								</div>
 							)}
 
 							{activeTab === "knowMore" && (
 								<div className="space-y-6">
 									<h2 className="text-2xl font-bold">Know More</h2>
-									<div className="prose max-w-none">
-										<p className="text-gray-700">{cleanDescription}</p>
-									</div>
+									{/* <div className="prose max-w-none">
+										<p className="text-gray-700">{termsandconditions}</p>
+									</div> */}
+									<div
+										className="prose max-w-none text-gray-700"
+										dangerouslySetInnerHTML={{ __html: termsandconditionsHTML }}
+									/>
 								</div>
 							)}
 
@@ -485,8 +690,8 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 												<div
 													key={idx}
 													className={`flex-shrink-0 w-20 h-16 md:w-24 md:h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition-all ${(selectedRoom.currentImageIndex || 0) === idx
-															? "border-green-600 scale-105"
-															: "border-transparent hover:border-green-400"
+														? "border-green-600 scale-105"
+														: "border-transparent hover:border-green-400"
 														}`}
 													onClick={() =>
 														setSelectedRoom({

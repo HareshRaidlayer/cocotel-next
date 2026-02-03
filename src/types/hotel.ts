@@ -12,16 +12,66 @@ export interface Hotel {
   latitude?:string;
   longitude?:string;
   slug?: string;
-
+  terms_conditions?:string;
   image: string;        // Primary image (card image)
   gallery?: string[];   // Gallery images (quick view slider)
-
+  primary_image?:string; 
   category?: string;
   distance?: string;
   breakfast?: boolean;
   parking?: string;
   amenities?: string[]; // Array of amenity IDs
   tag?: string[];       // Array of tag IDs
+}
+
+// Room API Response Types
+export interface RoomApiItem {
+  _id: string;
+  sectionData: {
+    rooms: {
+      web_rooms_id: string;
+      title: string;
+      description?: string;
+      max_adults: number;
+      extraPerson:number;
+      price?: number;
+      rate_week_day_lean?: number;
+      rate_week_end_lean?: number;
+      rate_week_day_peak?: number;
+      rate_week_end_peak?: number;
+      primary_image?: string;
+      hotel_id: string;
+      is_deleted: string;
+      is_status: string;
+    };
+  };
+}
+
+// Room Gallery API Response Types
+export interface RoomGalleryApiItem {
+  _id: string;
+  sectionData: {
+    room_gallery: {
+      room_id: string;
+      room_gallery_image: string;
+      is_deleted: string;
+      is_status: string;
+    };
+  };
+}
+
+// Amenity API Response Types
+export interface AmenityApiItem {
+  _id: string;
+  sectionData: {
+    amenities: {
+      title: string;
+      icon?: string;
+      icon_new?: string;
+      is_status: string;
+      is_deleted: string;
+    };
+  };
 }
 
 // ✅ API Response Types
@@ -65,7 +115,7 @@ export interface ApiResponseItem {
 }
 
 // Amenity API item
-export interface AmenityApiItem {
+export interface LegacyAmenityApiItem {
   _id: string;
   sectionData: {
     amenities: {
@@ -122,3 +172,19 @@ export interface MeiliSearchResponse<T> {
   query?: string;
 }
 
+
+// Room API Response Types
+export interface GalleryItem {
+  _id: string;
+  sectionData: {
+    gallerys: {
+      web_rooms_id: string;
+      title: string;
+      gallery_image?: string;
+      primary_image?: string;
+      hotel_id: string;
+      is_deleted: string;
+      is_status: string;
+    };
+  };
+}
