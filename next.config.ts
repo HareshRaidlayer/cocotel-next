@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
         hostname: "cocotel.com.ph",
         pathname: "/**",
       },
+
+      
     ],
     unoptimized: true,
   },

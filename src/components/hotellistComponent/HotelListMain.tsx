@@ -414,6 +414,7 @@ export default function HotelListMain({
                                             images: hotel.image ? [hotel.image] : [],
                                             amenities: undefined
                                         }}
+                                        searchParams={searchParams}
                                     />
                                 ))}
                             </div>

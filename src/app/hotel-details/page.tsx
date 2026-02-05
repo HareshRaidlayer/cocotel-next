@@ -2,7 +2,7 @@ import Header from "@/components/common/Header";
 import Footer from "../[locale]/Footer";
 import fs from "fs";
 import path from "path";
-import HotelPageClient from "./HotelPageClientNew";
+import HotelPageClient from "../[locale]/[slug]/HotelPageClient";
 import { notFound } from "next/navigation";
 
 async function getFooterData(locale: string = "en") {
@@ -36,7 +36,7 @@ export default async function HotelPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <HotelPageClient slug={slug} />
+      <HotelPageClient locale="ph" slug={slug} />
       <Footer data={footerData} />
     </div>
   );

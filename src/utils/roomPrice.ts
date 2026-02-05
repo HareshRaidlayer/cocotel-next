@@ -16,23 +16,45 @@ export function onSeason(date: Date) {
   return [11, 12, 3, 4, 5].includes(month); // peak months
 }
 
+// export function getRoomPrice(
+//   room: Room,
+//   checkin?: string | Date
+// ): number {
+//   // 1️⃣ Manual override (calendar price)
+//   if (room.price && Number(room.price) > 0) {
+//     return Number(room.price);
+//   }
+
+//   // 2️⃣ Use checkin date or today's date
+//   const date = checkin ? new Date(checkin) : new Date();
+//   const peak = onSeason(date);
+//   const weekend = isWeekend(date);
+
+//   if (peak && weekend) return room.rate_week_end_peak ?? 0;
+//   if (peak && !weekend) return room.rate_week_day_peak ?? 0;
+//   if (!peak && weekend) return room.rate_week_end_lean ?? 0;
+
+//   return room.rate_week_day_lean ?? 0;
+// }
 export function getRoomPrice(
-  room: Room,
+  room: Room | null | undefined,
   checkin?: string | Date
 ): number {
-  // 1️⃣ Manual override (calendar price)
+  if (!room) return 0;
+
+  // Manual override
   if (room.price && Number(room.price) > 0) {
     return Number(room.price);
   }
 
-  // 2️⃣ Use checkin date or today's date
   const date = checkin ? new Date(checkin) : new Date();
   const peak = onSeason(date);
   const weekend = isWeekend(date);
 
-  if (peak && weekend) return room.rate_week_end_peak ?? 0;
-  if (peak && !weekend) return room.rate_week_day_peak ?? 0;
-  if (!peak && weekend) return room.rate_week_end_lean ?? 0;
+  if (peak && weekend) return Number(room.rate_week_end_peak ?? 0);
+  if (peak && !weekend) return Number(room.rate_week_day_peak ?? 0);
+  if (!peak && weekend) return Number(room.rate_week_end_lean ?? 0);
 
-  return room.rate_week_day_lean ?? 0;
+  return Number(room.rate_week_day_lean ?? 0);
 }
+

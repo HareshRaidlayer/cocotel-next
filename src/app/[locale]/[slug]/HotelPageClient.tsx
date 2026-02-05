@@ -7,22 +7,16 @@ import {
 	ChevronLeft,
 	Camera,
 	ShieldCheck,
-	Wifi,
-	ParkingCircle,
-	Utensils,
-	Dumbbell,
-	CigaretteOff,
-	Users,
-	BedDouble,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { fetchFromAPI } from "@/lib/api";
-import { ApiResponseItem, RoomApiItem, RoomGalleryApiItem, AmenityApiItem, GalleryItem} from "@/types/hotel";
+import { ApiResponseItem, RoomApiItem, RoomGalleryApiItem, AmenityApiItem, GalleryItem } from "@/types/hotel";
 import { getRoomPrice } from "@/utils/roomPrice";
 
 type Room = {
+	_id: string;      // Mongo ID (IMPORTANT)
 	id: number;
 	name: string;
 	size: string;
@@ -142,16 +136,21 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 
 	const router = useRouter();
 
-	const handleBookNow = () => {
-		const params = new URLSearchParams();
-		if (checkin) params.set('checkin', checkin);
-		if (checkout) params.set('checkout', checkout);
-		params.set('rooms', String(roomCount || 1));
-		params.set('adults', String(adults || 1));
-		params.set('children', String(children || childrenCount || 0));
-		params.set('openModal', '1');
+	const handleBookNow = (room?: Room) => {
+		// Use the passed room or the selected room
+		const roomToBook = room || selectedRoom;
 
-		router.push(`/${locale}/${slug}/booking?${params.toString()}`);
+		// Set default dates if not provided
+		const today = new Date();
+		const tomorrow = new Date(today);
+		tomorrow.setDate(tomorrow.getDate() + 1);
+
+		const formatDate = (date: Date) => date.toISOString().split('T')[0];
+
+		// Create path-based URL structure with popup=1
+		const pathUrl = `/${locale}/${roomToBook?._id}/${hotelData?._id}/${roomCount || 1}/${checkin || formatDate(today)}/${checkout || formatDate(tomorrow)}/${adults || 1}/${children || childrenCount || 0}/0/1`;
+
+		router.push(pathUrl);
 	};
 
 	useEffect(() => {
@@ -176,7 +175,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 				const company = companiesRes[0];
 				setHotelData(company);
 				//
-				// 1️⃣ Fetch hotel gallery images
+				// Fetch hotel gallery images
 				const hotelGalleryRes = await fetchFromAPI<GalleryItem[]>({
 					appName: "app3534482538357",
 					moduleName: "gallerys",
@@ -188,12 +187,12 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 					limit: 100,
 				});
 
-				// 2️⃣ Normalize images
+				// Normalize images
 				const galleryImages = hotelGalleryRes
 					.map(g => normalizeGalleryImage(g.sectionData.gallerys.gallery_image))
 					.filter(Boolean);
 				console.log('galleryImages:', galleryImages);
-				// 3️⃣ Fallback to primary image
+				//  Fallback to primary image
 				setHotelGalleryImages(
 					galleryImages.length > 0
 						? galleryImages
@@ -286,6 +285,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 							: [normalizeRoomImageUrl(room.primary_image)];
 
 					return {
+						_id: r._id,                      // ✅ KEEP THIS
 						id: Number(room.web_rooms_id),
 						name: room.title,
 						size: "",
@@ -320,7 +320,6 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 		fetchHotelData();
 	}, [slug]);
 
-	const currentPrice = selectedRoom ? getRoomPrice(selectedRoom, checkin) : 0;
 	if (loading) {
 		return (
 			<div className="flex justify-center items-center min-h-screen">
@@ -516,7 +515,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 																	per night
 																</span>
 															</p>
-															<Button name="Book Now" onClick={() => handleBookNow()} />
+															<Button name="Book Now" onClick={() => handleBookNow(room)} />
 														</>
 														{/* )} */}
 													</div>

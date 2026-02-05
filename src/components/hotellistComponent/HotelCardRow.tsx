@@ -32,18 +32,28 @@ export default function HotelCardRow({ hotel, searchParams }: Props) {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const router = useRouter();
-
   const handleBookNow = () => {
+    console.log("Book Now clicked for hotel:", hotel.name, "with searchParams:", searchParams);
     const country = 'ph';
-    const slug = hotel.slug;
-    if (slug) {
-      if (searchParams?.checkin && searchParams?.checkout && searchParams?.rooms && searchParams?.adults && searchParams?.children) {
-        router.push(`/${country}/${slug}/${searchParams.checkin}/${searchParams.checkout}/${searchParams.rooms}/${searchParams.adults}/${searchParams.children}`);
-      } else {
-        router.push(`/${country}/${slug}`);
-      }
-    }
+    // if (searchParams?.checkin && searchParams?.checkout && searchParams?.rooms && searchParams?.adults && searchParams?.children) {
+    //   // Navigate to clean path-based URL: /ph/roomid/hotelid/rooms/checkin/checkout/adults/children/breakfast?openModal=1
+    //   const bookingUrl = `/${country}/8732400417742/${hotel.id}/${searchParams.rooms}/${searchParams.checkin}/${searchParams.checkout}/${searchParams.adults}/${searchParams.children}/0?openModal=1`;
+    //   router.push(bookingUrl);
+    // } else {
+    router.push(`/${country}/${hotel.slug}`);
+    // }
   };
+  // const handleBookNow = () => {
+  //   const checkin = searchParams?.checkin || '';
+  //   const checkout = searchParams?.checkout || '';
+  //   const rooms = searchParams?.rooms || '1';
+  //   const adults = searchParams?.adults || '1';
+  //   const children = searchParams?.children || '0';
+
+  //   // Use the correct hotel slug and pass room/hotel IDs as query params
+  //   const bookingUrl = `/ph/${hotel.slug}/booking?openModal=true&checkin=${checkin}&checkout=${checkout}&rooms=${rooms}&adults=${adults}&children=${children}&roomid=8732400417742&hotelid=${hotel.id}`;
+  //   router.push(bookingUrl);
+  // };
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -215,8 +225,8 @@ export default function HotelCardRow({ hotel, searchParams }: Props) {
                   {hotel.price.toLocaleString()}{" "}
                   <span className="text-xs text-gray-500">₱</span>
                 </p>
-                <Button 
-                  name="Book Now" 
+                <Button
+                  name="Book Now"
                   onClick={handleBookNow}
                 />
               </div>
