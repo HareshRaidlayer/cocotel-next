@@ -27,7 +27,7 @@ interface PageProps {
     checkout?: string;
     roomCount?: string;
     adults?: string;
-    //children?: string;
+    children?: string;
   }>;
 }
 
@@ -39,15 +39,15 @@ export default async function HotelPage({ params, searchParams }: PageProps) {
     checkout,
     roomCount = "1",
     adults = "1",
-   // children = "0",
+    children = "0",
   } = await searchParams;
-  
+
   if (!slug) {
     notFound();
   }
-  
+
   const footerData = await getFooterData(locale);
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -58,9 +58,8 @@ export default async function HotelPage({ params, searchParams }: PageProps) {
         checkout={checkout}
         roomCount={Number(roomCount)}
         adults={Number(adults)}
-        //children={Number(children)}
+        childrenCount={Number(children)}
       />
-      {/* <HotelPageClient locale={locale} slug={slug} /> */}
       <Footer data={footerData} />
     </div>
   );
