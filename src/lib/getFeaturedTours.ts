@@ -1,5 +1,7 @@
 import { fetchFromAPI } from "@/lib/api";
 import type { ApiResponseItem } from "@/types/hotel";
+import { getMinRoomPriceByHotelId } from "@/utils/roomPrice";
+
 
 export interface TourCard {
   title: string;
@@ -40,21 +42,63 @@ export async function getFeaturedTours(locale: string) {
 
   const companies = res as ApiResponseItem[];
 
-  const tours: TourCard[] = companies.map((company) => {
+  // const tours: TourCard[] = companies.map((company) => {
+  //   const data = company.sectionData.Company;
+
+  //   // Handle gallery images with proper validation
+  //   let galleryImages: string[] = [];
+  //   if (data.gallery_image && data.gallery_image.trim()) {
+  //     galleryImages = data.gallery_image
+  //       .split(",")
+  //       .map(img => img.trim())
+  //       .filter(img => img && img !== 'null' && img !== 'undefined');
+  //   }
+    
+  //   // Handle primary image with validation
+  //   let primaryImage = "/images/defualtimg.webp";
+  //   if (data.primary_image && data.primary_image.trim() && data.primary_image !== 'null' && data.primary_image !== 'undefined') {
+  //     primaryImage = data.primary_image.trim();
+  //   }
+
+  //   return {
+  //     title: data.name ?? "Hotel",
+  //     city: data.web_city ?? "",
+  //     country: data.country,
+  //     src: galleryImages, // gallery images for quick view
+  //     primaryImage: primaryImage, // primary image for main card
+  //     price: "2,500",
+  //     originalPrice: "500",
+  //     discount: "20% OFF",
+  //     category: "Resort",
+  //     slug: data.slug ?? "", // hotel slug for routing
+  //   };
+  // });
+const tours: TourCard[] = await Promise.all(
+  companies.map(async (company) => {
     const data = company.sectionData.Company;
 
-    // Handle gallery images with proper validation
+    // 🔥 get min room price here
+    const minRoomPrice = await getMinRoomPriceByHotelId(company._id);
+
+    // Gallery images
     let galleryImages: string[] = [];
     if (data.gallery_image && data.gallery_image.trim()) {
       galleryImages = data.gallery_image
         .split(",")
-        .map(img => img.trim())
-        .filter(img => img && img !== 'null' && img !== 'undefined');
+        .map((img) => img.trim())
+        .filter(
+          (img) => img && img !== "null" && img !== "undefined"
+        );
     }
-    
-    // Handle primary image with validation
+
+    // Primary image
     let primaryImage = "/images/defualtimg.webp";
-    if (data.primary_image && data.primary_image.trim() && data.primary_image !== 'null' && data.primary_image !== 'undefined') {
+    if (
+      data.primary_image &&
+      data.primary_image.trim() &&
+      data.primary_image !== "null" &&
+      data.primary_image !== "undefined"
+    ) {
       primaryImage = data.primary_image.trim();
     }
 
@@ -62,15 +106,16 @@ export async function getFeaturedTours(locale: string) {
       title: data.name ?? "Hotel",
       city: data.web_city ?? "",
       country: data.country,
-      src: galleryImages, // gallery images for quick view
-      primaryImage: primaryImage, // primary image for main card
-      price: "2,500",
-      originalPrice: "500",
-      discount: "20% OFF",
+      src: galleryImages,
+      primaryImage,
+      price: minRoomPrice > 0 ? minRoomPrice.toLocaleString() : "0",
+      originalPrice: "",
+      discount: "",
       category: "Resort",
-      slug: data.slug ?? "", // hotel slug for routing
+      slug: data.slug ?? "",
     };
-  });
+  })
+);
 
   return {
     tours,

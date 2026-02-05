@@ -9,13 +9,13 @@ export interface Hotel {
   discount?: string;
   description?: string;
   save?: string;
-  latitude?:string;
-  longitude?:string;
+  latitude?: string;
+  longitude?: string;
   slug?: string;
-  terms_conditions?:string;
+  terms_conditions?: string;
   image: string;        // Primary image (card image)
   gallery?: string[];   // Gallery images (quick view slider)
-  primary_image?:string; 
+  primary_image?: string;
   category?: string;
   distance?: string;
   breakfast?: boolean;
@@ -33,7 +33,7 @@ export interface RoomApiItem {
       title: string;
       description?: string;
       max_adults: number;
-      extraPerson:number;
+      extraPerson: number;
       price?: number;
       rate_week_day_lean?: number;
       rate_week_end_lean?: number;
@@ -43,6 +43,10 @@ export interface RoomApiItem {
       hotel_id: string;
       is_deleted: string;
       is_status: string;
+      room_type_code: string;
+      extraPersonPrice: number;
+      breakfast_price?: number;
+      rate?: number;
     };
   };
 }
@@ -102,14 +106,17 @@ export interface CompanyData {
   slug?: string;
   amenities?: string[];
   tag?: string[];
-  google_map_url?:string;
-  terms_conditions?:string;
+  google_map_url?: string;
+  terms_conditions?: string;
+  pms_hotel_code?: string;
+  booking_engine?: string; // "0" for EZEE, "1" for default
+  hotel_api_key?: string;
 }
 
 export interface ApiResponseItem {
-  _id: string; 
+  _id: string;
   sectionData: {
-    
+
     Company: CompanyData;
   };
 }
@@ -125,8 +132,8 @@ export interface LegacyAmenityApiItem {
       category: string;
       available_24_7: boolean;
       additional_cost: boolean;
-      is_status?:string;
-      is_deleted?:string;
+      is_status?: string;
+      is_deleted?: string;
     };
   };
 }
@@ -141,8 +148,8 @@ export interface TagApiItem {
       bgcolor: string;
       textcolor: string;
       image: string;
-      is_status?:string;
-      is_deleted?:string;
+      is_status?: string;
+      is_deleted?: string;
     };
   };
 }
@@ -158,11 +165,11 @@ export interface MeiliHotelHit {
   gallery_images?: string[];
   classification?: string;
   city?: string;
-  latitude?:string;
-  longitude?:string;
+  latitude?: string;
+  longitude?: string;
   amenities?: string[];
   tags?: string[];
-  
+
 }
 
 export interface MeiliSearchResponse<T> {

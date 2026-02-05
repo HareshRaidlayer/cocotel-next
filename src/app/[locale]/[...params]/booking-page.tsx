@@ -52,6 +52,7 @@ function BookingModal({
   const [error, setError] = useState<string>("");
   const [roomData, setRoomData] = useState<Record<string, unknown> | null>(null);
 
+
   const formatDate = (date: Date) => {
     if (!(date instanceof Date) || isNaN(date.getTime())) {
       return "";
@@ -116,9 +117,11 @@ function BookingModal({
       const totalChildren = parseInt(formData.noofchild);
       const maxAdults = parseInt(roomData.max_adults as string);
       const maxChildren = parseInt((roomData.max_children as string) || '0');
+      const extraPersonAllowed = parseInt((roomData.extraPerson as string) || '0');
+      const maxAllowedGuests = maxAdults + extraPersonAllowed;
 
-      if (totalAdults > maxAdults) {
-        setError(`This room allows maximum ${maxAdults} adults. You have selected ${totalAdults} adults.`);
+      if (totalAdults > maxAllowedGuests) {
+        setError(`This room allows maximum ${maxAdults} adults + ${extraPersonAllowed} extra person (total ${maxAllowedGuests}). You have selected ${totalAdults} adults.`);
         return false;
       }
 
@@ -227,7 +230,7 @@ function BookingModal({
             <input
               type="number"
               min={1}
-              max={Number(roomData?.max_adults) || 10}
+              max={roomData ? (Number(roomData.max_adults) + Number(roomData.extraPerson || 0)) : 10}
               required
               placeholder="No of Guests"
               value={formData.no_of_guests}
@@ -330,6 +333,11 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
   const [hotelData, setHotelData] = useState<Record<string, unknown> | null>(null);
   const [roomData, setRoomData] = useState<Record<string, unknown> | null>(null);
   const [promoCode, setPromoCode] = useState('');
+  //  const [refundType, setRefundType] = useState<'refundable' | 'nonrefundable'>('refundable');
+  const [refundType, setRefundType] = useState<"refundable" | "nonrefundable">(
+    "nonrefundable"
+  );
+
   const [appliedPromo, setAppliedPromo] = useState<{ code: string, discount: number, type: 'percent' | 'fixed' } | null>(null);
   const [bookingData, setBookingData] = useState<BookingData>({
     roomid: '',
@@ -510,13 +518,12 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
     //  Base price (rooms × nights)
     const basePrice = perRoomTotal * rooms;
     console.log("Base Price Calculation:", { perRoomTotal, rooms, basePrice });
-    //  Extra guest
+    //  Extra guest calculation
     const guests = Number(bookingData.no_of_guests) || 1;
     const maxAdults = Number(roomData.max_adults || 2);
     const extraGuests = Math.max(0, guests - maxAdults);
-    const extraGuestRate = Number(roomData.extra_guest_charge || 500);
-    const extraGuestCharge =
-      extraGuests * extraGuestRate * nightsCount;
+    const extraGuestRate = Number(roomData.extraPersonPrice || 500);
+    const extraGuestCharge = extraGuests * extraGuestRate * nightsCount;
 
     //  Breakfast
     const withBreakfast = Number(bookingData.withbreakfast) || 0;
@@ -567,6 +574,22 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
 
 
   const payment = calculatePayment();
+  const baseTotal = payment.total;
+  const REFUND_PERCENT = 8;
+
+  const calculateRefundFee = (amount: number) => {
+    return Number(((amount * REFUND_PERCENT) / 100).toFixed(2));
+  };
+
+  const refundFee =
+    refundType === "refundable"
+      ? calculateRefundFee(baseTotal)
+      : 0;
+
+  const finalPayable =
+    refundType === "refundable"
+      ? baseTotal + refundFee
+      : baseTotal;
 
   return (
     <div className="min-h-screen bg-green-50">
@@ -615,6 +638,7 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
                 <span>Rooms : <strong>{bookingData.noofroom}</strong></span>
                 <span>Children : <strong>{bookingData.noofchild}</strong></span>
                 <span>Max Adults : <strong>{(roomData?.max_adults as string) || 'N/A'}</strong></span>
+                <span>Extra Person : <strong>{(roomData?.extraPerson as string) || '0'}</strong></span>
               </div>
             </div>
 
@@ -630,7 +654,8 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
               <h2 className="text-2xl font-bold">Total Payment Summary</h2>
 
               <div className="mt-4 text-green-600 text-3xl font-bold">
-                {formatCurrency(payment.total)}
+                {formatCurrency(finalPayable)}
+                {/* //{formatCurrency(payment.total)} */}
               </div>
               <p className="text-sm text-gray-500">Incl. of all taxes</p>
 
@@ -728,7 +753,7 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
 
                 {payment.extraGuestCharge > 0 && (
                   <div className="flex justify-between">
-                    <span>Extra Person Charges</span>
+                    <span>Extra Person Charges ({Math.max(0, parseInt(bookingData.no_of_guests) - parseInt((roomData?.max_adults as string) || '2'))} person × {payment.nights} nights × ₱{Number(roomData?.extraPersonPrice) || 500})</span>
                     <span>{formatCurrency(payment.extraGuestCharge)}</span>
                   </div>
                 )}
@@ -762,7 +787,7 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
 
                 <div className="flex justify-between font-bold text-lg text-green-700 border-t pt-3">
                   <span>Total Payment</span>
-                  <span>{formatCurrency(payment.total)}</span>
+                  <span>{formatCurrency(finalPayable)}</span>
                 </div>
 
                 <p className="text-xs text-gray-500 mt-2">(incl. of all taxes)</p>
@@ -770,7 +795,7 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
             </div>
 
             {/* REFUNDABLE */}
-            <div className="bg-white rounded-lg shadow p-6">
+            {/* <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-2xl font-bold mb-4">Refundable Booking</h2>
 
               <label className="flex items-center gap-3 border p-4 rounded cursor-pointer">
@@ -786,6 +811,115 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
 
               <label className="flex items-center gap-3 border p-4 rounded cursor-pointer mt-3">
                 <input type="radio" name="refund" />
+                <p className="font-semibold">Non-refundable Booking</p>
+              </label>
+            </div> */}
+            {/* REFUND SECTION */}
+            <div className="bg-white rounded-lg shadow p-6">
+              {/* Header */}
+              <div className="mb-4">
+                <p className="text-2xl font-bold text-center md:text-left">
+                  Refundable Booking
+                </p>
+                <p className="text-gray-500 text-sm text-center md:text-left">
+                  Select options that you preferred
+                </p>
+              </div>
+
+              {/* Country restriction */}
+              {hotelData?.country_id === '2' && (
+                <p className="text-red-600 mb-3">
+                  Refundable Booking is not available for Indonesia.
+                </p>
+              )}
+
+              {/* Refundable Option */}
+              <label
+                className={`flex items-center justify-between border rounded-lg p-4 cursor-pointer ${refundType === 'refundable'
+                    ? 'border-blue-500 bg-blue-50'
+                    : ''
+                  }`}
+              >
+                <div className="flex items-center gap-3">
+                  <input
+                    type="radio"
+                    name="refund"
+                    checked={refundType === 'refundable'}
+                    disabled={hotelData?.country_id === '2'}
+                    onChange={() => setRefundType('refundable')}
+                  />
+                  <div>
+                    <p className="font-semibold">Refundable Booking</p>
+                    <p className="text-sm text-gray-500">
+                      Added Fee to Room Price
+                    </p>
+                  </div>
+                </div>
+
+                <span className="text-sm bg-blue-600 text-white px-3 py-1 rounded-full">
+                  Recommended
+                </span>
+              </label>
+
+              {/* Fee Row */}
+              <div className="flex justify-between mt-3 text-sm text-gray-600 pl-6">
+                <span>Added Fee to Room Price (8%)</span>
+                <span className="font-semibold">
+                  {refundType === "refundable"
+                    ? formatCurrency(refundFee)
+                    : formatCurrency(0)}
+                </span>
+              </div>
+
+
+              {/* COVID Coverage */}
+              <div className="mt-4 bg-green-500 text-white rounded-full px-4 py-2 text-sm">
+                ✓ <b>COVID-19</b> infection & isolation –{" "}
+                <a href="#" className="underline">
+                  See details
+                </a>
+              </div>
+
+              {/* Benefits */}
+              <div className="grid md:grid-cols-3 gap-3 mt-4 text-sm text-gray-700">
+                {[
+                  "Sickness, Accident, Injury",
+                  "Home Emergency",
+                  "Pre-existing medical conditions",
+                  "Public Transport Failure",
+                  "Theft of Documents",
+                  "Court Summons",
+                  "Private Vehicle Failure",
+                  "Emergency Services Recall",
+                  "And many more...",
+                ].map((item, i) => (
+                  <p key={i}>✓ {item}</p>
+                ))}
+              </div>
+
+              {/* Terms */}
+              <p className="text-xs text-gray-500 mt-4">
+                Upgrade your booking and receive a 100% refund if you cannot attend
+                and can evidence one of the many reasons in our{" "}
+                <a href="#" className="text-green-600 underline">
+                  Terms and Conditions
+                </a>
+                .
+              </p>
+
+              {/* Non-refundable */}
+              <label
+                className={`flex items-center gap-3 border rounded-lg p-4 mt-4 cursor-pointer ${refundType === 'nonrefundable'
+                    ? 'border-gray-500 bg-gray-50'
+                    : ''
+                  }`}
+              >
+                <input
+                  type="radio"
+                  name="refund"
+                  checked={refundType === 'nonrefundable'}
+                  onChange={() => setRefundType('nonrefundable')}
+                />
                 <p className="font-semibold">Non-refundable Booking</p>
               </label>
             </div>
@@ -842,26 +976,11 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
               </p>
 
               <span className="text-black-500 text-xl font-bold">
-                {formatCurrency(payment.total)}
+                {formatCurrency(finalPayable)}
               </span>
             </div>
 
           </aside>
-
-          {/* <aside className="bg-white rounded-lg shadow p-6 h-fit sticky top-6">
-            <h3 className="font-bold text-lg">
-              {hotelData?.name || hotelData?.web_title || 'Loading hotel...'}
-            </h3>
-            <p className="text-sm text-gray-600 mt-2">
-              {hotelData?.address_line1 || 'Hotel address'}
-            </p>
-            <p className="text-sm text-gray-600 mt-1">
-              {bookingData.checkin} – {bookingData.checkout}
-            </p>
-            <div className="mt-4 text-red-500 text-xl font-bold">
-              {formatCurrency(payment.total)}
-            </div>
-          </aside> */}
         </div>
       </main>
 

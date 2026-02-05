@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import HotelListMain from "@/components/hotellistComponent/HotelListMain";
 import { fetchFromAPI } from "@/lib/api";
 import { Hotel, ApiResponseItem, AmenityApiItem, TagApiItem } from "@/types/hotel";
+import { getMinRoomPriceByHotelId } from "@/utils/roomPrice";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -98,32 +99,41 @@ function HotelListContent() {
           },
         });
 
-        const mappedHotels: Hotel[] = data.map((item) => {
-          const c = item.sectionData.Company;
+       const mappedHotels: Hotel[] = await Promise.all(
+  data.map(async (item) => {
+    const c = item.sectionData.Company;
 
-          return {
-            id: item._id,
-            name: c.web_title || c.companyName || c.name || "Unknown Hotel",
-            location: `${c.address_line1 || c.address || ''}, ${c.web_province || c.province || c.city || ''}`.replace(/^,\s*|,\s*$/g, ''),
-            price: 0,
-            rating: 5,
-            reviews: 0,
-            discount: "20% OFF",
-            description: c.description || c.web_description || '',
-            save: c.promo_active ? "Best Deal" : "",
-            image: c.primary_image?.trim() || "/images/hotel-placeholder.jpg",
-            gallery: c.gallery_image?.split(",") ?? [],
-            category: c.prop_classification || "Hotel",
-            distance: c.web_city?.trim() || c.city?.trim() || "",
-            breakfast: c.description?.toLowerCase().includes("breakfast"),
-            parking: c.description?.toLowerCase().includes("parking")
-              ? "Available"
-              : "Not available",
-            amenities: c.amenities ?? [],
-            tag: c.tag ?? [],
-            slug: c.slug || "",
-          };
-        });
+    // 🔥 get min room price here
+    const minRoomPrice = await getMinRoomPriceByHotelId(item._id);
+
+    return {
+      id: item._id,
+      name: c.web_title || c.companyName || c.name || "Unknown Hotel",
+      location: `${c.address_line1 || c.address || ""}, ${
+        c.web_province || c.province || c.city || ""
+      }`.replace(/^,\s*|,\s*$/g, ""),
+      price: minRoomPrice > 0 ? minRoomPrice : 0,
+
+      rating: 5,
+      reviews: 0,
+      discount: "20% OFF",
+      description: c.description || c.web_description || "",
+      save: c.promo_active ? "Best Deal" : "",
+      image: c.primary_image?.trim() || "/images/hotel-placeholder.jpg",
+      gallery: c.gallery_image?.split(",") ?? [],
+      category: c.prop_classification || "Hotel",
+      distance: c.web_city?.trim() || c.city?.trim() || "",
+      breakfast: c.description?.toLowerCase().includes("breakfast"),
+      parking: c.description?.toLowerCase().includes("parking")
+        ? "Available"
+        : "Not available",
+      amenities: c.amenities ?? [],
+      tag: c.tag ?? [],
+      slug: c.slug || "",
+    };
+  })
+); // ✅ THIS was missing
+
 
         console.log('Loaded hotels:', mappedHotels.length, mappedHotels.slice(0, 2));
 
