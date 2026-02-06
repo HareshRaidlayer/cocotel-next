@@ -679,7 +679,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 
 							{/* Thumbnail strip + arrows */}
 							{selectedRoom.images.length > 1 && (
-								<div className="p-4 bg-black/50 border-t">
+								<div className="p-2 bg-black/90 border-t">
 									<div className="relative flex items-center">
 										{/* Left arrow */}
 										<button
