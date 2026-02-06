@@ -11,6 +11,7 @@ import {
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
+import BookingButton from "@/components/BookingButton";
 import { fetchFromAPI } from "@/lib/api";
 import { ApiResponseItem, RoomApiItem, RoomGalleryApiItem, AmenityApiItem, GalleryItem } from "@/types/hotel";
 import { getRoomPrice } from "@/utils/roomPrice";
@@ -363,6 +364,14 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 
 	return (
 		<main className="max-w-7xl mx-auto px-4 py-6">
+			{/* Booking Form - Hidden inputs for BookingButton */}
+			<div className="hidden">
+				<input id="checkin" type="date" defaultValue={checkin || new Date().toISOString().split('T')[0]} />
+				<input id="checkout" type="date" defaultValue={checkout || new Date(Date.now() + 86400000).toISOString().split('T')[0]} />
+				<input id="guests" type="number" defaultValue={adults || 1} />
+				<input id="children" type="number" defaultValue={children || childrenCount || 0} />
+			</div>
+
 			{/* Hotel Title & Rating */}
 			<div className="mb-6 flex justify-between items-center">
 				<div>
@@ -515,7 +524,14 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 																	per night
 																</span>
 															</p>
-															<Button name="Book Now" onClick={() => handleBookNow(room)} />
+															<BookingButton
+																hotelId={hotelData._id}
+																roomId={room._id}
+																className="bg-green-600 text-sm font-medium hover:bg-green-700 text-white p-3 md:px-6 md:py-3 rounded-md flex items-center justify-center transition w-full md:w-auto"
+																onBookingSuccess={() => handleBookNow(room)}
+															>
+																Book Now
+															</BookingButton>
 														</>
 														{/* )} */}
 													</div>

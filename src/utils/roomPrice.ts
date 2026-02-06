@@ -1,3 +1,6 @@
+import { fetchFromAPI } from "@/lib/api";
+import { ApiResponseItem, RoomApiItem } from "@/types/hotel";
+
 export type Room = {
   price?: number | string;
   rate_week_day_lean?: number;
@@ -58,3 +61,33 @@ export function getRoomPrice(
   return Number(room.rate_week_day_lean ?? 0);
 }
 
+export async function getMinRoomPriceByHotelId(
+  hotelId: string
+): Promise<number> {
+  const rooms = await fetchFromAPI<RoomApiItem[]>({
+    appName: "app3534482538357",
+    moduleName: "rooms",
+    query: {
+      "sectionData.rooms.hotel_id": hotelId,
+      "sectionData.rooms.is_deleted": "0",
+      "sectionData.rooms.is_status": "0",
+    },
+  });
+
+  if (!rooms || rooms.length === 0) return 0;
+
+  const prices: number[] = [];
+
+  rooms.forEach((room) => {
+    const r = room.sectionData.rooms;
+
+    // choose ONE rate column minimum
+    const price = Number(r.rate_week_day_peak ?? 0);
+
+    if (price > 0) {
+      prices.push(price);
+    }
+  });
+
+  return prices.length ? Math.min(...prices) : 0;
+}
