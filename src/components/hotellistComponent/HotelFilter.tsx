@@ -10,7 +10,7 @@ interface Props {
 	selectedTags: string[];
 	onAmenityChange: (ids: string[]) => void;
 	onTagChange: (ids: string[]) => void;
-	onPriceChange?: (price: number) => void; // optional callback to parent
+	onPriceChange: (price: number) => void;
 }
 
 export default function HotelFilterUI({
@@ -42,7 +42,7 @@ export default function HotelFilterUI({
 
 	// Update parent whenever price changes
 	useEffect(() => {
-		if (onPriceChange) onPriceChange(price);
+		onPriceChange(price);
 	}, [price, onPriceChange]);
 
 	return (

@@ -544,3 +544,38 @@ export async function signupUser(userData: SignupUserData): Promise<SignupRespon
 /**
  * Form login API - checks if user exists and validates password
  */
+
+export async function submitBookingData({
+  appName,
+  moduleName,
+  body,
+}: {
+  appName: string;
+  moduleName: string;
+  body: object;
+}): Promise<{ success: boolean; message?: string; data?: unknown }> {
+  try {
+    const response = await fetch(`${NEST_URL}/api/dynamic/submitdata`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": NEST_KEY,
+      },
+      body: JSON.stringify({
+        appName,
+        moduleName,
+        body
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`API Error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return { success: true, data: result };
+  } catch (error) {
+    console.error("Booking submission error:", error);
+    return { success: false, message: error instanceof Error ? error.message : "Failed to submit booking" };
+  }
+}

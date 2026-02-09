@@ -16,6 +16,7 @@ export default function LocationHotelListPage() {
   const [tags, setTags] = useState<TagApiItem[]>([]);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [maxPrice, setMaxPrice] = useState(20000);
   
   const params = useParams();
   const location = params?.location as string;
@@ -23,6 +24,9 @@ export default function LocationHotelListPage() {
   // Filter hotels based on location and selected amenities/tags
   const filteredHotels = useMemo(() => {
     return allHotels.filter(hotel => {
+      // Price filter
+      if (maxPrice < 20000 && hotel.price > maxPrice) return false;
+
       // Location filter
       if (location) {
         const searchTerm = location.toLowerCase();
@@ -52,7 +56,7 @@ export default function LocationHotelListPage() {
 
       return true;
     });
-  }, [allHotels, selectedAmenities, selectedTags, location]);
+  }, [allHotels, selectedAmenities, selectedTags, location, maxPrice]);
 
   const handleAmenityChange = (ids: string[]) => {
     setSelectedAmenities(ids);
@@ -61,6 +65,11 @@ export default function LocationHotelListPage() {
 
   const handleTagChange = (ids: string[]) => {
     setSelectedTags(ids);
+    setCurrentPage(1);
+  };
+
+  const handlePriceChange = (price: number) => {
+    setMaxPrice(price);
     setCurrentPage(1);
   };
 
@@ -213,6 +222,7 @@ export default function LocationHotelListPage() {
         selectedTags={selectedTags}
         onAmenityChange={handleAmenityChange}
         onTagChange={handleTagChange}
+        onPriceChange={handlePriceChange}
       />
 
       {/* Pagination */}
