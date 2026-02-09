@@ -72,7 +72,8 @@ export async function POST(req: Request) {
 
     if (bookingEngine === "0") {
       // EZEE booking engine
-      const ezeeResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/availability/ezee`, {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+      const ezeeResponse = await fetch(`${baseUrl}/api/availability/ezee`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -151,7 +152,8 @@ export async function POST(req: Request) {
       // OneDay booking engine
       console.log('Using OneDay booking engine for hotel:', hotelid);
       
-      const internalResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/availability/internal`, {
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+      const internalResponse = await fetch(`${baseUrl}/api/availability/internal`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

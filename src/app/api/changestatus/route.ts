@@ -67,8 +67,8 @@ export async function POST(req: Request) {
     await submitBookingData({
       appName: "app3534482538357",
       moduleName: "bookings",
+      docId: bookingDoc._id,
       body: {
-        _id: bookingDoc._id,
         sectionData: { bookings: booking },
         companyId: bookingDoc.companyId,
       },
@@ -379,8 +379,8 @@ export async function POST(req: Request) {
     await submitBookingData({
       appName: "app3534482538357",
       moduleName: "bookings",
+      docId: bookingDoc._id,
       body: {
-        _id: bookingDoc._id,
         sectionData: { bookings: booking },
         companyId: bookingDoc.companyId,
       },
