@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import Header from "@/components/common/Header";
 import SearchSubHeader from "@/components/common/subHeaderSearch";
 import { useRouter } from "next/navigation";
-import { fetchFromAPI } from "@/lib/api";
+import { fetchFromAPI, submitBookingData } from "@/lib/api";
 import { getRoomPrice } from "@/utils/roomPrice";
+import { ApiResponseItem, CompanyData, RoomApiItem } from "@/types/hotel";
 
 interface BookingData {
   roomid: string;
@@ -193,50 +194,69 @@ function BookingModal({
   if (!open) return null;
 
   const today = new Date().toISOString().split("T")[0];
+return (
+  <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+    <div className="bg-white rounded-lg w-full max-w-3xl p-6 relative">
+      <button
+        onClick={onClose}
+        className="absolute left-3 top-3 text-gray-500 hover:text-gray-800 flex items-center gap-2"
+      >
+        ← Back
+      </button>
 
-  return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg w-full max-w-3xl p-6 relative">
-        <button
-          onClick={onClose}
-          className="absolute left-3 top-3 text-gray-500 hover:text-gray-800 flex items-center gap-2"
-        >
-          ← Back
-        </button>
+      <form onSubmit={handleSubmit}>
+        <h3 className="text-xl font-semibold mb-4 mt-8">Booking Details</h3>
 
-        <form onSubmit={handleSubmit}>
-          <h3 className="text-xl font-semibold mb-4 mt-8">Booking Details</h3>
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
-          )}
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium text-gray-700">
+            No of Rooms
+          </label>
+          <input
+            type="number"
+            min={1}
+            max={500}
+            required
+            placeholder="No of Rooms"
+            value={formData.noofroom}
+            onChange={(e) => handleInputChange('noofroom', e.target.value)}
+            className="border rounded px-3 py-2 w-full"
+          />
+        </div>
 
-          <div className="mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              No of Guests
+            </label>
             <input
               type="number"
               min={1}
-              max={500}
+              max={
+                roomData
+                  ? Number(roomData.max_adults) +
+                    Number(roomData.extraPerson || 0)
+                  : 10
+              }
               required
-              placeholder="No of Rooms"
-              value={formData.noofroom}
-              onChange={(e) => handleInputChange('noofroom', e.target.value)}
+              placeholder="No of Guests"
+              value={formData.no_of_guests}
+              onChange={(e) =>
+                handleInputChange('no_of_guests', e.target.value)
+              }
               className="border rounded px-3 py-2 w-full"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <input
-              type="number"
-              min={1}
-              max={roomData ? (Number(roomData.max_adults) + Number(roomData.extraPerson || 0)) : 10}
-              required
-              placeholder="No of Guests"
-              value={formData.no_of_guests}
-              onChange={(e) => handleInputChange('no_of_guests', e.target.value)}
-              className="border rounded px-3 py-2"
-            />
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              No of Child
+            </label>
             <input
               type="number"
               min={0}
@@ -244,80 +264,263 @@ function BookingModal({
               required
               placeholder="No of Child"
               value={formData.noofchild}
-              onChange={(e) => handleInputChange('noofchild', e.target.value)}
-              className="border rounded px-3 py-2"
+              onChange={(e) =>
+                handleInputChange('noofchild', e.target.value)
+              }
+              className="border rounded px-3 py-2 w-full"
             />
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Check-in Date
+            </label>
             <input
               type="date"
               min={today}
               required
               value={formData.checkin}
-              onChange={(e) => handleInputChange('checkin', e.target.value)}
-              className="border rounded px-3 py-2"
-            />
-            <input
-              type="date"
-              min={formData.checkin ? formatDate(addDays(new Date(formData.checkin), 1)) : today}
-              required
-              value={formData.checkout}
-              onChange={(e) => handleInputChange('checkout', e.target.value)}
-              className="border rounded px-3 py-2"
+              onChange={(e) =>
+                handleInputChange('checkin', e.target.value)
+              }
+              className="border rounded px-3 py-2 w-full"
             />
           </div>
 
-          <h3 className="text-xl font-semibold mb-4">Traveller Details</h3>
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Check-out Date
+            </label>
+            <input
+              type="date"
+              min={
+                formData.checkin
+                  ? formatDate(
+                      addDays(new Date(formData.checkin), 1)
+                    )
+                  : today
+              }
+              required
+              value={formData.checkout}
+              onChange={(e) =>
+                handleInputChange('checkout', e.target.value)
+              }
+              className="border rounded px-3 py-2 w-full"
+            />
+          </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-4">
+        <h3 className="text-xl font-semibold mb-4">
+          Traveller Details
+        </h3>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              First Name
+            </label>
             <input
               maxLength={32}
               required
               placeholder="First Name"
               value={formData.firstname || ''}
-              onChange={(e) => handleInputChange('firstname', e.target.value)}
-              className="border rounded px-3 py-2"
+              onChange={(e) =>
+                handleInputChange('firstname', e.target.value)
+              }
+              className="border rounded px-3 py-2 w-full"
             />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Last Name
+            </label>
             <input
               maxLength={32}
               required
               placeholder="Last Name"
               value={formData.lastname || ''}
-              onChange={(e) => handleInputChange('lastname', e.target.value)}
-              className="border rounded px-3 py-2"
+              onChange={(e) =>
+                handleInputChange('lastname', e.target.value)
+              }
+              className="border rounded px-3 py-2 w-full"
             />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               required
               placeholder="Email"
               value={formData.email || ''}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              className="border rounded px-3 py-2"
+              onChange={(e) =>
+                handleInputChange('email', e.target.value)
+              }
+              className="border rounded px-3 py-2 w-full"
             />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Phone
+            </label>
             <input
               maxLength={16}
               required
               placeholder="Phone"
               value={formData.phone || ''}
-              onChange={(e) => handleInputChange('phone', e.target.value)}
-              className="border rounded px-3 py-2"
+              onChange={(e) =>
+                handleInputChange('phone', e.target.value)
+              }
+              className="border rounded px-3 py-2 w-full"
             />
           </div>
+        </div>
 
-          <div className="mt-6 text-center">
-            <button
-              type="submit"
-              disabled={!!error}
-              className="bg-green-600 text-white px-6 py-2 rounded disabled:bg-gray-400"
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="mt-6 text-center">
+          <button
+            type="submit"
+            disabled={!!error}
+            className="bg-green-600 text-white px-6 py-2 rounded disabled:bg-gray-400"
+          >
+            Save
+          </button>
+        </div>
+      </form>
     </div>
-  );
+  </div>
+);
+
+  // return (
+  //   <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+  //     <div className="bg-white rounded-lg w-full max-w-3xl p-6 relative">
+  //       <button
+  //         onClick={onClose}
+  //         className="absolute left-3 top-3 text-gray-500 hover:text-gray-800 flex items-center gap-2"
+  //       >
+  //         ← Back
+  //       </button>
+
+  //       <form onSubmit={handleSubmit}>
+  //         <h3 className="text-xl font-semibold mb-4 mt-8">Booking Details</h3>
+
+  //         {error && (
+  //           <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+  //             {error}
+  //           </div>
+  //         )}
+
+  //         <div className="mb-4">
+            
+  //           <input
+  //             type="number"
+  //             min={1}
+  //             max={500}
+  //             required
+  //             placeholder="No of Rooms"
+  //             value={formData.noofroom}
+  //             onChange={(e) => handleInputChange('noofroom', e.target.value)}
+  //             className="border rounded px-3 py-2 w-full"
+  //           />
+  //         </div>
+
+  //         <div className="grid grid-cols-2 gap-4 mb-4">
+  //           <input
+  //             type="number"
+  //             min={1}
+  //             max={roomData ? (Number(roomData.max_adults) + Number(roomData.extraPerson || 0)) : 10}
+  //             required
+  //             placeholder="No of Guests"
+  //             value={formData.no_of_guests}
+  //             onChange={(e) => handleInputChange('no_of_guests', e.target.value)}
+  //             className="border rounded px-3 py-2"
+  //           />
+  //           <input
+  //             type="number"
+  //             min={0}
+  //             max={Number(roomData?.max_children) || 5}
+  //             required
+  //             placeholder="No of Child"
+  //             value={formData.noofchild}
+  //             onChange={(e) => handleInputChange('noofchild', e.target.value)}
+  //             className="border rounded px-3 py-2"
+  //           />
+  //         </div>
+
+  //         <div className="grid grid-cols-2 gap-4 mb-6">
+  //           <input
+  //             type="date"
+  //             min={today}
+  //             required
+  //             value={formData.checkin}
+  //             onChange={(e) => handleInputChange('checkin', e.target.value)}
+  //             className="border rounded px-3 py-2"
+  //           />
+  //           <input
+  //             type="date"
+  //             min={formData.checkin ? formatDate(addDays(new Date(formData.checkin), 1)) : today}
+  //             required
+  //             value={formData.checkout}
+  //             onChange={(e) => handleInputChange('checkout', e.target.value)}
+  //             className="border rounded px-3 py-2"
+  //           />
+  //         </div>
+
+  //         <h3 className="text-xl font-semibold mb-4">Traveller Details</h3>
+
+  //         <div className="grid grid-cols-2 gap-4">
+  //           <input
+  //             maxLength={32}
+  //             required
+  //             placeholder="First Name"
+  //             value={formData.firstname || ''}
+  //             onChange={(e) => handleInputChange('firstname', e.target.value)}
+  //             className="border rounded px-3 py-2"
+  //           />
+  //           <input
+  //             maxLength={32}
+  //             required
+  //             placeholder="Last Name"
+  //             value={formData.lastname || ''}
+  //             onChange={(e) => handleInputChange('lastname', e.target.value)}
+  //             className="border rounded px-3 py-2"
+  //           />
+  //           <input
+  //             type="email"
+  //             required
+  //             placeholder="Email"
+  //             value={formData.email || ''}
+  //             onChange={(e) => handleInputChange('email', e.target.value)}
+  //             className="border rounded px-3 py-2"
+  //           />
+  //           <input
+  //             maxLength={16}
+  //             required
+  //             placeholder="Phone"
+  //             value={formData.phone || ''}
+  //             onChange={(e) => handleInputChange('phone', e.target.value)}
+  //             className="border rounded px-3 py-2"
+  //           />
+  //         </div>
+
+  //         <div className="mt-6 text-center">
+  //           <button
+  //             type="submit"
+  //             disabled={!!error}
+  //             className="bg-green-600 text-white px-6 py-2 rounded disabled:bg-gray-400"
+  //           >
+  //             Save
+  //           </button>
+  //         </div>
+  //       </form>
+  //     </div>
+  //   </div>
+  // );
 }
 
 interface PathBasedBookingPageProps {
@@ -330,10 +533,10 @@ interface PathBasedBookingPageProps {
 export default function PathBasedBookingPage({ params }: PathBasedBookingPageProps) {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
-  const [hotelData, setHotelData] = useState<Record<string, unknown> | null>(null);
+  const [hotelData, setHotelData] = useState<CompanyData | null>(null);
   const [roomData, setRoomData] = useState<Record<string, unknown> | null>(null);
   const [promoCode, setPromoCode] = useState('');
-  //  const [refundType, setRefundType] = useState<'refundable' | 'nonrefundable'>('refundable');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [refundType, setRefundType] = useState<"refundable" | "nonrefundable">(
     "nonrefundable"
   );
@@ -349,6 +552,111 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
     noofchild: '0',
     withbreakfast: '0'
   });
+  const handlePaymentMethodChange = (method: string) => {
+    setSelectedPaymentMethod(method);
+  };
+
+  const handleProceedPayment = async () => {
+    if (!selectedPaymentMethod) return;
+
+    try {
+      // Check room availability
+      const availabilityResponse = await fetch("/api/check-availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          checkin: bookingData.checkin,
+          checkout: bookingData.checkout,
+          hotelid: bookingData.hotelid,
+          roomid: bookingData.roomid,
+          noofguest: bookingData.no_of_guests,
+          noofchild: bookingData.noofchild,
+          noofroom: bookingData.noofroom
+        })
+      });
+
+      const availabilityResult = await availabilityResponse.json();
+
+      if (!availabilityResponse.ok || !availabilityResult.success) {
+        alert(availabilityResult.error || "Room not available. Please choose different dates.");
+        return;
+      }
+
+      // Room available, save booking
+      const nightDates = getNightDates(bookingData.checkin, bookingData.checkout);
+      const roomInfo = nightDates.map(date => ({
+        date: date.toISOString().split('T')[0],
+        price: getRoomPrice(roomData!, date),
+        room_name: roomData?.title || "",
+        guests: bookingData.no_of_guests,
+        rooms: bookingData.noofroom
+      }));
+
+      const bookingId = `BK-${new Date().getFullYear().toString().slice(-2)}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(new Date().getDate()).padStart(2, '0')}${String(new Date().getHours()).padStart(2, '0')}${String(new Date().getMinutes()).padStart(2, '0')}${String(new Date().getSeconds()).padStart(2, '0')}${Math.floor(Math.random() * 100)}`;
+
+      const bookingPayload = {
+        booking_id: bookingId,
+        hotel_id: bookingData.hotelid,
+        hotel_code: hotelData?.web_hotel_code || "",
+        hotel_name: hotelData?.web_title || hotelData?.name || "",
+        room_type_id: bookingData.roomid,
+        room_type_code: roomData?.room_code || "",
+        room_type_name: roomData?.title || "",
+        room_type_amount: payment.basePrice,
+        first_name: bookingData.firstname || "",
+        last_name: bookingData.lastname || "",
+        email: bookingData.email || "",
+        phone: bookingData.phone || "",
+        amount: finalPayable,
+        no_of_days: payment.nights,
+        no_of_guests: bookingData.no_of_guests,
+        no_of_rooms: bookingData.noofroom,
+        is_breakfast: bookingData.withbreakfast,
+        refundable: refundType === "refundable" ? 1 : 0,
+        method: selectedPaymentMethod,
+        promocode: appliedPromo?.code || null,
+        booking_date: new Date().toISOString().split('T')[0],
+        arrival_date_app: bookingData.checkin,
+        departure_date_app: bookingData.checkout,
+        pay_status: "Pending",
+        RoomInfo: roomInfo
+      };
+
+      const result = await submitBookingData({
+        appName: "app3534482538357",
+        moduleName: "bookings",
+        body: {
+          sectionData: {
+            bookings: bookingPayload
+          },
+          companyId: bookingData.hotelid
+        }
+      });
+
+      if (result.success) {
+        if (selectedPaymentMethod === "Creditcard") {
+          console.log('paymentcard:', bookingId, finalPayable);
+          router.push(
+            `/creditcard?bookingid=${bookingId}&amount=${finalPayable}`
+          );
+        }
+
+        if (selectedPaymentMethod === "GCASH") {
+          console.log('paymentgacsh:', bookingId, finalPayable);
+          router.push(
+            `/gcash?bookingid=${bookingId}&amount=${finalPayable}&PH_GCASH=1`
+          );
+        }
+
+      } else {
+        alert("Failed to create booking. Please try again.");
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      alert("Failed to process booking. Please try again.");
+    }
+  };
+
   const formatFullDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-GB", {
@@ -420,13 +728,15 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
     if (hotelData && roomData) return;
 
     try {
+      console.log("Fetching hotel data for hotelid:", hotelid);
+      console.log("Fetching room data for roomid:", roomid);
+
       const [hotelResponse, roomResponse] = await Promise.all([
-        fetchFromAPI<Record<string, unknown>[]>({
+        fetchFromAPI<ApiResponseItem[]>({
           appName: "app3534482538357",
           moduleName: "company",
           query: {
             "_id": hotelid,
-            "sectionData.Company.is_deleted": false,
           },
           limit: 1,
         }),
@@ -435,18 +745,27 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
           moduleName: "rooms",
           query: {
             "_id": roomid,
-            "sectionData.rooms.is_deleted": "0",
           },
           limit: 1,
         })
       ]);
 
+      console.log("Hotel Response:", JSON.stringify(hotelResponse, null, 2));
+      console.log("Room Response:", JSON.stringify(roomResponse, null, 2));
       if (hotelResponse && hotelResponse.length > 0) {
-        setHotelData((hotelResponse[0] as Record<string, unknown>).sectionData as Record<string, unknown>);
+        console.log("Setting hotel data:", hotelResponse[0].sectionData.Company);
+        setHotelData(hotelResponse[0].sectionData.Company);
+      } else {
+        console.log("No hotel data found");
       }
 
       if (roomResponse && roomResponse.length > 0) {
-        setRoomData(((roomResponse[0] as Record<string, unknown>).sectionData as Record<string, unknown>).rooms as Record<string, unknown>);
+        const roomSection = (roomResponse[0] as Record<string, unknown>).sectionData as Record<string, unknown>;
+        const roomInfo = roomSection.rooms as Record<string, unknown>;
+        console.log("Setting room data:", roomInfo);
+        setRoomData(roomInfo);
+      } else {
+        console.log("No room data found");
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -929,21 +1248,29 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
               <h2 className="text-2xl font-bold mb-4">Payment Method</h2>
 
               <label className="flex items-center gap-3 border p-4 rounded cursor-pointer">
-                <input type="radio" name="pay" defaultChecked />
+                <input type="radio" name="pay" value="Creditcard" onChange={(e) => handlePaymentMethodChange(e.target.value)} />
                 <p className="font-semibold">Credit / Debit Card</p>
               </label>
 
               <label className="flex items-center gap-3 border p-4 rounded cursor-pointer mt-3">
-                <input type="radio" name="pay" />
+                <input type="radio" name="pay" value="GCASH" onChange={(e) => handlePaymentMethodChange(e.target.value)} />
                 <p className="font-semibold">GCash</p>
               </label>
+
+              <button
+                onClick={handleProceedPayment}
+                disabled={!selectedPaymentMethod}
+                className="w-full mt-4 bg-green-600 text-white py-3 rounded-lg font-semibold disabled:bg-gray-400 hover:bg-green-700"
+              >
+                Proceed to Payment
+              </button>
             </div>
           </div>
 
           <aside className="bg-white rounded-lg shadow p-6 h-fit sticky top-6">
             {/* Hotel Name */}
             <h3 className="font-bold text-lg">
-              {(hotelData?.web_title as string) || (hotelData?.name as string) || "Loading hotel..."}
+              {hotelData?.web_title || hotelData?.companyName || "Loading hotel..."}
             </h3>
 
             {/* Date Range */}

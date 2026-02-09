@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import HotelFilterUI from "./HotelFilter";
 import Features from "@/app/[locale]/homeTwo/Features";
 import HotelCardRow from "./HotelCardRow"
@@ -19,6 +19,7 @@ interface Props {
     selectedTags: string[];
     onAmenityChange: (ids: string[]) => void;
     onTagChange: (ids: string[]) => void;
+    onPriceChange: (price: number) => void;
     searchParams?: {
         checkin?: string | null;
         checkout?: string | null;
@@ -36,34 +37,16 @@ export default function HotelListMain({
     selectedTags,
     onAmenityChange,
     onTagChange,
+    onPriceChange,
     searchParams
 }: Props) {
     const [view, setView] = useState<"card" | "list">("card");
 
-    const filteredHotels = useMemo(() => {
-        return hotels.filter(hotel => {
-            // Check amenities filter - ALL selected amenities must be present
-            if (selectedAmenities.length > 0) {
-                const hasAllAmenities = selectedAmenities.every(amenityId =>
-                    hotel.amenities?.includes(amenityId)
-                );
-                if (!hasAllAmenities) return false;
-            }
-
-            // Check tags filter - ALL selected tags must be present
-            if (selectedTags.length > 0) {
-                const hasAllTags = selectedTags.every(tagId =>
-                    hotel.tag?.includes(tagId)
-                );
-                if (!hasAllTags) return false;
-            }
-
-            return true;
-        });
-    }, [hotels, selectedAmenities, selectedTags]);
+    // Hotels are already filtered in parent component
+    const filteredHotels = hotels;
 
     // Show message when no hotels match filters
-    const showNoResults = filteredHotels.length === 0 && (selectedAmenities.length > 0 || selectedTags.length > 0);
+    const showNoResults = filteredHotels.length === 0;
 
     // const [selectedSort, setSelectedSort] = useState(sortOptions?.[0]?.value || "");
     const [quickViewIndex, setQuickViewIndex] = useState<number | null>(null);
@@ -187,6 +170,7 @@ export default function HotelListMain({
                             selectedTags={selectedTags}
                             onAmenityChange={onAmenityChange}
                             onTagChange={onTagChange}
+                            onPriceChange={onPriceChange}
                         />
                     </div>
 
@@ -201,7 +185,6 @@ export default function HotelListMain({
                                         <button onClick={() => setFilterOpen(false)} className="text-2xl">&times;</button>
                                     </div>
                                 </div>
-                                {/* <HotelFilterUI /> */}
                                 <HotelFilterUI
                                     amenities={amenities}
                                     tags={tags}
@@ -209,6 +192,7 @@ export default function HotelListMain({
                                     selectedTags={selectedTags}
                                     onAmenityChange={onAmenityChange}
                                     onTagChange={onTagChange}
+                                    onPriceChange={onPriceChange}
                                 />
 
                             </div>

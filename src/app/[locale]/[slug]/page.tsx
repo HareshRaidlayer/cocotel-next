@@ -1,4 +1,5 @@
 import Header from "@/components/common/Header";
+import SubHeader from "@/components/common/subHeaderSearch";
 import Footer from "../Footer";
 import fs from "fs";
 import path from "path";
@@ -51,6 +52,7 @@ export default async function HotelPage({ params, searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      <SubHeader />
       <HotelPageClient
         locale={locale}
         slug={slug}

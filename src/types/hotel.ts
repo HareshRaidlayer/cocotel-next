@@ -111,6 +111,7 @@ export interface CompanyData {
   pms_hotel_code?: string;
   booking_engine?: string; // "0" for EZEE, "1" for default
   hotel_api_key?: string;
+  country_id?:string;
 }
 
 export interface ApiResponseItem {
