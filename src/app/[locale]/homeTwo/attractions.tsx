@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import { fetchFromAPI } from "@/lib/api";
@@ -168,9 +169,9 @@ const Attractions: React.FC = () => {
 				</div>
 
 				<div className="text-right mt-4">
-					<a href="/hotellist" className="text-blue-600 hover:underline">
+					<Link href="/hotellist" className="text-blue-600 hover:underline">
 						See all attractions →
-					</a>
+					</Link>
 				</div>
 			</div>
 		</section>
