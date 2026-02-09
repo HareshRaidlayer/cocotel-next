@@ -168,7 +168,7 @@ const Attractions: React.FC = () => {
 				</div>
 
 				<div className="text-right mt-4">
-					<a href="#" className="text-blue-600 hover:underline">
+					<a href="/hotellist" className="text-blue-600 hover:underline">
 						See all attractions →
 					</a>
 				</div>
