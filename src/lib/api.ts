@@ -549,23 +549,32 @@ export async function submitBookingData({
   appName,
   moduleName,
   body,
+  docId,
 }: {
   appName: string;
   moduleName: string;
   body: object;
+  docId?: string;
 }): Promise<{ success: boolean; message?: string; data?: unknown }> {
   try {
+    const payload: Record<string, unknown> = {
+      appName,
+      moduleName,
+      body
+    };
+
+    // Add docId if provided (for updates)
+    if (docId) {
+      payload.docId = docId;
+    }
+
     const response = await fetch(`${NEST_URL}/api/dynamic/submitdata`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-api-key": NEST_KEY,
       },
-      body: JSON.stringify({
-        appName,
-        moduleName,
-        body
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
