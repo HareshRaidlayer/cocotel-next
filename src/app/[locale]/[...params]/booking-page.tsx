@@ -5,8 +5,9 @@ import Header from "@/components/common/Header";
 import SearchSubHeader from "@/components/common/subHeaderSearch";
 import { useRouter } from "next/navigation";
 import { fetchFromAPI, submitBookingData } from "@/lib/api";
-import { getRoomPrice } from "@/utils/roomPrice";
+import { getRoomPrice, isWeekend } from "@/utils/roomPrice";
 import { ApiResponseItem, CompanyData, RoomApiItem } from "@/types/hotel";
+import Swal from "sweetalert2";
 
 interface BookingData {
   roomid: string;
@@ -36,6 +37,7 @@ interface PaymentCalculation {
   gatewayCharges: number;
   total: number;
   savings: number;
+  totalBeforePromo: number;
 }
 
 function BookingModal({
@@ -541,7 +543,7 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
     "nonrefundable"
   );
 
-  const [appliedPromo, setAppliedPromo] = useState<{ code: string, discount: number, type: 'percent' | 'fixed' } | null>(null);
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string, discount_in_percentage_weekday: number, discount_in_percentage_weekend: number, discount_in_price_weekday: number, discount_in_price_weekend: number, is_for_holiday: number } | null>(null);
   const [bookingData, setBookingData] = useState<BookingData>({
     roomid: '',
     hotelid: '',
@@ -554,6 +556,69 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
   });
   const handlePaymentMethodChange = (method: string) => {
     setSelectedPaymentMethod(method);
+  };
+
+  const handleApplyPromo = async () => {
+    if (!promoCode) {
+       Swal.fire({
+                icon: "info",
+                title: "Info!",
+                text: "Please enter a promo code",
+                // confirmButtonText: "OK",
+              });
+     // alert("Please enter a promo code");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/promocode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          promocode: promoCode,
+          hotelid: bookingData.hotelid,
+          roomid: bookingData.roomid,
+          checkin: bookingData.checkin,
+          checkout: bookingData.checkout,
+          noofday: payment.nights,
+          email: bookingData.email,
+        }),
+      });
+
+      const result = await response.json();
+      console.log('Promo Code Result:', result);
+      if (result.status === 1) {
+        setAppliedPromo({
+          code: promoCode,
+          ...result.data,
+        });
+        Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Promo code applied successfully!",
+                // confirmButtonText: "OK",
+              });
+        //alert("Promocode applied successfully!");
+      } else {
+      Swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: result.message,
+                // confirmButtonText: "OK",
+              });
+       // alert(result.message);
+        setPromoCode("");
+      }
+    } catch (error) {
+      Swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: "Failed to apply promo code",
+                // confirmButtonText: "OK",
+              });
+     // console.error("Promo code error:", error);
+      alert("Failed to apply promo code");
+    }
   };
 
   const handleProceedPayment = async () => {
@@ -813,74 +878,83 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
         gatewayCharges: 0,
         total: 0,
         savings: 0,
+        totalBeforePromo: 0,
       };
     }
 
     const rooms = Number(bookingData.noofroom) || 1;
-
-    //  Night dates
-    const nightDates = getNightDates(
-      bookingData.checkin,
-      bookingData.checkout
-    );
-
+    const nightDates = getNightDates(bookingData.checkin, bookingData.checkout);
     const nightsCount = nightDates.length;
 
-    //  Per-room total (date-wise pricing)
-    // const perRoomTotal = nightDates.reduce((sum, date) => {
-    //   return sum + getRoomPrice(roomData, date);
-    // }, 0);
-    const perRoomTotal = nightDates.reduce((sum, date) => {
-      return sum + Number(getRoomPrice(roomData, date));
-    }, 0);
+    // Calculate original price and discount separately
+    let originalRoomPrice = 0;
+    let totalDiscount = 0;
 
-    //  Base price (rooms × nights)
-    const basePrice = perRoomTotal * rooms;
-    console.log("Base Price Calculation:", { perRoomTotal, rooms, basePrice });
-    //  Extra guest calculation
+    nightDates.forEach(date => {
+      const dayPrice = getRoomPrice(roomData, date);
+      originalRoomPrice += dayPrice * rooms;
+
+      if (appliedPromo) {
+        const isWeekendDay = isWeekend(date);
+        // Note: Holiday check would require async call, skipping for now
+        // In PHP, holidays are checked and is_for_holiday flag determines if promo applies
+        // For simplicity, we apply promo based on weekend/weekday only
+        if (isWeekendDay) {
+          if (appliedPromo.discount_in_price_weekend > 0) {
+            totalDiscount += appliedPromo.discount_in_price_weekend * rooms;
+          } else if (appliedPromo.discount_in_percentage_weekend > 0) {
+            totalDiscount += (dayPrice * appliedPromo.discount_in_percentage_weekend / 100) * rooms;
+          }
+        } else {
+          if (appliedPromo.discount_in_price_weekday > 0) {
+            totalDiscount += appliedPromo.discount_in_price_weekday * rooms;
+          } else if (appliedPromo.discount_in_percentage_weekday > 0) {
+            totalDiscount += (dayPrice * appliedPromo.discount_in_percentage_weekday / 100) * rooms;
+          }
+        }
+      }
+    });
+
+    const basePrice = originalRoomPrice - totalDiscount;
+
+    // Extra guest calculation
     const guests = Number(bookingData.no_of_guests) || 1;
     const maxAdults = Number(roomData.max_adults || 2);
     const extraGuests = Math.max(0, guests - maxAdults);
     const extraGuestRate = Number(roomData.extraPersonPrice || 500);
     const extraGuestCharge = extraGuests * extraGuestRate * nightsCount;
 
-    //  Breakfast
+    // Breakfast
     const withBreakfast = Number(bookingData.withbreakfast) || 0;
     const breakfastPrice = Number(roomData.breakfast_price || 200);
-    const breakfastCost = withBreakfast
-      ? breakfastPrice * guests * nightsCount
-      : 0;
+    const breakfastCost = withBreakfast ? breakfastPrice * guests * nightsCount : 0;
 
-    //  Subtotal
+    // Subtotal
     const subtotal = basePrice + breakfastCost + extraGuestCharge;
 
-    // Gateway (ONLY on base price)
+    // Gateway charges (on discounted base price)
     const gatewayCharges = (basePrice * 3.6) / 100;
 
-    // Discount
-    let discount = 0;
-    let savings = 0;
-    if (appliedPromo) {
-      discount =
-        appliedPromo.type === "percent"
-          ? (subtotal * appliedPromo.discount) / 100
-          : appliedPromo.discount;
-      savings = discount;
-    }
-
     // Total
-    const total = subtotal + gatewayCharges - discount;
+    const total = subtotal + gatewayCharges;
 
+    // Calculate total before promo (for savings calculation)
+    const originalSubtotal = originalRoomPrice + breakfastCost + extraGuestCharge;
+    const originalGatewayCharges = (originalRoomPrice * 3.6) / 100;
+    const totalBeforePromo = originalSubtotal + originalGatewayCharges;
+
+console.log("Payment Calculation Details:", {nightsCount, originalRoomPrice, totalDiscount, basePrice, breakfastCost, extraGuestCharge, subtotal, gatewayCharges, total });
     return {
       nights: nightsCount,
       basePrice,
       breakfastCost,
       extraGuestCharge,
       subtotal,
-      discount,
+      discount: totalDiscount,
       gatewayCharges,
       total,
-      savings,
+      savings: totalBeforePromo - total,
+      totalBeforePromo,
     };
   };
 
@@ -984,11 +1058,12 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
                   <input
                     placeholder="PROMO CODE"
                     value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
+                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                    // onChange={(e) => setPromoCode(e.target.value)}
                     className="border rounded px-3 py-2 flex-1"
                   />
                   <button
-                    // onClick={handleApplyPromo}
+                    onClick={handleApplyPromo}
                     className="bg-green-600 text-white px-6 rounded hover:bg-green-700"
                   >
                     Apply
@@ -1007,7 +1082,7 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
                   </div>
                 )}
 
-                {payment.savings > 0 && (
+                {payment.discount > 0 && (
                   <div className="mt-2 p-2 bg-green-50 rounded">
                     <div className="flex justify-between text-sm">
                       <span className="text-green-700 font-medium">Your Savings</span>
@@ -1016,6 +1091,43 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
                   </div>
                 )}
               </div>
+
+              {/* Promo Code Details - Only shown when promo is applied */}
+              {appliedPromo && payment.discount > 0 && (
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h3 className="font-bold text-lg mb-3">Promo Code Details</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Promo Code</span>
+                      <span className="font-bold text-blue-600">{appliedPromo.code}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Total Discount Promo</span>
+                      <span className="font-semibold text-green-600">{formatCurrency(payment.discount)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Total Room Price Before Discount</span>
+                      <span>{formatCurrency(payment.basePrice + payment.discount)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Room Price After Discount</span>
+                      <span className="font-semibold">{formatCurrency(payment.basePrice)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tax</span>
+                      <span>3.6 %</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tax Amount</span>
+                      <span>{formatCurrency(payment.gatewayCharges)}</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-base border-t pt-2 mt-2">
+                      <span>Total room with promo after tax</span>
+                      <span className="text-green-600">{formatCurrency(payment.basePrice + payment.gatewayCharges)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Detailed Breakdown */}
               <div className="mt-6 text-sm space-y-2 border-t pt-4">
@@ -1059,9 +1171,16 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
 
 
                 <div className="flex justify-between text-xs text-gray-600">
-                  <span>{payment.nights} nights × {bookingData.noofroom} room(s) × {formatCurrency(parseFloat((roomData?.rate_week_day_peak as string) || (roomData?.rate_week_day_lean as string) || (roomData?.rate as string) || '1000'))}</span>
-                  <span>{formatCurrency(payment.basePrice)}</span>
+                  <span>{payment.nights} nights × {bookingData.noofroom} room(s)</span>
+                  <span>{formatCurrency(payment.basePrice + payment.discount)}</span>
                 </div>
+
+                {payment.discount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Discount ({appliedPromo?.code})</span>
+                    <span>-{formatCurrency(payment.discount)}</span>
+                  </div>
+                )}
 
                 {payment.breakfastCost > 0 && (
                   <div className="flex justify-between">
@@ -1079,25 +1198,8 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
 
                 <div className="flex justify-between border-t pt-2">
                   <span>Subtotal</span>
-                  <span>{formatCurrency(payment.subtotal)}</span>
+                  <span>{formatCurrency(payment.subtotal + payment.discount)}</span>
                 </div>
-
-                {/* <div className="flex justify-between">
-                  <span>Taxes (VAT)</span>
-                  <span>{formatCurrency(payment.taxAmount)}</span>
-                </div> */}
-
-                {/* <div className="flex justify-between">
-                  <span>Service Fee</span>
-                  <span>{formatCurrency(payment.serviceFee)}</span>
-                </div> */}
-
-                {payment.discount > 0 && (
-                  <div className="flex justify-between text-green-600">
-                    <span>Discount ({appliedPromo?.code})</span>
-                    <span>-{formatCurrency(payment.discount)}</span>
-                  </div>
-                )}
 
                 <div className="flex justify-between">
                   <span>Payment Gateway Charges</span>
