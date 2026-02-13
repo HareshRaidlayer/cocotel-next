@@ -36,6 +36,7 @@ export default async function HotelPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      
       <HotelPageClient locale="ph" slug={slug} />
       <Footer data={footerData} />
     </div>

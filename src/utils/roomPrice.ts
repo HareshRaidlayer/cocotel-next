@@ -19,6 +19,24 @@ export function onSeason(date: Date) {
   return [11, 12, 3, 4, 5].includes(month); // peak months
 }
 
+export async function isHoliday(date: Date): Promise<boolean> {
+  const dateStr = date.toISOString().split('T')[0];
+  try {
+    const holidays = await fetchFromAPI<Record<string, unknown>[]>({
+      appName: "app3534482538357",
+      moduleName: "nationalholidays",
+      query: {
+        "sectionData.nationalholidays.date": dateStr,
+        "sectionData.nationalholidays.is_deleted": "0",
+      },
+      limit: 1,
+    });
+    return holidays && holidays.length > 0;
+  } catch {
+    return false;
+  }
+}
+
 // export function getRoomPrice(
 //   room: Room,
 //   checkin?: string | Date
