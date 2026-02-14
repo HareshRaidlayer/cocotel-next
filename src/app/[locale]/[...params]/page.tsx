@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import Header from "@/components/common/Header";
+import SubHeader from "@/components/common/subHeaderSearch";
 import Footer from "../Footer";
 import fs from "fs";
 import path from "path";
@@ -41,6 +42,7 @@ export default async function DynamicRoutePage({ params }: PageProps) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
+        <SubHeader />
         <HotelPageClient
           locale={locale}
           slug={slug}
@@ -67,6 +69,7 @@ export default async function DynamicRoutePage({ params }: PageProps) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
+        <SubHeader />
         <HotelPageClient
           locale={locale}
           slug={slug}
@@ -88,6 +91,7 @@ export default async function DynamicRoutePage({ params }: PageProps) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
+        <SubHeader />
         <HotelPageClient
           locale={locale}
           slug={slug}
@@ -115,6 +119,11 @@ export default async function DynamicRoutePage({ params }: PageProps) {
   // Pattern 6: Booking page with popup closed - /ph/3/3/2/2026-03-23/2026-03-25/2/0/0/jayashri/patil/test@gmail.com/9582587425/1
   if (routeParams.length === 14 && !isNaN(Number(routeParams[0]))) {
     return <PathBasedBookingPage params={params} />;
+  }
+
+  // Pattern 7: Hotel list page - /ph/hotellist (redirect to /hotellist with query params)
+  if (routeParams.length === 1 && routeParams[0] === 'hotellist') {
+    notFound(); // Let Next.js handle the proper hotellist route
   }
 
   // If no pattern matches, return 404

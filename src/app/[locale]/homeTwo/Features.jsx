@@ -267,8 +267,8 @@ const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-
 										3 reviews
 									</span>
 								</div>
-								<div className="bg-white shadow-xl rounded-full text-xs text-black px-2 py-1 font-medium">
-									{tour.discount}
+								<div className="bg-white shadow-xl rounded-full text-xs text-black px-2 py-1 font-medium animate-pulse">
+									<span className="text-red-600 font-bold">{tour.discount}</span>
 								</div>
 							</div>
 
