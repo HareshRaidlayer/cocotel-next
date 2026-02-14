@@ -3,6 +3,10 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
 import Features from "@/app/[locale]/homeTwo/Features";
 import { fetchFromAPI } from "@/lib/api";
 
@@ -171,32 +175,44 @@ export default function PromotionsSection() {
           Find The Best Promotions That Suit Your Needs
         </motion.h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-          {promos.map((promo, i) => (
-            <motion.div
-              key={promo.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              onClick={() => handlePromoClick(promo.id)}
-              className={`relative rounded-xl overflow-hidden shadow-md group cursor-pointer aspect-[320/180] min-w-0 transition-all ${activeTab === promo.id ? "ring-4 ring-green-500 scale-105" : ""
-                }`}
-            >
-              <Image
-                src={promo.image && promo.image !== "NULL" ? promo.image : "/promocode/promo-1.png"}
-                alt={promo.title}
-                fill
-                className="object-cover group-hover:scale-105 transition duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              {activeTab === promo.id && (
-                <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
-                  Active
-                </div>
-              )}
-            </motion.div>
-          ))}
+        <div className="mb-8">
+          <Swiper
+            modules={[Navigation]}
+            navigation
+            spaceBetween={20}
+            slidesPerView={1}
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 4 },
+            }}
+            className="!pb-8"
+          >
+            {promos.map((promo, i) => (
+              <SwiperSlide key={promo.id}>
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  onClick={() => handlePromoClick(promo.id)}
+                  className={`relative rounded-xl overflow-hidden shadow-md group cursor-pointer aspect-[320/180] min-w-0 transition-all ${activeTab === promo.id ? "ring-4 ring-green-500 scale-105" : ""}`}
+                >
+                  <Image
+                    src={promo.image && promo.image !== "NULL" ? promo.image : "/promocode/promo-1.png"}
+                    alt={promo.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  {activeTab === promo.id && (
+                    <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+                      Active
+                    </div>
+                  )}
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
 
         {!activeTab && (
