@@ -12,7 +12,6 @@ async function getFooterData(locale: string = "ph") {
     return data.footer || null;
   } catch (err) {
     console.error(`Error reading footer data for locale ${locale}:`, err);
-    // Try fallback to ph locale
     if (locale !== "ph") {
       try {
         const fallbackPath = path.join(process.cwd(), "src/app/content", "ph", "hometwo.json");
@@ -45,7 +44,6 @@ export default async function AccommodationPromotions() {
 				</div>
 			</div>
 
-			{/* promo cards */}
 			<PromotionsSection />
 			{footerData && <Footer data={footerData} />}
 		</section>

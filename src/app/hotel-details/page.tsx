@@ -3,6 +3,7 @@ import Footer from "../[locale]/Footer";
 import fs from "fs";
 import path from "path";
 import HotelPageClient from "../[locale]/[slug]/HotelPageClient";
+import SubHeader from "@/components/common/subHeaderSearch";
 import { notFound } from "next/navigation";
 
 async function getFooterData(locale: string = "en") {
@@ -36,7 +37,7 @@ export default async function HotelPage({ searchParams }: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+      <SubHeader />
       <HotelPageClient locale="ph" slug={slug} />
       <Footer data={footerData} />
     </div>

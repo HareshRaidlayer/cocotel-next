@@ -95,24 +95,26 @@ const [dateRange, setDateRange] = useState({
   }, [searchQuery, fetchSuggestions]);
 
   const handleSearch = () => {
-    // Check if searchQuery matches a specific hotel
     if (searchQuery && suggestions.length > 0) {
       const exactHotelMatch = suggestions.find(s => 
         s.type === 'hotel' && s.name.toLowerCase() === searchQuery.toLowerCase()
       );
       
       if (exactHotelMatch) {
-        // Redirect directly to hotel details with booking parameters
         const country = activeCountry?.toLowerCase() || 'ph';
         const checkinFormatted = format(dateRange.from, 'dd-MM-yyyy');
         const checkoutFormatted = format(dateRange.to, 'dd-MM-yyyy');
         
-        router.push(`/${country}/${exactHotelMatch.slug}/${checkinFormatted}/${checkoutFormatted}/${rooms}/${adults}/${children}`);
+        const newUrl = `/${country}/${exactHotelMatch.slug}/${checkinFormatted}/${checkoutFormatted}/${rooms}/${adults}/${children}`;
+        console.log('Path to navigate:', newUrl);
+        
+        // Force full page reload
+        window.location = newUrl;
         return;
       }
     }
     
-    // Otherwise, go to hotel list with search parameters
+    const country = activeCountry?.toLowerCase() || 'ph';
     const params = new URLSearchParams();
     if (searchQuery) params.set('q', searchQuery);
     if (activeCountry) params.set('country', activeCountry.toUpperCase());
@@ -127,14 +129,18 @@ const [dateRange, setDateRange] = useState({
 
   const handleSuggestionClick = (suggestion) => {
     if (suggestion.type === 'hotel') {
-      // For hotel clicks, redirect directly to hotel details with booking parameters
       const country = activeCountry?.toLowerCase() || 'ph';
       const checkinFormatted = format(dateRange.from, 'dd-MM-yyyy');
       const checkoutFormatted = format(dateRange.to, 'dd-MM-yyyy');
       
-      router.push(`/${country}/${suggestion.slug}/${checkinFormatted}/${checkoutFormatted}/${rooms}/${adults}/${children}`);
+      const newUrl = `/${country}/${suggestion.slug}/${checkinFormatted}/${checkoutFormatted}/${rooms}/${adults}/${children}`;
+      console.log('Path to navigate:', newUrl);
+      console.log('Suggestion slug:', suggestion.slug);
+      console.log('Country:', country);
+      
+      // Force full page reload
+      window.location = newUrl;
     } else {
-      // For location clicks, search by city name
       setSearchQuery(suggestion.name);
       setLocation(suggestion.location);
       setLocationOpen(false);

@@ -63,8 +63,18 @@ export default function SearchSubHeader() {
   
   
     useEffect(() => {
-      const path = window.location.pathname.replace("/", "");
-      if (path) setActiveCountry(path);
+      const path = window.location.pathname;
+      const segments = path.split('/').filter(Boolean);
+      if (segments.length > 0) {
+        // Check if first segment is a valid country code (2-3 letters)
+        const firstSegment = segments[0];
+        if (firstSegment.length <= 3 && /^[a-z]+$/i.test(firstSegment)) {
+          setActiveCountry(firstSegment);
+        } else {
+          // Default to 'ph' if not a valid country code
+          setActiveCountry('ph');
+        }
+      }
     }, []);
   
     const handleCountryClick = (code: string) => {
