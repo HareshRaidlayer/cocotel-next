@@ -25,7 +25,7 @@ const getGalleryImageSrc = (tour, slideIndex = 0) => {
   return "/images/defualtimg.webp";
 };
 
-const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-cols-4", searchParams }) => {
+const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-cols-4", searchParams, showOriginalPrice = false }) => {
 	const [currentSlides, setCurrentSlides] = useState(
 		tours.map(() => 0)
 	);
@@ -267,9 +267,11 @@ const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-
 										3 reviews
 									</span>
 								</div>
-								<div className="bg-white shadow-xl rounded-full text-xs text-black px-2 py-1 font-medium animate-pulse">
-									<span className="text-red-600 font-bold">{tour.discount}</span>
-								</div>
+								{showOriginalPrice && tour.discount && (
+									<div className="bg-white shadow-xl rounded-full text-xs text-black px-2 py-1 font-medium animate-pulse">
+										<span className="text-red-600 font-bold">{tour.discount}</span>
+									</div>
+								)}
 							</div>
 
 							<button
@@ -304,6 +306,11 @@ const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-
 							</div>
 							<div className="mt-4 flex justify-between items-center">
 								<div>
+									{showOriginalPrice && tour.originalPrice && (
+										<p className="text-sm text-gray-500 line-through">
+											{currencySymbol} {tour.originalPrice}
+										</p>
+									)}
 									<p className="text-xl text-green-600 font-bold">
 										<span className="text-sm text-gray-800 font-medium">
 											From {currencySymbol}
