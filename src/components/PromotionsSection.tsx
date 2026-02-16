@@ -10,6 +10,7 @@ import 'swiper/css/navigation';
 import Features from "@/app/[locale]/homeTwo/Features";
 import { fetchFromAPI } from "@/lib/api";
 
+
 type PromoHotel = {
   id: string;
   name: string;
@@ -66,10 +67,35 @@ export default function PromotionsSection() {
           },
         });
 
-        const hotels = await fetchFromAPI<Record<string, unknown>[]>({
-          appName: "app3534482538357",
-          moduleName: "company",
-          query: {},
+        const [hotels, allRooms] = await Promise.all([
+          fetchFromAPI<Record<string, unknown>[]>({
+            appName: "app3534482538357",
+            moduleName: "company",
+            query: {},
+          }),
+          fetchFromAPI<Record<string, unknown>[]>({
+            appName: "app3534482538357",
+            moduleName: "rooms",
+            query: {
+              "sectionData.rooms.is_deleted": "0",
+              "sectionData.rooms.is_status": "0",
+            },
+          }),
+        ]);
+
+        // Build hotel price map from rooms
+        const hotelPriceMap = new Map<string, number>();
+        allRooms.forEach((room) => {
+          const r = (room.sectionData as Record<string, unknown>).rooms as Record<string, unknown>;
+          const hotelId = String(r.hotel_id);
+          const price = Number(r.rate_week_day_peak ?? 0);
+          
+          if (price > 0) {
+            const currentMin = hotelPriceMap.get(hotelId) ?? Infinity;
+            if (price < currentMin) {
+              hotelPriceMap.set(hotelId, price);
+            }
+          }
         });
 
         const promosWithHotels = promoCodes.map((promo) => {
@@ -105,7 +131,7 @@ export default function PromotionsSection() {
                 slug: hotelData.slug as string,
                 image: primaryImage,
                 location: hotelData.web_city as string,
-                price: Number(hotelData.web_price || 2500),
+                price: hotelPriceMap.get(hotel._id as string) || 2500,
               };
             });
 
@@ -232,8 +258,10 @@ export default function PromotionsSection() {
               <h2 className="text-xl md:text-2xl font-bold text-center mb-2 text-green-700">
                 Available Hotels for {activePromo.title}
               </h2>
+        
+               {/*<div className="bg-green-200 rounded-xl shadow p-4 mt-2 mb-6 w-full mx-auto border border-green-100"> */}
+                <div className="bg-green-200 rounded-xl shadow p-6 mt-4 mb-8 max-w-2xl mx-auto border border-green-100 text-center">
 
-              <div className="bg-green-200 rounded-xl shadow p-4 mt-2 mb-6 w-full mx-auto border border-green-100">
                 <h3 className="text-lg font-semibold text-green-700 mb-2">Offer Details</h3>
                 <ul className="text-gray-700 text-sm space-y-1">
                   <li>
@@ -269,7 +297,6 @@ export default function PromotionsSection() {
                   activePromo.discountWeekday,
                   activePromo.discountTypeWeekday
                 );
-                const savingsAmount = originalPrice - discountedPrice;
 
                 return {
                   title: hotel.name,
@@ -278,7 +305,7 @@ export default function PromotionsSection() {
                   src: [],
                   primaryImage: hotel.image,
                   price: discountedPrice.toFixed(0),
-                  originalPrice: savingsAmount.toFixed(0),
+                  originalPrice: originalPrice.toFixed(0),
                   discount: activePromo.discountTypeWeekday === "percentage"
                     ? `${activePromo.discountWeekday}% OFF`
                     : `₱${activePromo.discountWeekday} OFF`,
@@ -291,6 +318,7 @@ export default function PromotionsSection() {
               currencySymbol="PHP"
               gridCols="lg:grid-cols-4"
               searchParams={{}}
+              showOriginalPrice={true}
             />
           </motion.div>
         )}

@@ -518,8 +518,8 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 														{/* {room.priceFrom && ( */}
 														<>
 															<p className="text-green-600 mb-2 text-xl font-semibold">
-																{/* ${room.priceFrom}{" "} */}
-																₱ {getRoomPrice(room, checkin).toLocaleString()}
+																{/*₱ ${room.priceFrom}{" "} */}
+																PHP {getRoomPrice(room, checkin).toLocaleString()}
 																<span className="text-gray-500 text-sm ml-2">
 																	per night
 																</span>

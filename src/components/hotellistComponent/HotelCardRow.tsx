@@ -223,7 +223,7 @@ export default function HotelCardRow({ hotel, searchParams }: Props) {
                 <p className="text-lg font-bold text-gray-900 mr-5">
                   <span className="text-xs text-gray-500">From</span>{" "}
                   {hotel.price.toLocaleString()}{" "}
-                  <span className="text-xs text-gray-500">₱</span>
+                  <span className="text-xs text-gray-500">PHP</span>
                 </p>
                 <Button
                   name="Book Now"
