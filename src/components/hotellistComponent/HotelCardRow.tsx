@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import { Hotel } from "@/types/hotel";
 import DOMPurify from "dompurify";
 import { useRouter } from "next/navigation";
+import { usePriceConversion } from "@/lib/usePriceConversion";
 
 interface ExtendedHotel extends Omit<Hotel, 'amenities'> {
   images?: string[];
@@ -26,6 +27,7 @@ interface Props {
 }
 
 export default function HotelCardRow({ hotel, searchParams }: Props) {
+  const { formatPrice } = usePriceConversion();
   const images = hotel.images && hotel.images.length > 0
     ? hotel.images
     : hotel.image ? [hotel.image] : ["/images/defualtimg.webp"];
@@ -222,8 +224,7 @@ export default function HotelCardRow({ hotel, searchParams }: Props) {
               <div className="flex justify-between items-center mt-4">
                 <p className="text-lg font-bold text-gray-900 mr-5">
                   <span className="text-xs text-gray-500">From</span>{" "}
-                  {hotel.price.toLocaleString()}{" "}
-                  <span className="text-xs text-gray-500">PHP</span>
+                  {formatPrice(hotel.price)}
                 </p>
                 <Button
                   name="Book Now"

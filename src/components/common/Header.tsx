@@ -12,6 +12,16 @@ import { loginUser, registerUser } from '@/lib/api-auth';
 
 import { fetchFromAPI } from "@/lib/api";
 import { useLocale } from '@/lib/locale-context';
+import { useCurrency } from '@/lib/currency-context';
+
+interface Country {
+  code: string;
+  name: string;
+  currency: string;
+  symbol: string;
+  currencyRate: number;
+  image: string;
+}
 
 // Define the Language interface
 interface Language {
@@ -30,12 +40,36 @@ interface LanguageApiItem {
   };
 }
 
+// Define the Country interface
+interface Country {
+  code: string;
+  name: string;
+  currency: string;
+  symbol: string;
+  image: string;
+}
+interface CountryApiItem {
+  sectionData: {
+    country: {
+      countrycode: string;
+      countryname: string;
+      currency: string;
+      currencysymbol: string;
+      image: string;
+      is_active?: boolean;
+      tag?: string;
+    };
+  };
+}
+
 
 const Header = () => {
   const { locale, setLocale, t } = useLocale();
+  const { selectedCountry, setSelectedCountry, countries } = useCurrency();
   const { data: session } = useSession();
   const APP_NAME = 'app3534482538357';
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<Language | null>(null);
   const [languages, setLanguages] = useState<Language[]>([]);
@@ -200,6 +234,12 @@ const Header = () => {
     }
   }, [locale, languages]);
 
+  // Handle country change
+  const handleCountryChange = (country: Country) => {
+    setSelectedCountry(country);
+    setShowCountryDropdown(false);
+  };
+
   // Handle language change
   const handleLanguageChange = (language: Language) => {
     setSelectedLanguage(language);
@@ -230,6 +270,39 @@ const Header = () => {
 
         {/* Right Buttons */}
         <div className="flex items-center space-x-4">
+          {/* Currency Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+              className="flex items-center gap-2 px-3 py-1 rounded text-sm font-medium text-white bg-[#4CAA42] hover:bg-green-600"
+            >
+              {selectedCountry ? `${selectedCountry.currency} - ${selectedCountry.symbol}` : 'Currency'} <FiChevronDown />
+            </button>
+            {showCountryDropdown && (
+              <ul className="absolute right-0 mt-2 bg-white border rounded shadow w-56 z-50">
+                <div className="bg-[#4CAA42] rounded-t-[5px] text-white font-semibold p-2 flex items-center justify-between">
+                  <span>Currency</span>
+                  <div
+                    onClick={() => setShowCountryDropdown(false)}
+                    className="bg-white text-[#4CAA42] cursor-pointer text-sm font-bold p-1 rounded-full"
+                  >
+                    <RxCross2 />
+                  </div>
+                </div>
+                {countries.map((country) => (
+                  <li
+                    key={country.code}
+                    onClick={() => handleCountryChange(country)}
+                    className="px-4 py-2 hover:bg-green-100 text-sm text-green-700 cursor-pointer flex items-center gap-2"
+                  >
+                    <Image src={country.image} alt={country.name} width={20} height={15} className="object-cover" />
+                    {country.name} - {country.symbol}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
           {/* Language Dropdown */}
           <div className="relative">
             <button

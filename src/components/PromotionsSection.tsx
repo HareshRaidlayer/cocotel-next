@@ -88,7 +88,8 @@ export default function PromotionsSection() {
         allRooms.forEach((room) => {
           const r = (room.sectionData as Record<string, unknown>).rooms as Record<string, unknown>;
           const hotelId = String(r.hotel_id);
-          const price = Number(r.rate_week_day_peak ?? 0);
+          const priceStr = r.rate_week_day_peak;
+          const price = priceStr ? parseFloat(String(priceStr).replace(/,/g, '')) : 0;
           
           if (price > 0) {
             const currentMin = hotelPriceMap.get(hotelId) ?? Infinity;

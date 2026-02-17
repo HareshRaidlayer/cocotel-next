@@ -4,6 +4,7 @@ import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { Hotel } from "@/types/hotel";
 import { Star, MapPin, Coffee, ParkingCircle } from "lucide-react";
+import { usePriceConversion } from "@/lib/usePriceConversion";
 
 interface Props {
     hotel: Hotel;
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export default function HotelCardBlock({ hotel, onQuickView }: Props) {
+    const { formatPrice } = usePriceConversion();
+    
     return (
         <div className="relative bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="relative h-[200px]">
@@ -120,8 +123,7 @@ export default function HotelCardBlock({ hotel, onQuickView }: Props) {
     <div className="flex justify-between items-center mt-4">
         <p className="text-lg font-bold text-gray-900">
             <span className="text-xs text-gray-500">From</span>{" "}
-            {hotel.price.toLocaleString()}{" "}
-            <span className="text-xs text-gray-500">₱</span>
+            {formatPrice(hotel.price)}
         </p>
         <Button name="Book Now" />
     </div>

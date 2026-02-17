@@ -10,11 +10,11 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Button from "@/components/ui/Button";
 import BookingButton from "@/components/BookingButton";
 import { fetchFromAPI } from "@/lib/api";
 import { ApiResponseItem, RoomApiItem, RoomGalleryApiItem, AmenityApiItem, GalleryItem } from "@/types/hotel";
 import { getRoomPrice } from "@/utils/roomPrice";
+import { usePriceConversion } from "@/lib/usePriceConversion";
 
 type Room = {
 	_id: string;      // Mongo ID (IMPORTANT)
@@ -61,6 +61,7 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 		title: string;
 		icon?: string;
 	};
+const { formatPrice } = usePriceConversion();
 
 	const [amenities, setAmenities] = useState<Amenity[]>([]);
 
@@ -519,7 +520,9 @@ export default function HotelPageClient({ locale, slug, checkin, checkout, roomC
 														<>
 															<p className="text-green-600 mb-2 text-xl font-semibold">
 																{/*₱ ${room.priceFrom}{" "} */}
-																PHP {getRoomPrice(room, checkin).toLocaleString()}
+																{/* PHP {getRoomPrice(room, checkin).toLocaleString()} */}
+																
+																{formatPrice(getRoomPrice(room, checkin))}
 																<span className="text-gray-500 text-sm ml-2">
 																	per night
 																</span>

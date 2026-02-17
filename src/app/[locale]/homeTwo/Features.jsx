@@ -6,6 +6,7 @@ import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
+import { usePriceConversion } from "@/lib/usePriceConversion";
 const getPrimaryImageSrc = (tour) => {
   // For main card view - show primary image only
   if (tour.primaryImage && tour.primaryImage.trim() && tour.primaryImage !== 'null' && tour.primaryImage !== 'undefined') {
@@ -26,6 +27,7 @@ const getGalleryImageSrc = (tour, slideIndex = 0) => {
 };
 
 const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-cols-4", searchParams, showOriginalPrice = false }) => {
+	const { formatPrice, convertPrice, currencySymbol: currentSymbol } = usePriceConversion();
 	const [currentSlides, setCurrentSlides] = useState(
 		tours.map(() => 0)
 	);
@@ -241,7 +243,7 @@ const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-
 								Quick View
 							</button>
 							<div className="absolute bottom-0 right-0 bg-green-600 text-white px-3 py-1 text-xs font-semibold">
-								save {currencySymbol} {tour.originalPrice}
+								save {currentSymbol} {convertPrice(parseFloat(tour.originalPrice) || 0).toFixed(2)}
 							</div>
 
 							<div className="absolute top-2 right-0 flex justify-between items-center w-full z-10 p-1">
@@ -308,14 +310,14 @@ const Features = ({ tours, title, subtitle, currencySymbol, gridCols = "lg:grid-
 								<div>
 									{showOriginalPrice && tour.originalPrice && (
 										<p className="text-sm text-gray-500 line-through">
-											{currencySymbol} {tour.originalPrice}
+											{formatPrice(parseFloat(tour.originalPrice) || 0)}
 										</p>
 									)}
 									<p className="text-xl text-green-600 font-bold">
 										<span className="text-sm text-gray-800 font-medium">
-											From {currencySymbol}
+											From
 										</span>{" "}
-										{tour.price}
+										{formatPrice(parseFloat(tour.price) || 0)}
 									</p>
 								</div>
 								<button 
