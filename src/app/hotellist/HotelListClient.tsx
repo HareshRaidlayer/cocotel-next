@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import HotelListMain from "@/components/hotellistComponent/HotelListMain";
 import { Hotel, AmenityApiItem, TagApiItem } from "@/types/hotel";
+
 
 const ITEMS_PER_PAGE = 12;
 
@@ -13,13 +14,15 @@ interface HotelListClientProps {
   tags: TagApiItem[];
 }
 
-export default function HotelListClient({ initialHotels, amenities, tags }: HotelListClientProps) {
+function HotelListClientComponent({ initialHotels, amenities, tags }: HotelListClientProps) {
+  const searchParams = useSearchParams();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState(20000);
-  
-  const searchParams = useSearchParams();
+  const [sortBy, setSortBy] = useState("default");
+
   const searchQuery = searchParams?.get('q');
   const checkin = searchParams?.get('checkin');
   const checkout = searchParams?.get('checkout');
@@ -27,33 +30,40 @@ export default function HotelListClient({ initialHotels, amenities, tags }: Hote
   const adults = searchParams?.get('adults');
   const children = searchParams?.get('children');
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedAmenities, selectedTags, maxPrice, sortBy, searchQuery]);
+
   const filteredHotels = useMemo(() => {
-    return initialHotels.filter(hotel => {
-      // Price filter - only apply if price is less than max (20000)
+    let filtered = initialHotels.filter(hotel => {
       if (maxPrice < 20000 && hotel.price > maxPrice) return false;
-      //  if (hotel.price > maxPrice) return false;
       if (searchQuery) {
         const searchTerm = searchQuery.toLowerCase();
         const hotelName = hotel.name.toLowerCase();
         const hotelLocation = hotel.location.toLowerCase();
         const hotelDescription = (hotel.description || '').toLowerCase();
-        
+
         const matchesName = hotelName.includes(searchTerm);
         const matchesLocation = hotelLocation.includes(searchTerm);
         const matchesDescription = hotelDescription.includes(searchTerm);
-        
+
         const searchWords = searchTerm.split(' ').filter(word => word.length > 2);
-        const matchesWords = searchWords.some(word => 
-          hotelName.includes(word) || 
-          hotelLocation.includes(word) || 
+        const matchesWords = searchWords.some(word =>
+          hotelName.includes(word) ||
+          hotelLocation.includes(word) ||
           hotelDescription.includes(word)
         );
-        
+
         if (!matchesName && !matchesLocation && !matchesDescription && !matchesWords) {
           return false;
         }
       }
-      
+
       if (selectedAmenities.length > 0) {
         const hasAllAmenities = selectedAmenities.every(amenityId =>
           hotel.amenities?.includes(amenityId)
@@ -70,21 +80,31 @@ export default function HotelListClient({ initialHotels, amenities, tags }: Hote
 
       return true;
     });
-  }, [initialHotels, selectedAmenities, selectedTags, searchQuery, maxPrice]);
+
+    // Apply sorting
+    if (sortBy === "priceHigh") {
+      filtered = [...filtered].sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (sortBy === "priceLow") {
+      filtered = [...filtered].sort((a, b) => (a.price || 0) - (b.price || 0));
+    }
+
+    return filtered;
+  }, [initialHotels, selectedAmenities, selectedTags, searchQuery, maxPrice, sortBy]);
 
   const handleAmenityChange = (ids: string[]) => {
     setSelectedAmenities(ids);
-    setCurrentPage(1);
   };
 
   const handleTagChange = (ids: string[]) => {
     setSelectedTags(ids);
-    setCurrentPage(1);
   };
 
   const handlePriceChange = (price: number) => {
     setMaxPrice(price);
-    setCurrentPage(1);
+  };
+
+  const handleSortChange = (sort: string) => {
+    setSortBy(sort);
   };
 
   const totalPages = Math.max(1, Math.ceil(filteredHotels.length / ITEMS_PER_PAGE));
@@ -121,14 +141,19 @@ export default function HotelListClient({ initialHotels, amenities, tags }: Hote
         onAmenityChange={handleAmenityChange}
         onTagChange={handleTagChange}
         onPriceChange={handlePriceChange}
+        onSortChange={handleSortChange}
+        selectedSort={sortBy}
         searchParams={{ checkin, checkout, rooms, adults, children }}
       />
 
       <div className="flex justify-center gap-2 mt-5 mb-5 flex-wrap">
         <button
           disabled={currentPage === 1}
-          onClick={() => setCurrentPage((p) => p - 1)}
-          className="px-4 py-2 border rounded disabled:opacity-40"
+          onClick={(e) => {
+            e.preventDefault();
+            setCurrentPage(currentPage - 1);
+          }}
+          className="px-4 py-2 border rounded disabled:opacity-40 hover:bg-gray-100 transition"
         >
           Prev
         </button>
@@ -139,12 +164,14 @@ export default function HotelListClient({ initialHotels, amenities, tags }: Hote
           ) : (
             <button
               key={`page-${page}-${i}`}
-              onClick={() => setCurrentPage(page)}
-              className={`px-3 py-2 rounded-md border text-sm ${
-                page === currentPage
+              onClick={(e) => {
+                e.preventDefault();
+                setCurrentPage(page as number);
+              }}
+              className={`px-3 py-2 rounded-md border text-sm transition ${page === currentPage
                   ? "bg-green-500 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100"
-              }`}
+                }`}
             >
               {page}
             </button>
@@ -153,8 +180,11 @@ export default function HotelListClient({ initialHotels, amenities, tags }: Hote
 
         <button
           disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((p) => p + 1)}
-          className="px-4 py-2 border rounded disabled:opacity-40"
+          onClick={(e) => {
+            e.preventDefault();
+            setCurrentPage(currentPage + 1);
+          }}
+          className="px-4 py-2 border rounded disabled:opacity-40 hover:bg-gray-100 transition"
         >
           Next
         </button>
@@ -162,3 +192,5 @@ export default function HotelListClient({ initialHotels, amenities, tags }: Hote
     </>
   );
 }
+
+export default HotelListClientComponent;

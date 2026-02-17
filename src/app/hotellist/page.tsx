@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import HotelListClient from "./HotelListClient";
 import { fetchFromAPI } from "@/lib/api";
 import { Hotel, ApiResponseItem, AmenityApiItem, TagApiItem, RoomApiItem } from "@/types/hotel";
+import Header from "@/components/common/Header";
+import SubHeader from "@/components/common/subHeaderSearch";
 
 // Force dynamic rendering to avoid build timeout
 export const dynamic = 'force-dynamic';
@@ -36,7 +38,7 @@ export default async function HotelListPage() {
     // Parse string to number properly
     const priceStr = r.rate_week_day_peak;
     const price = priceStr ? parseFloat(String(priceStr).replace(/,/g, '')) : 0;
-    
+
     if (price > 0) {
       const currentMin = hotelPriceMap.get(hotelId) ?? Infinity;
       if (price < currentMin) {
@@ -51,9 +53,8 @@ export default async function HotelListPage() {
     return {
       id: item._id,
       name: c.web_title || c.companyName || c.name || "Unknown Hotel",
-      location: `${c.address_line1 || c.address || ""}, ${
-        c.web_province || c.province || c.city || ""
-      }`.replace(/^,\s*|,\s*$/g, ""),
+      location: `${c.address_line1 || c.address || ""}, ${c.web_province || c.province || c.city || ""
+        }`.replace(/^,\s*|,\s*$/g, ""),
       price: hotelPriceMap.get(item._id) || 0,
       rating: 5,
       reviews: 0,
@@ -95,12 +96,17 @@ export default async function HotelListPage() {
   ]);
 
   return (
-    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
-      <HotelListClient 
-        initialHotels={hotels}
-        amenities={amenities}
-        tags={tags}
-      />
-    </Suspense>
+    <div>
+      <Header />
+      <SubHeader />
+      <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+        <HotelListClient
+          key="hotel-list-stable"
+          initialHotels={hotels}
+          amenities={amenities}
+          tags={tags}
+        />
+      </Suspense>
+    </div>
   );
 }
