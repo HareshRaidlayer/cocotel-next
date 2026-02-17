@@ -1,5 +1,5 @@
 import { fetchFromAPI } from "@/lib/api";
-import { ApiResponseItem, RoomApiItem } from "@/types/hotel";
+import { RoomApiItem } from "@/types/hotel";
 
 export type Room = {
   price?: number | string;
@@ -72,11 +72,13 @@ export function getRoomPrice(
   const peak = onSeason(date);
   const weekend = isWeekend(date);
 
-  if (peak && weekend) return Number(room.rate_week_end_peak ?? 0);
-  if (peak && !weekend) return Number(room.rate_week_day_peak ?? 0);
-  if (!peak && weekend) return Number(room.rate_week_end_lean ?? 0);
+  const parsePrice = (val: number | string | undefined): number => val ? parseFloat(String(val).replace(/,/g, '')) : 0;
 
-  return Number(room.rate_week_day_lean ?? 0);
+  if (peak && weekend) return parsePrice(room.rate_week_end_peak);
+  if (peak && !weekend) return parsePrice(room.rate_week_day_peak);
+  if (!peak && weekend) return parsePrice(room.rate_week_end_lean);
+
+  return parsePrice(room.rate_week_day_lean);
 }
 
 export async function getMinRoomPriceByHotelId(
@@ -98,9 +100,8 @@ export async function getMinRoomPriceByHotelId(
 
   rooms.forEach((room) => {
     const r = room.sectionData.rooms;
-
-    // choose ONE rate column minimum
-    const price = Number(r.rate_week_day_peak ?? 0);
+    const priceStr = r.rate_week_day_peak;
+    const price = priceStr ? parseFloat(String(priceStr).replace(/,/g, '')) : 0;
 
     if (price > 0) {
       prices.push(price);

@@ -700,16 +700,18 @@ export default function PathBasedBookingPage({ params }: PathBasedBookingPagePro
 
       if (result.success) {
         if (selectedPaymentMethod === "Creditcard") {
-          console.log('paymentcard:', bookingId, finalPayable);
+          const formattedAmount = Number(finalPayable).toFixed(2);
+          console.log('paymentcard:', bookingId, formattedAmount);
           router.push(
-            `/creditcard?bookingid=${bookingId}&amount=${finalPayable}`
+            `/creditcard?bookingid=${bookingId}&amount=${formattedAmount}`
           );
         }
 
         if (selectedPaymentMethod === "GCASH") {
-          console.log('paymentgacsh:', bookingId, finalPayable);
+          const formattedAmount = Number(finalPayable).toFixed(2);
+          console.log('paymentgacsh:', bookingId, formattedAmount);
           router.push(
-            `/gcash?bookingid=${bookingId}&amount=${finalPayable}&PH_GCASH=1`
+            `/gcash?bookingid=${bookingId}&amount=${formattedAmount}&PH_GCASH=1`
           );
         }
 

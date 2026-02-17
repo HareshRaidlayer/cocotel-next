@@ -3,6 +3,9 @@ import HotelListClient from "./HotelListClient";
 import { fetchFromAPI } from "@/lib/api";
 import { Hotel, ApiResponseItem, AmenityApiItem, TagApiItem, RoomApiItem } from "@/types/hotel";
 
+// Force dynamic rendering to avoid build timeout
+export const dynamic = 'force-dynamic';
+
 // Server Component - fetch data here
 export default async function HotelListPage() {
   // Fetch hotels and rooms in parallel
@@ -30,7 +33,9 @@ export default async function HotelListPage() {
   allRooms.forEach((room) => {
     const r = room.sectionData.rooms;
     const hotelId = r.hotel_id;
-    const price = Number(r.rate_week_day_peak ?? 0);
+    // Parse string to number properly
+    const priceStr = r.rate_week_day_peak;
+    const price = priceStr ? parseFloat(String(priceStr).replace(/,/g, '')) : 0;
     
     if (price > 0) {
       const currentMin = hotelPriceMap.get(hotelId) ?? Infinity;

@@ -108,7 +108,7 @@ const tours: TourCard[] = await Promise.all(
       country: data.country,
       src: galleryImages,
       primaryImage,
-      price: minRoomPrice > 0 ? minRoomPrice.toLocaleString() : "0",
+      price: minRoomPrice > 0 ? String(minRoomPrice) : "0",
       originalPrice: "",
       discount: "",
       category: "Resort",
