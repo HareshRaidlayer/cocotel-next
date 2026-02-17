@@ -4,9 +4,7 @@ import { useState } from "react";
 import HotelFilterUI from "./HotelFilter";
 import Features from "@/app/[locale]/homeTwo/Features";
 import HotelCardRow from "./HotelCardRow"
-import Header from "../common/Header";
-import SubHeader from "../common/subHeaderSearch";
-import { Filter, LayoutGrid, List, Star, TrendingUp, TrendingDown, Flame } from "lucide-react";
+import { Filter, LayoutGrid, List, TrendingUp, TrendingDown } from "lucide-react";
 import Image from "next/image";
 import { Hotel, AmenityApiItem, TagApiItem } from "@/types/hotel";
 
@@ -20,6 +18,8 @@ interface Props {
     onAmenityChange: (ids: string[]) => void;
     onTagChange: (ids: string[]) => void;
     onPriceChange: (price: number) => void;
+    onSortChange: (sort: string) => void;
+    selectedSort: string;
     searchParams?: {
         checkin?: string | null;
         checkout?: string | null;
@@ -38,32 +38,19 @@ export default function HotelListMain({
     onAmenityChange,
     onTagChange,
     onPriceChange,
+    onSortChange,
+    selectedSort,
     searchParams
 }: Props) {
     const [view, setView] = useState<"card" | "list">("card");
-
-    // Hotels are already filtered in parent component
-    const filteredHotels = hotels;
-
-    // Show message when no hotels match filters
-    const showNoResults = filteredHotels.length === 0;
-
-    // const [selectedSort, setSelectedSort] = useState(sortOptions?.[0]?.value || "");
     const [quickViewIndex, setQuickViewIndex] = useState<number | null>(null);
     const [currentSlide, setCurrentSlide] = useState(0);
 
-
-
     const options = [
         {
-            label: "Popular",
-            value: "popular",
-            icon: Flame,
-        },
-        {
-            label: "Top-rated",
-            value: "topRated",
-            icon: Star,
+            label: "Default",
+            value: "default",
+            icon: List,
         },
         {
             label: "Price (Highest first)",
@@ -77,9 +64,13 @@ export default function HotelListMain({
         },
     ];
 
-    const [selectedSort, setSelectedSort] = useState(options[0].value);
     const [open, setOpen] = useState(false);
     const [filterOpen, setFilterOpen] = useState(false);
+
+    const filteredHotels = hotels;
+    const showNoResults = filteredHotels.length === 0;
+
+    // console.log('HotelListMain - Hotels received:', hotels.length, 'Hotels:', hotels.map(h => h.name));
 
 
     const getGallery = (index: number) => {
@@ -124,40 +115,6 @@ export default function HotelListMain({
 
     return (
         <div>
-            <Header />
-            <SubHeader />
-            {/* top header green section */}
-            {/* <section className="container mx-auto">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-around bg-white border-b border-green-500 text-green-600 pt-0 md:pt-5 pb-5 px-2 lg:px-0">
-                    <div className="flex items-start space-x-2 p-2 sm:p-0">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" />
-                            <path d="M10 4a1 1 0 011 1v6a1 1 0 11-2 0V5a1 1 0 011-1z" />
-                        </svg>
-                        <span className="text-sm font-semibold">{t('hero.feature1')}</span>
-                    </div>
-                    <div className="flex items-start space-x-2 p-2 sm:p-0">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 2a1 1 0 011 1v8a1 1 0 11-2 0V3a1 1 0 011-1zm5 5a1 1 0 011 1v3a1 1 0 11-2 0V8a1 1 0 011-1z" />
-                        </svg>
-                        <span className="text-sm font-semibold">{t('hero.feature2')}</span>
-                    </div>
-                    <div className="flex items-start space-x-2 p-2 sm:p-0">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM7 9a1 1 0 100 2h6a1 1 0 100-2H7z" />
-                        </svg>
-                        <span className="text-sm font-semibold">{t('hero.feature3')}</span>
-                    </div>
-                    <div className="flex items-start space-x-2 p-2 sm:p-0">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                            <path d="M2 10a8 8 0 1116 0 8 8 0 01-16 0zm8-6a6 6 0 100 12 6 6 0 000-12z" />
-                        </svg>
-                        <span className="text-sm font-semibold">{t('hero.feature4')}</span>
-                    </div>
-                </div>
-            </section> */}
-
             <div className="bg-gray-50 min-h-screen py-8" >
                 <div className="max-w-screen-2xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
 
@@ -339,7 +296,7 @@ export default function HotelListMain({
                                                 <div
                                                     key={opt.value}
                                                     onClick={() => {
-                                                        setSelectedSort(opt.value);
+                                                        onSortChange(opt.value);
                                                         setOpen(false);
                                                     }}
                                                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 cursor-pointer"
@@ -430,7 +387,6 @@ export default function HotelListMain({
                             height={600}
                             className="max-h-[80vh] object-contain"
                         />
-
 
                         <button
                             className="absolute right-4 text-white text-4xl bg-black/50 rounded-full p-2"

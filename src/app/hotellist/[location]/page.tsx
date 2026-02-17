@@ -17,7 +17,7 @@ export default function LocationHotelListPage() {
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState(20000);
-  
+
   const params = useParams();
   const location = params?.location as string;
 
@@ -32,12 +32,12 @@ export default function LocationHotelListPage() {
         const searchTerm = location.toLowerCase();
         const hotelName = hotel.name.toLowerCase();
         const hotelLocation = hotel.location.toLowerCase();
-        
+
         if (!hotelName.includes(searchTerm) && !hotelLocation.includes(searchTerm)) {
           return false;
         }
       }
-      
+
       // Check amenities filter
       if (selectedAmenities.length > 0) {
         const hasAllAmenities = selectedAmenities.every(amenityId =>
@@ -130,7 +130,7 @@ export default function LocationHotelListPage() {
           "sectionData.amenities.is_status": "0",
           "sectionData.amenities.is_deleted": "0",
         });
-        
+
         const amenityData = await fetchFromAPI<AmenityApiItem[]>({
           appName: "app3534482538357",
           moduleName: "amenities",
@@ -148,7 +148,7 @@ export default function LocationHotelListPage() {
           appName: "app3534482538357",
           moduleName: "tags",
           query: {
-           // "sectionData.tag.is_active": true,
+            // "sectionData.tag.is_active": true,
             "sectionData.tags.is_status": "0",
             "sectionData.tags.is_deleted": "0",
           },
@@ -223,6 +223,8 @@ export default function LocationHotelListPage() {
         onAmenityChange={handleAmenityChange}
         onTagChange={handleTagChange}
         onPriceChange={handlePriceChange}
+        onSortChange={() => { }}
+        selectedSort="default"
       />
 
       {/* Pagination */}
@@ -248,8 +250,8 @@ export default function LocationHotelListPage() {
               key={`page-${page}-${i}`}
               onClick={() => setCurrentPage(page)}
               className={`px-3 py-2 rounded-md border text-sm ${page === currentPage
-                  ? "bg-green-500 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
+                ? "bg-green-500 text-white"
+                : "bg-white text-gray-700 hover:bg-gray-100"
                 }`}
             >
               {page}
