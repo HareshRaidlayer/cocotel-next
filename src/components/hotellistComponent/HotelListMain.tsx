@@ -376,7 +376,7 @@ export default function HotelListMain({
                                     primaryImage: hotel.image && hotel.image.trim() && hotel.image !== 'null' && hotel.image !== 'undefined'
                                         ? hotel.image
                                         : "/images/defualtimg.webp",
-                                    price: hotel.price.toLocaleString() || "2000",
+                                    price: String(hotel.price || 0),
                                     originalPrice: "500",
                                     discount: hotel.discount || "15% OFF",
                                     category: hotel.category || "Hotel",
