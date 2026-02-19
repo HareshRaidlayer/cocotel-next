@@ -264,7 +264,7 @@ const Header = () => {
             <Link href="/events" className="hover:underline">{t('header.events')}</Link>
           </li>
           <li>
-            <Link href="#" className="hover:underline">{t('header.partner')}</Link>
+            <Link href="/partner-with-us" className="hover:underline">{t('header.partner')}</Link>
           </li>
         </ul>
 
@@ -452,7 +452,7 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link href="#" onClick={() => setShowMobileMenu(false)}>
+              <Link href="/partner-with-us" onClick={() => setShowMobileMenu(false)}>
                 {t('header.partner')}
               </Link>
             </li>
