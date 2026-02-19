@@ -209,7 +209,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
       className="bg-green-600 text-white rounded-xl p-8 shadow-lg h-full flex flex-col justify-center"
     >
       <h3 className="text-xl font-semibold mb-4">
-        {sectionFourActive[currentSlide]?.sectionfourtitle || "Requirements"}
+        {sectionFourActive[currentSlide]?.sectionfourtitle || ""}
       </h3>
       <div className="text-sm whitespace-pre-line">{sectionFourActive[currentSlide]?.sectionfourdescription || ""}</div>
     </motion.div>
