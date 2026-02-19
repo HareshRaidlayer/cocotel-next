@@ -61,29 +61,36 @@ export async function POST(request: NextRequest) {
     }
 
     // Send email via Elastic Email
-    const emailParams = new URLSearchParams({
-      apikey: process.env.ELASTIC_EMAIL_API_KEY || "",
-      from: "admin@cocotel.com.ph",
-      to: "jayashri@raidlayer.com",
-      subject: "New Partner Inquiry - Cocotel",
-      bodyHtml: `
-        <h2>New Partner Inquiry</h2>
-        <p><strong>Full Name:</strong> ${fullName}</p>
-        <p><strong>Resort/Hotel Name:</strong> ${resortName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Contact Number:</strong> ${contactNumber}</p>
-        <p><strong>Number of Rooms:</strong> ${numberOfRooms}</p>
-        <p><strong>Number of Hotels/Resorts:</strong> ${numberOfHotels}</p>
-        <p><strong>Address:</strong> ${address}</p>
-        <p><strong>Message:</strong> ${message}</p>
-      `,
-    });
-
-    await fetch("https://api.elasticemail.com/v2/email/send", {
+    const emailResponse = await fetch("https://api.elasticemail.com/v2/email/send", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: emailParams.toString(),
+      body: new URLSearchParams({
+        apikey: process.env.ELASTIC_EMAIL_API_KEY || "",
+        from: "admin@cocotel.com.ph",
+        fromName: "Cocotel Admin",
+        to: "jayashriraidlayer@gmail.com",
+        subject: "New Partner Inquiry - Cocotel",
+        bodyHtml: `
+          <h1>Cocotel Partner</h1>
+          <h4>Full Name: ${fullName}</h4>
+          <h4>Contact Number: ${contactNumber}</h4>
+          <h4>Email: ${email}</h4>
+          <h4>Location: ${address}</h4>
+          <h4>Resort Name: ${resortName}</h4>
+          <h4>Number Of Rooms: ${numberOfRooms}</h4>
+          <h4>Number Of Hotels: ${numberOfHotels}</h4>
+          <h4>Message: ${message}</h4>
+        `,
+        isTransactional: "false",
+      }).toString(),
     });
+
+    const emailResult = await emailResponse.json();
+    console.log("Email send result:", emailResult);
+
+    if (!emailResult.success) {
+      console.error("Email send failed:", emailResult);
+    }
 
     return NextResponse.json({ message: "Form submitted successfully" });
   } catch (error) {
