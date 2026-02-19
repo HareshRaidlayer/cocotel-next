@@ -273,7 +273,7 @@ export default function HotelListMain({
                             <div className="relative">
                                 <button
                                     onClick={() => setOpen(!open)}
-                                    className="flex items-center justify-between gap-2 border px-4 py-2 rounded-md bg-white shadow-sm w-56"
+                                    className="flex items-center justify-between gap-2 border px-1 py-2 rounded-md bg-white shadow-sm w-56"
                                 >
                                     {(() => {
                                         const active = options.find(o => o.value === selectedSort);
