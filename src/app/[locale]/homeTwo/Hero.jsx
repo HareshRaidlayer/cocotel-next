@@ -20,9 +20,11 @@ const Hero = ({ data }) => {
   const [countries, setCountries] = useState([]);
   const [activeCountry, setActiveCountry] = useState(params?.locale || "ph");
   const [sectionOne, setSectionOne] = useState(null);
+  const [countriesLoading, setCountriesLoading] = useState(true);
 
   useEffect(() => {
     const fetchCountries = async () => {
+      setCountriesLoading(true);
       try {
         /* 1️⃣ Fetch homesection */
         const homeRes = await fetchFromAPI({
@@ -69,6 +71,8 @@ const Hero = ({ data }) => {
         setCountries(formattedCountries);
       } catch (err) {
         console.error("Error loading countries", err);
+      } finally {
+        setCountriesLoading(false);
       }
     };
 
@@ -114,18 +118,28 @@ const Hero = ({ data }) => {
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center items-center text-center text-white">
-          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3 text-shadow-c-lg">
-            {sectionOne?.sectiononebannerheading || "Just Unpacked!"}{/* {t('hero.title')}  */}
-          </h1>
-          <p className="text-sm font-medium lg:text-md max-w-5xl mb-3 text-shadow-c-lg">
-            {sectionOne?.sectiononebannersubheading || "no text"} {/* {t('hero.subtitle')} */}
-          </p>
+          {countriesLoading ? (
+            <>
+              <div className="h-10 md:h-12 lg:h-14 w-64 md:w-96 bg-white/20 rounded-lg mb-3 animate-pulse" />
+              <div className="h-5 lg:h-6 w-80 md:w-[500px] bg-white/20 rounded-lg mb-3 animate-pulse" />
+            </>
+          ) : (
+            <>
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3 text-shadow-c-lg">
+                {sectionOne?.sectiononebannerheading || "Just Unpacked!"}{/* {t('hero.title')}  */}
+              </h1>
+              <p className="text-sm font-medium lg:text-md max-w-5xl mb-3 text-shadow-c-lg">
+                {sectionOne?.sectiononebannersubheading || "no text"} {/* {t('hero.subtitle')} */}
+              </p>
+            </>
+          )}
 
           {/* Search Bar */}
           <SearchBar 
             countries={countries}
             activeCountry={activeCountry}
             onCountryClick={handleCountryClick}
+            countriesLoading={countriesLoading}
           />
         </div>
       </section>
@@ -137,6 +151,7 @@ const Hero = ({ data }) => {
           activeCountry={activeCountry}
           onCountryClick={handleCountryClick}
           isMobile={true}
+          countriesLoading={countriesLoading}
         />
       </section>
       <section className="container mx-auto">

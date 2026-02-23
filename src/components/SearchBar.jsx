@@ -16,7 +16,7 @@ const locations = {
   aus: ["Sydney", "Melbourne", "Brisbane"],
 };
 
-const SearchBar = ({ countries, activeCountry, onCountryClick, isMobile = false,showCountries = true, variant = "default" }) => {
+const SearchBar = ({ countries, activeCountry, onCountryClick, isMobile = false,showCountries = true, variant = "default", countriesLoading = false }) => {
   const router = useRouter();
   const [location, setLocation] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -164,21 +164,31 @@ const [dateRange, setDateRange] = useState({
           {/* Country Tabs */}
           {showCountries && ( 
           <div className={`flex ${isMobile ? 'justify-center space-x-1 p-2' : 'space-x-4 p-4 md:p-6'} bg-green-100/50 rounded-t-xl`}>
-            {countries.map((c) => (
-              <button
-                  key={c.id}
-                  onClick={() => onCountryClick(c.code)}
-                  className={`flex items-center gap-2 px-2 py-2 rounded-lg text-base font-medium transition country-button-shdow ${
-                    activeCountry === c.code
-                      ? "bg-green-600 text-white hover:bg-green-700"
-                      : "bg-white text-gray-700 hover:bg-green-600 hover:text-white"
-                  }`}
-                  variants={tabVariants}
-                >
-                  <Image src={c.flag} alt={c.name} width={20} height={20} />
-                  {c.name}
-                </button>
-            ))}
+            {countriesLoading ? (
+              // Loading skeleton
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-2 px-2 py-2 rounded-lg bg-white animate-pulse">
+                  <div className="w-5 h-5 bg-gray-200 rounded" />
+                  <div className="w-16 h-4 bg-gray-200 rounded" />
+                </div>
+              ))
+            ) : (
+              countries.map((c) => (
+                <button
+                    key={c.id}
+                    onClick={() => onCountryClick(c.code)}
+                    className={`flex items-center gap-2 px-2 py-2 rounded-lg text-base font-medium transition country-button-shdow ${
+                      activeCountry === c.code
+                        ? "bg-green-600 text-white hover:bg-green-700"
+                        : "bg-white text-gray-700 hover:bg-green-600 hover:text-white"
+                    }`}
+                    variants={tabVariants}
+                  >
+                    <Image src={c.flag} alt={c.name} width={20} height={20} />
+                    {c.name}
+                  </button>
+              ))
+            )}
           </div>
            )}
           {/* Search Fields */}
