@@ -269,12 +269,12 @@ const Header = () => {
         </ul>
 
         {/* Right Buttons */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-1 md:space-x-4">
           {/* Currency Dropdown */}
           <div className="relative">
             <button
               onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-              className="flex items-center gap-2 px-3 py-1 rounded text-sm font-medium text-white bg-[#4CAA42] hover:bg-green-600"
+              className="flex items-center gap-2 px-1 md:px-3 py-1 rounded text-xs md:text-sm font-medium text-white bg-[#4CAA42] hover:bg-green-600"
             >
               {selectedCountry ? `${selectedCountry.currency} - ${selectedCountry.symbol}` : 'Currency'} <FiChevronDown />
             </button>
@@ -307,7 +307,7 @@ const Header = () => {
           <div className="relative">
             <button
               onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-              className="flex items-center gap-2 px-3 py-1 rounded text-sm font-medium text-white bg-[#4CAA42] hover:bg-green-600"
+              className="flex items-center gap-2 px-1 md:px-3 py-1 rounded text-xs md:text-sm font-medium text-white bg-[#4CAA42] hover:bg-green-600"
             >
               {selectedLanguage?.name || 'Language'} <FiChevronDown />
             </button>
@@ -337,12 +337,12 @@ const Header = () => {
 
           {/* Cart Dropdown */}
           <div className="relative">
-            <button
+            {/* <button
               onClick={() => setShowCartDropdown(!showCartDropdown)}
               className="flex items-center px-1 py-1 rounded text-sm font-medium text-green-700 hover:text-green-900"
             >
               <FiShoppingCart className="ml-1 text-lg" />
-            </button>
+            </button> */}
             {showCartDropdown && (
               <ul className="absolute z-50 mt-2 bg-white border rounded shadow w-40 right-0">
                 <div className="bg-[#4CAA42] text-white rounded-t-[5px] font-semibold p-2 flex items-center justify-between">

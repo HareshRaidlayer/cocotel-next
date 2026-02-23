@@ -147,7 +147,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
 
       {/* OWNER AND HOTEL SECTION */}
       <div className="py-16 px-6 lg:px-20 bg-white text-center">
-        <h2 className="text-4xl font-bold text-green-600 mb-4">
+        <h2 className=" text-2xl lg:text-4xl font-bold text-green-600 mb-4">
           {sectionTwo?.sectiontwobannerheading || "OWNER AND HOTEL"}
         </h2>
 
@@ -175,7 +175,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
 
 {/* WHAT WE ARE LOOKING FOR */}
 <div className="bg-gray-50 py-16 px-6 lg:px-20">
-  <h2 className="text-center text-4xl font-bold text-green-600 mb-12">
+  <h2 className="text-center text-2xl lg:text-4xl font-bold text-green-600 mb-12">
     What we are looking for
   </h2>
 
@@ -185,27 +185,28 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
     {/* LEFT IMAGE SLIDER */}
     <div className="relative h-full">
       <div className="relative w-full h-full min-h-[350px] overflow-hidden rounded-xl shadow-lg">
-        <AnimatePresence mode="wait">
+       
           <motion.img
             key={currentSlide}
             src={images[currentSlide]}
             alt="Resort"
             className="absolute w-full h-full object-cover rounded-xl"
-            initial={{ opacity: 0, x: 50 }}
+            initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 1 }}
           />
-        </AnimatePresence>
+       
       </div>
     </div>
 
     {/* RIGHT CONTENT */}
     <motion.div
       key={currentSlide}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, x: 100 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -50 }}
+      transition={{ duration: 1 }}
       className="bg-green-600 text-white rounded-xl p-8 shadow-lg h-full flex flex-col justify-center"
     >
       <h3 className="text-xl font-semibold mb-4">
@@ -235,7 +236,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
 
       {/* FORM SECTION */}
       <div className="py-16 px-6 lg:px-20 bg-white">
-        <h2 className="text-center text-4xl font-bold text-green-600 mb-10">
+        <h2 className="text-center text-2xl lg:text-4xl font-bold text-green-600 mb-10">
           Be a Coco Partner
         </h2>
 
@@ -246,7 +247,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
             value={formData.fullName}
             onChange={handleInputChange}
             placeholder="Full Name *"
-            className="border p-3 rounded-md w-full"
+            className="border p-3 rounded-md w-full ring-1 ring-gray-400 focus:ring-green-500 focus:outline-none focus:ring-2"
             required
           />
           <input
@@ -255,7 +256,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
             value={formData.resortName}
             onChange={handleInputChange}
             placeholder="Resort/Hotel Name"
-            className="border p-3 rounded-md w-full"
+            className="border p-3 rounded-md w-full ring-1 ring-gray-400 focus:ring-green-500 focus:outline-none focus:ring-2"
           />
 
           <input
@@ -264,7 +265,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
             value={formData.contactNumber}
             onChange={handleInputChange}
             placeholder="Contact Number *"
-            className="border p-3 rounded-md w-full"
+            className="border p-3 rounded-md w-full ring-1 ring-gray-400 focus:ring-green-500 focus:outline-none focus:ring-2"
             required
           />
           <input
@@ -273,7 +274,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
             value={formData.numberOfRooms}
             onChange={handleInputChange}
             placeholder="Number of Rooms"
-            className="border p-3 rounded-md w-full"
+            className="border p-3 rounded-md w-full ring-1 ring-gray-400 focus:ring-green-500 focus:outline-none focus:ring-2"
           />
 
           <input
@@ -282,7 +283,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
             value={formData.email}
             onChange={handleInputChange}
             placeholder="Email Address *"
-            className="border p-3 rounded-md w-full"
+            className="border p-3 rounded-md w-full ring-1 ring-gray-400 focus:ring-green-500 focus:outline-none focus:ring-2"
             required
           />
           <input
@@ -291,7 +292,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
             value={formData.numberOfHotels}
             onChange={handleInputChange}
             placeholder="Number of Hotels/Resorts"
-            className="border p-3 rounded-md w-full"
+            className="border p-3 rounded-md w-full ring-1 ring-gray-400 focus:ring-green-500 focus:outline-none focus:ring-2"
           />
 
           <textarea
@@ -299,7 +300,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
             value={formData.address}
             onChange={handleInputChange}
             placeholder="Full Resort Address"
-            className="border p-3 rounded-md md:col-span-2"
+            className="border p-3 rounded-md md:col-span-2 ring-1 ring-gray-400 focus:ring-green-500 focus:outline-none focus:ring-2"
             rows={3}
           ></textarea>
 
@@ -308,7 +309,7 @@ export default function PartnerWithUsClient({ partnerData }: Props) {
             value={formData.message}
             onChange={handleInputChange}
             placeholder="Message"
-            className="border p-3 rounded-md md:col-span-2"
+            className="border p-3 rounded-md md:col-span-2 ring-1 ring-gray-400 focus:ring-green-500 focus:outline-none focus:ring-2"
             rows={4}
           ></textarea>
 
